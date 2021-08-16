@@ -1,0 +1,95 @@
+
+/* .App-header {
+  background-color: #02CFAA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+} */
+.form-cotizacion{
+  background-color: #02CFAA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-transform: uppercase;
+  margin-top: 4%;
+  width: 93%;
+  margin-left: 4%;
+  height: 30px;
+  border-radius: 5px;
+}
+.bg-azul{
+  background-color: #214462;
+  width: 85%;
+  margin-left: 8%;
+  margin-top: 25px;
+  height: 670px;
+  border-radius: 15px;
+  padding-top: 20px;
+}
+.title-cliente{
+  text-transform: uppercase ;
+  font-size: 19px;
+  color: #fff;
+  letter-spacing: 4px;
+  margin-left: 4%;
+  margin-top: 20px;
+}
+.inputs{
+  border-radius: 25px;
+  width: 43%;
+  height: 51px;
+  border: hidden;
+  background-color: #F5F5F5;
+  margin-top: 15px;
+  margin-left: 50px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+::placeholder{
+  font-size: 14px;
+  color: #000;
+  padding-left: 20px;
+
+}
+.bg-azulPedido{
+  background-color: #214462;
+  width: 85%;
+  margin-left: 8%;
+  margin-top: 25px;
+  height: 750px;
+  border-radius: 15px;
+  padding-top: 20px;
+}
+.boton{
+  color: #02CFAA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.boton-color{
+  background-color: #02CFAA;
+  border-style: hidden;
+  width: 20%;
+  height: 50px;
+  border-radius: 10px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 22px;
+}
+.hr{
+  color: #E3E4E5;
+  width: 93%;
+}
+.input-descripcion{
+  width: 90% !important;
+}
+.pieza{
+padding-left: 50px;
+padding-right: 70px;
+
+}
