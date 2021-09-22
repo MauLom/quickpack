@@ -1,7 +1,26 @@
 .containerMain{
-    max-width: 60%;
-    max-height: 40%;
-    margin: 10% 20% 20% 20%
+    width: 100%;
+    height: 100%;
+}
+.imgBg{
+    width: 100%;
+    height: 100%;
+}
+.contCard{
+    width: 50%;
+    height: 50%;
+    text-align: center;
+    position: absolute;
+    z-index: 2;
+    top:25%;
+    left:25%;
+
+}
+.cardContentCont{
+
+}
+.textBienvenida{
+    font-size: 1.25rem;
 }
 .text-center{
     text-align: center;
