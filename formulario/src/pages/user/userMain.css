@@ -1,0 +1,32 @@
+
+.title {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 36px;
+}
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 50px;
+  margin: 3rem;
+}
+
+.m-2 {
+  padding: 2rem;
+}
+.h100 {
+  height: 100% !important;
+}
+.buttonAction {
+  min-height: 30%;
+}
+
+.wrapperForAction {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 50px;
+}
+.contBackButton{
+  text-align: center;
+  margin: 1% 0 1% 0;
+}

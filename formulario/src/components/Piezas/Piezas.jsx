@@ -52,7 +52,7 @@ export default function SimpleTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChangeTabs = (event, newValue) => {
     setValue(newValue);
   };
 
@@ -60,7 +60,7 @@ export default function SimpleTabs() {
     <div className={classes.root} className="pieza">
       <div>
         <AppBar position="static">
-          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" className="principal">
+          <Tabs value={value} onChange={handleChangeTabs} aria-label="simple tabs example" className="principal">
             <Tab label="1 Cantidad" {...a11yProps(0)} />
             <Tab label="2 Peso" {...a11yProps(1)} />
             <Tab label="3 Alto" {...a11yProps(2)} />
@@ -73,47 +73,51 @@ export default function SimpleTabs() {
           <div className="display-contentTabPanel">
             <div>Cantidad</div>
             <label>
-              <input type="number" name="name" className="selector" />
+              <input type="number" name="quantity" className="selector" />
             </label>
           </div>
         </TabPanel>
         <TabPanel value={value} index={1}>
           <div className="display-contentTabPanel">
-            <div>peso</div>
+            <div>Indique el peso</div>
             <label>
-              <input type="number" name="name" className="selector" />
+              <input type="number" name="weight" className="selector" />
             </label>
+            <div>gr.</div>
           </div>
         </TabPanel>
         <TabPanel value={value} index={2}>
           <div className="display-contentTabPanel">
-            <div>seleccione la altura</div>
+            <div>Indique la altura</div>
             <label>
-              <input type="number" name="name" className="selector" />
+              <input type="number" name="height" className="selector" />
             </label>
+            <div>cm.</div>
           </div>
         </TabPanel>
         <TabPanel value={value} index={3}>
           <div className="display-contentTabPanel">
-            <div>seleccione el ancho</div>
+            <div>Indique el ancho</div>
             <label>
-              <input type="number" name="name" className="selector" />
+              <input type="number" name="width" className="selector" />
             </label>
+            <div>cm.</div>
           </div>
         </TabPanel>
         <TabPanel value={value} index={4}>
           <div className="display-contentTabPanel">
-            <div>seleccione la profundidad</div>
+            <div>Seleccione la profundidad</div>
             <label>
-              <input type="number" name="name" className="selector" />
+              <input type="number" name="z-axis" className="selector" />
             </label>
+            <div>cm.</div>
           </div>
         </TabPanel>
         <TabPanel value={value} index={5}>
           <div className="display-contentTabPanel">
             <div>ingrese una referencia</div>
             <label>
-              <input type="text" name="name" />
+              <input type="text" name="user-ref" />
             </label>
           </div>
         </TabPanel>

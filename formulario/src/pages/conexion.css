@@ -1,0 +1,16 @@
+.containerMain{
+    max-width: 60%;
+    max-height: 40%;
+    margin: 10% 20% 20% 20%
+}
+.text-center{
+    text-align: center;
+}
+
+.mt-1{
+    margin-top: 1rem;
+}
+
+.mt-2{
+    margin-top: 1.5rem;
+}
