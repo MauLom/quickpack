@@ -15,7 +15,7 @@ import AdminMain from './pages/admin/adminMain'
 import Cotizaciones from './components/Cotizador/Cotizador'
 import Shipment from './components/Shipment/Shipment'
 import MutableContent from './pages/MutableContent/MutableContent';
-
+import CommunicationPresentToAll from 'material-ui/svg-icons/communication/present-to-all';
 
 function App() {
   return (
