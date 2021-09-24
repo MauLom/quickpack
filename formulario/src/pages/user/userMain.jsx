@@ -80,7 +80,7 @@ function Imprimirdatos(){
             <Button color="inherit">
               <span>Desconexion</span>
               &nbsp;&nbsp;&nbsp;
-              <span class="material-icons">
+              <span className="material-icons">
                 logout
               </span>
             </Button>
@@ -117,7 +117,7 @@ function Imprimirdatos(){
             <div className="contBackButton">
               <Link to="/user" className="noLinkStyle">
                 <Button >
-                  <span class="material-icons">
+                  <span className="material-icons">
                     reply
                   </span>
                   &nbsp;&nbsp;&nbsp;

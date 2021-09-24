@@ -10,6 +10,7 @@ import {
 import Main from '../conexion';
 import UserMain from '../user/userMain';
 import AdminMain from '../admin/adminMain';
+import Cotizaciones from '../../components/Cotizador/Cotizador';
 
 function MutableContent() {
     return (
@@ -25,6 +26,9 @@ function MutableContent() {
                 </Route>
                 <Route path="/admin">
                     <AdminMain />
+                </Route>
+                <Route path="/Cotizador">
+                    <Cotizaciones />
                 </Route>
             </Switch>
             
