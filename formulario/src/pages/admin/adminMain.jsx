@@ -13,6 +13,8 @@ import {
 } from "react-router-dom";
 
 import EdicionClientes from '../../components/EdicionClientes/edicionClientes';
+
+
 import './adminMain.css'
 
 function AdminMain() {
@@ -28,6 +30,8 @@ function AdminMain() {
       setListaAcciones(jsonFake);
     }, 200);
   })
+
+
 
   return (
     <>
@@ -86,7 +90,7 @@ function AdminMain() {
               </Link>
             </div>
 
-           <EdicionClientes />
+            <EdicionClientes />
 
           </Route>
         </Switch>
