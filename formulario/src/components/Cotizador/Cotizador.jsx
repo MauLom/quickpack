@@ -1,7 +1,7 @@
 import ActionSystemUpdateAlt from 'material-ui/svg-icons/action/system-update-alt';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -11,6 +11,7 @@ import Divider from '@mui/material/Divider';
 
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+
 
 
 import './Cotizador.css';
@@ -45,7 +46,7 @@ function a11yProps(index) {
 export default function Cotizaciones() {
     const [datos, setDatos] = useState({
         userName: '',
-        userPass: '',
+        shipmentDate: '',
         originCity: '',
         originZip: '',
         originCC: '',
@@ -73,14 +74,14 @@ export default function Cotizaciones() {
             ...datos,
             [event.target.name]: event.target.value
         })
+        console.log("El date: ", datos.shipmentDate)
     }
 
     //API Consulta
     const consultaAPI = (event) => {
         event.preventDefault()
-
         var dataString = "https://quickpack-back-al2vij23ta-uc.a.run.app/"
-            + "?AA01=" + "2021-10-10T12:00:00+GMT+0100"
+            + "?AA01=" + datos.shipmentDate + "T12:00:00+GMT+0100"
             + "&BB01=" + datos.originCity
             + "&BB02=" + datos.originZip
             + "&BB03=" + datos.originCC
@@ -131,7 +132,7 @@ export default function Cotizaciones() {
                 }
                 handleClickOpen()
 
-
+                // background-color: #02cfaa !important;
                 return data
             })
             .catch((error) => {
@@ -167,6 +168,10 @@ export default function Cotizaciones() {
 
                         <div className="title-cliente">Información de envio
                         </div>
+
+                        <label>
+                            <input type="date" name="shipmentDate" className="inputs" onChange={handelDatosChanges} placeholder="Fecha de envio" />
+                        </label>
 
                         <label>
                             <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad origen" />

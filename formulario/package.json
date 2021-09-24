@@ -5,13 +5,17 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@material-ui/core": "^4.12.3",
+    "@material-ui/core": "^5.0.0-beta.5",
     "@material-ui/icons": "^4.11.2",
-    "@mui/material": "^5.0.0",
+    "@material-ui/lab": "^5.0.0-alpha.44",
+    "@material-ui/styles": "^4.11.4",
+    "@mui/material": "^5.0.1",
+    "@mui/styled-engine-sc": "^5.0.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^5.1.1",
+    "firebase": "^9.0.2",
     "material-ui": "^0.20.2",
     "react": "^17.0.2",
     "react-bootstrap": "^2.0.0-beta.6",
@@ -19,6 +23,7 @@
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "react-simple-modal-provider": "^1.7.1",
+    "styled-components": "^5.3.1",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

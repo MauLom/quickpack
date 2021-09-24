@@ -1,35 +1,47 @@
-.containerMain{
+.containerMain {
     width: 100%;
     height: 100%;
 }
-.imgBg{
+.imgBg {
     width: 100%;
     height: 100%;
 }
-.contCard{
+.contCard {
     width: 50%;
     height: 50%;
     text-align: center;
     position: absolute;
     z-index: 2;
-    top:25%;
-    left:25%;
-
+    top: 25%;
+    left: 25%;
+    background: rgba(33, 68, 98, 0.8) !important;
 }
-.cardContentCont{
-
+.cardContentCont {
 }
-.textBienvenida{
-    font-size: 1.25rem;
+.textBienvenida {
+    color: white;
+    font-size: 4.5rem;
+    font-weight: 600;
 }
-.text-center{
+.text-center {
     text-align: center;
 }
 
-.mt-1{
+.mt-1 {
     margin-top: 1rem;
 }
 
-.mt-2{
+.mt-2 {
     margin-top: 1.5rem;
+}
+
+.btnConexion {
+    background: linear-gradient(146deg, rgba(2, 207, 170, 1) 0%, rgba(2, 207, 170, 1) 41%, rgba(28, 188, 238, 1) 100%);
+    color: white !important;
+    font-size: 1.5rem !important;
+    width: 30%;
+    height: 10%;
+}
+.inputsTxtFields{
+    background-color: white;
 }

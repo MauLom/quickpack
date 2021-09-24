@@ -1,0 +1,9 @@
+.barraHeader{
+   background-color: rgba(33, 68, 98, 1) !important;
+   padding: 20px;
+}
+.logoAppBar{
+    max-width: 10%;
+    max-height: 80%;
+    margin-right: 30%;
+}
