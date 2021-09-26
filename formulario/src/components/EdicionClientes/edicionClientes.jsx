@@ -52,7 +52,8 @@ function setNewUser(name, last) {
 }
 var datosOut = []
 function getUsers() {
-    getDocs(collection(db, "users")).then((snapshot) => {
+    getDocs(collection(db, "users"))
+    .then((snapshot) => {
         var auxArr = [];
         snapshot.forEach((each) => {
             console.log("Each", (each.data()))
@@ -73,6 +74,11 @@ function EdicionClientes() {
     });
     const [usersList, setUsersList] = React.useState(datosOut)
 
+    const miObjeto = {propieda1:"valor1", propiedad2:"valor2"};
+    miObjeto.propieda1 // (valor1)
+
+    const miArray = ["valor1", "valor2", "valor3"];
+    miArray[0];
 
     const printSomething = () => {
         console.log("Consume esto")
