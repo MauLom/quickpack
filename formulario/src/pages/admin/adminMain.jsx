@@ -79,7 +79,7 @@ function AdminMain() {
           </Route>
           <Route exact path="/admin/edicion-clientes">
             <div className="contBackButton">
-              <Link to="/user" className="noLinkStyle">
+              <Link to="/admin" className="noLinkStyle">
                 <Button >
                   <span className="material-icons">
                     reply

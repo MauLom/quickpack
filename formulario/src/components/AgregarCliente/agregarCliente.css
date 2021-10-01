@@ -4,9 +4,9 @@
     color: #000;
 }
 .MuiAppBar-colorPrimary {
+
     border-style: hidden;
 }
-
 .PrivateTabIndicator-root-2{
     display: none;
 }
@@ -21,4 +21,13 @@
     border-style: hidden;
     border-bottom: groove;
     margin-left: 15px;
+}
+.text-right{
+    text-align: right;
+}
+.contBtn{
+    margin-right: 10%;
+}
+.btnGuardar{
+    background-color: #02cfaa !important;
 }
