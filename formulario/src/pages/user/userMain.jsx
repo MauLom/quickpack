@@ -72,18 +72,8 @@ function getUsers() {
   
   
   console.log("query"+getDocs(q));
-    /*
-  getDocs(collection(database, "Cuenta"))
-  .then((snapshot) => {
-      var auxArr = [];
-      snapshot.forEach((each) => {
-          console.log("Each", (each.data()))
-          auxArr.push(each.data());
-          console.log("Each", `${each.id} => ${each.data()}`);
-           
-      })
-      datosOut = auxArr;
-  });*/
+    
+  
 
 }
 
@@ -115,19 +105,7 @@ const setData=()=>{
         console.log("Error getting documents: ", error);
     });
   
-  setDoc(doc(database, "Cuenta"), {
-    Id:datos1.Id,
-    Nombre:datos1.Nombres,
-    Apellidos: datos1.Apellidos,
-    Grupo: datos1.Grupo,
-    Contrasena:datos1.Pass
-  })
-  .then(respuesta1=>{
-    console.log("respuesta"+respuesta1);
-  }) 
-  .catch(error1=>{
-    console.log("error"+error1);
-  });
+ 
 }
 const UpdateDatos = (event) => {
   setDatos1({
