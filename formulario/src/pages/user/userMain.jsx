@@ -18,32 +18,75 @@ import {
 import Cotizaciones from '../../components/Cotizador/Cotizador';
 
 import './userMain.css'
-import firebaseApp from 'firebase/firebaseApp'
+import firebaseApp from '../../firebaseApp';
 import { getDatabase, ref, set} from "firebase/database"
-
+import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
+import { initializeApp } from 'firebase/app';
+firebaseApp();
+const database = getFirestore();
+var datosOut=[]
 function UserMain() {
-  firebaseApp();
+  
   const [listaAcciones, setListaAcciones] = React.useState([]);
+
+  
+
   const [datos, setDatos] = useState({
     originId: '',
     originName: '',
     originLastname: '',
     originGroup: '',
-    originPáss: ''
+    originPass: ''
 })
 const getData=()=>{
   console.log('entra aquí');
   
-  const baseddt=getDatabase();
-  set(ref(baseddt, 'nuevo/'), {
-      Id:datos.originId,
-      Nombre:datos.originName,
-      Apellidos: datos.originLastName,
-      Grupo: datos.originGroup,
-      Contrasena:datos.OriginPass
-
-    });
+  
+  addDoc(collection(database, "Cuenta"), {
+    Id:datos.originId,
+    Nombre:datos.originName,
+    Apellidos: datos.originLastname,
+    Grupo: datos.originGroup,
+    Contrasena:datos.originPass
+  })
+  .then(respuesta=>{
+    console.log("respuesta"+respuesta);
+  }) 
+  .catch(error=>{
+    console.log("error"+error);
+  });
 }
+
+function getUsers() {
+  console.log('entra en setData');
+  const q=query(collection(database,"Cuenta"),where("Id", "==", "2"))
+   getDocs(q).then(res=>{
+    res.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+    })
+  })
+  .catch(err=>{
+    console.log("error"+err);
+  });
+  
+  
+  console.log("query"+getDocs(q));
+    /*
+  getDocs(collection(database, "Cuenta"))
+  .then((snapshot) => {
+      var auxArr = [];
+      snapshot.forEach((each) => {
+          console.log("Each", (each.data()))
+          auxArr.push(each.data());
+          console.log("Each", `${each.id} => ${each.data()}`);
+           
+      })
+      datosOut = auxArr;
+  });*/
+
+}
+
 const handelDatosChanges = (event) => {
   setDatos({
       ...datos,
@@ -52,10 +95,52 @@ const handelDatosChanges = (event) => {
   })
   
 }
-function Imprimirdatos(){
-  console.log('datos:',datos);
-
+const [datos1, setDatos1] = useState({
+  Id: '',
+  Nombres: '',
+  Apellidos: '',
+  Grupo: '',
+  Pass: ''
+})
+const setData=()=>{
+  console.log('entra en setData');
+  collection(database,"Cuenta").where("Id", "==", "1")
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            console.log(doc.id, " => ", doc.data());
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+  
+  setDoc(doc(database, "Cuenta"), {
+    Id:datos1.Id,
+    Nombre:datos1.Nombres,
+    Apellidos: datos1.Apellidos,
+    Grupo: datos1.Grupo,
+    Contrasena:datos1.Pass
+  })
+  .then(respuesta1=>{
+    console.log("respuesta"+respuesta1);
+  }) 
+  .catch(error1=>{
+    console.log("error"+error1);
+  });
 }
+const UpdateDatos = (event) => {
+  setDatos1({
+      ...datos1,
+      [event.target.name]: event.target.value
+      
+  })
+  
+}
+
+
+
+
 
   React.useEffect(() => {
     const jsonFake = [
@@ -80,7 +165,7 @@ function Imprimirdatos(){
             <Button color="inherit">
               <span>Desconexion</span>
               &nbsp;&nbsp;&nbsp;
-              <span className="material-icons">
+              <span class="material-icons">
                 logout
               </span>
             </Button>
@@ -117,7 +202,7 @@ function Imprimirdatos(){
             <div className="contBackButton">
               <Link to="/user" className="noLinkStyle">
                 <Button >
-                  <span className="material-icons">
+                  <span class="material-icons">
                     reply
                   </span>
                   &nbsp;&nbsp;&nbsp;
@@ -135,29 +220,32 @@ function Imprimirdatos(){
               <a class="noLinkStyle" href="/user">
                 <button class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root css-1e6y48t-MuiButtonBase-root-MuiButton-root" tabindex="0" type="button"><span class="material-icons" _msthash="331916" _msttexthash="140842">respuesta</span>&nbsp;&nbsp;&nbsp;<span _msthash="332072" _msttexthash="114361">Regresar</span><span class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span></button></a></div>
                 <div class="bg-azul">
-                  <form id="Leer">
+                  
             <div class="title-cuenta" _msthash="604514" _msttexthash="411905"><font color="white">  Configuración de mi cuenta</font></div>
                 <br></br>
                 <label>
-                <font color="white">Id</font><center><input type="text" id="Id_1" name="Id"   class="inputs"></input></center>
+                <font color="white">Id</font><center><input type="text" id="Id_1" name="Id" onChange={UpdateDatos}   class="inputs"></input></center>
                 </label>
                 <label>
-                <p></p><font color="white">Nombre/s</font><center><input type="text" id="Nombres_1" name="Nombres"   class="inputs"></input></center>
+                <p></p><font color="white">Nombre/s</font><center><input type="text" id="Nombres_1" name="Nombres" onChange={UpdateDatos}   class="inputs"></input></center>
                 </label>
                 <label>
-                <p></p><font color="white">Apellidos</font><center><input type="text" id="Apellidos_2" name="Apellidos"   class="inputs"></input></center>
+                <p></p><font color="white">Apellidos</font><center><input type="text" id="Apellidos_2" name="Apellidos" onChange={UpdateDatos}   class="inputs"></input></center>
                 </label>
                 <label>
-                <p></p><font color="white">Grupo</font><center> <input type="text" id="Grupo_1" name="Grupo"   class="inputs"></input></center>
+                <p></p><font color="white">Grupo</font><center> <input type="text" id="Grupo_1" name="Grupo" onChange={UpdateDatos}   class="inputs"></input></center>
                 </label>
                 <label>
-                <p></p><font color="white">Contraseña</font><center> <input type="password_1" id="Contraseña"name="contrasena"   class="inputs" values=""></input></center>
+                <p></p><font color="white">Contraseña</font><center> <input type="password_1" id="Contraseña"name="Pass" onChange={UpdateDatos}   class="inputs" values=""></input></center>
                 </label>
-                </form>
+                <p></p>
+                <p></p>
+                <button onClick={getUsers}>Ver</button> <button onClick={getUsers}>Modificar</button>
+                
                 </div>
                 <div class="bg-azul">
-                  <form id="Gradar">
-                  <div class="title-cuenta" _msthash="604514" _msttexthash="411905"><font color="white">  Modificar datos</font></div>
+                  
+                  <div class="title-cuenta" _msthash="604514" _msttexthash="411905"><font color="white"> Registrar</font></div>
                 <p></p>
                 <label>
                 <font color="white">Id</font><center><input type="text" id="Id" name="originId" onChange={handelDatosChanges}  class="inputs"></input></center>
@@ -172,13 +260,14 @@ function Imprimirdatos(){
                 <p></p><font color="white">Grupo</font><center> <input type="text" id="Grupo" name="originGroup" onChange={handelDatosChanges}  class="inputs"></input></center>
                 </label>
                 <label>
-                <p></p><font color="white">Contraseña</font><center> <input type="password" id="Contraseña"name="originPass" onChange={handelDatosChanges}  class="inputs" values=""></input></center>
+                <p></p><font color="white">Contraseña</font><center> <input type="password" id="Contrasena"name="originPass" onChange={handelDatosChanges}  class="inputs" values=""></input></center>
                 </label>
+                
                 <p></p><button onClick={getData}>Guardar</button> 
                 
 
 
-                </form>
+                
                 </div>
                 
                 

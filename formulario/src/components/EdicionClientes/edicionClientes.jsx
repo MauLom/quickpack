@@ -74,11 +74,10 @@ function EdicionClientes() {
     });
     const [usersList, setUsersList] = React.useState(datosOut)
 
-    const miObjeto = {propieda1:"valor1", propiedad2:"valor2"};
-    miObjeto.propieda1 // (valor1)
+   
+   
 
-    const miArray = ["valor1", "valor2", "valor3"];
-    miArray[0];
+  
 
     const printSomething = () => {
         console.log("Consume esto")
