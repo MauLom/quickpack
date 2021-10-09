@@ -27,6 +27,11 @@ const db = firestore.getFirestore();
 
 function EdicionClientes() {
     const [usersList, setUsersList] = React.useState(datosOut)
+    const printSomething = () => {
+        console.log("Consume esto")
+        console.log("Log set")
+    }
+  
     var datosOut = []
 
     var docClavesRef = firestore.collection(db, "Claves");
