@@ -13,7 +13,7 @@ import {
 } from "react-router-dom";
 
 import EdicionClientes from '../../components/EdicionClientes/edicionClientes';
-
+import ListaPedidos from '../../components/Pedidos/Pedidos';
 
 import './adminMain.css'
 
@@ -24,7 +24,7 @@ function AdminMain() {
     const jsonFake = [
       { id: 0, txt: "Editar clientes", ico: "manage_accounts", destiny: "/admin/edicion-clientes" },
       { id: 1, txt: "Editar grupos", ico: "supervisor_account", destiny: "#" },
-      { id: 2, txt: "Ver pedidos", ico: "find_in_page", destiny: "#" }
+      { id: 2, txt: "Ver pedidos", ico: "find_in_page", destiny: "/admin/pedidos" }
     ];
     setTimeout(() => {
       setListaAcciones(jsonFake);
@@ -39,7 +39,7 @@ function AdminMain() {
         <Toolbar>
           <img className="logoAppBar" src="https://quickpak.com.mx/wp-content/uploads/2021/06/thumbnail_QUICL-Logotipo.png" />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Hola! Pruebas
+            Hola! Admin
           </Typography>
           <Link to="/" className="noLinkStyle">
             <Button color="inherit">
@@ -92,6 +92,20 @@ function AdminMain() {
 
             <EdicionClientes />
 
+          </Route>
+          <Route exact path="/admin/pedidos">
+          <div className="contBackButton">
+              <Link to="/admin" className="noLinkStyle">
+                <Button >
+                  <span className="material-icons">
+                    reply
+                  </span>
+                  &nbsp;&nbsp;&nbsp;
+                  <span>Regresar</span>
+                </Button>
+              </Link>
+            </div>
+                <ListaPedidos />
           </Route>
         </Switch>
       </Router>

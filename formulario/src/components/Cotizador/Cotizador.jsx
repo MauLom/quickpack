@@ -1,6 +1,4 @@
-import ActionSystemUpdateAlt from 'material-ui/svg-icons/action/system-update-alt';
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -12,10 +10,13 @@ import Divider from '@mui/material/Divider';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
-
+import firebaseApp from '../../firebaseApp';
+import * as firestore from "firebase/firestore"
 
 import './Cotizador.css';
 
+firebaseApp()
+const db =firestore.getFirestore();
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -59,7 +60,8 @@ export default function Cotizaciones() {
         height: '',
         width: '',
         longitude: '',
-        ref: ''
+        ref: '',
+        insurance: ''
     })
     const [tabIdx, setTab] = useState(0);
     const [open, setOpen] = React.useState(false);
@@ -92,6 +94,7 @@ export default function Cotizaciones() {
             + "&DD02=" + datos.longitude
             + "&DD03=" + datos.width
             + "&DD04=" + datos.height
+            + "&EE01=" + datos.insurance
 
 
         var dataJSONParsed = {};
@@ -107,9 +110,6 @@ export default function Cotizaciones() {
             .then((data) => {
 
                 var dataJSONParsed = JSON.parse(data)
-
-
-
                 var code = dataJSONParsed.RateResponse.Provider[0].Notification[0]['@code']
                 setHasErrorAPI(code != 0 ? true : false)
                 setDataResponse(dataJSONParsed);
@@ -129,6 +129,28 @@ export default function Cotizaciones() {
                         setArrServicios(JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service)))
                     }
 
+                }
+                var collectionRef = firestore.collection(db, "Cotizaciones");
+                var setData = () =>{
+                    firestore.addDoc(collectionRef, {
+                        DestinyCC: datos.destinyCC,
+                        DestinyCity: datos.destinyCity,
+                        DestinyZip: datos.destinyZip,
+                        OriginCity: datos.originCity,
+                        OriginCC: datos.originCC,
+                        OriginZip: datos.originZip,
+                        Height: datos.height,
+                        Insurance: datos.insurance,
+                        Longitude: datos.longitude,
+                        ShipmentDate: datos.shipmentDate,
+                        Weight: datos.weight,
+                        Width: datos.width,
+                        statusGuia: 0,
+                    }).then(response => {
+                        console.log("Response", response)
+                    }).catch(error => {
+                        console.log("Error:", error)
+                    }) 
                 }
                 handleClickOpen()
 

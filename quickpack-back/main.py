@@ -25,6 +25,7 @@ def get_example():
     PackageLenght = request.args.get("DD02")
     PackageWidth = request.args.get("DD03")
     PackageHeight = request.args.get("DD04")
+    ShipmentValue = request.args.get("EE001")
 
     data = {
         "RateRequest": {
@@ -60,7 +61,8 @@ def get_example():
                             "Height": PackageHeight
                         }
                     }
-                }
+                },
+                "DeclaredValue": ShipmentValue
             }
         }
     }
