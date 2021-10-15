@@ -11,7 +11,7 @@ import * as firestore from "firebase/firestore"
 import Button from '@mui/material/Button';
 
 import AgregarCliente from '../AgregarCliente/agregarCliente';
-
+import ListaClientes from '../ListaClientes/listaClientes';
 
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 
@@ -65,9 +65,7 @@ function EdicionClientes() {
             <Router>
                 <Switch>
                     <Route exact path="/admin/edicion-clientes">
-                        <p></p>
                         <p></p><button onClick={getDatos}> Cargar Lista clientes</button>
-                        <p></p>
                         <center>
                             <table id="ClientTable" border="1px">
                                 <tr>
@@ -79,14 +77,21 @@ function EdicionClientes() {
                                 </tr>
                             </table>
                         </center>
-                        <Link to="/admin/adicion-clientes" className="noLinkStyle">
 
+                        <Link to="/admin/adicion-clientes" className="noLinkStyle">
                             <button>Agregar Cliente</button>
+                        </Link>
+
+                        <Link to="/admin/lista-clientes" className="noLinkStyle">
+                            <button>Editar detalles de clientes</button>
                         </Link>
 
                     </Route>
                     <Route exact path="/admin/adicion-clientes" >
                         <AgregarCliente />
+                    </Route>
+                    <Route exact path="/admin/lista-clientes" >
+                        <ListaClientes />
                     </Route>
                 </Switch>
             </Router>
