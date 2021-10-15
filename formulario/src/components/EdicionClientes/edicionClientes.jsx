@@ -21,43 +21,49 @@ const db = firestore.getFirestore();
 const database = getFirestore();
 
 function EdicionClientes() {
-    const [usersList, setUsersList] = React.useState(datosOut)
+    const [usersList, setUsersList] = React.useState([])
+    const [slctdUser, setSlctdUser] = React.useState();
+    const [mostrarFormularioEdicion, setMostrarFormulario] = React.useState(false)
+    const [datos, setDatos] = React.useState({
+        originId: '',
+        originName: '',
+        originLastname: '',
+        originGroup: '',
+        originPass: ''
+    })
 
     var datosOut = []
-
-    var docClavesRef = firestore.collection(db, "Claves");
-
     function getDatos() {
-        let tabla = document.getElementById("ClientTable");
-
-        console.log('entra en setData');
         const q = query(collection(database, "Cuenta"))
         getDocs(q).then(res => {
             res.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
-                console.log(doc.id, " => ", doc.data());
-                let dato = doc.id;
-
-                let fila = tabla.insertRow(-1);
-                let celda0 = fila.insertCell(0);
-                let celda1 = fila.insertCell(1);
-                let celda2 = fila.insertCell(2);
-                let celda3 = fila.insertCell(3);
-                let celda4 = fila.insertCell(4);
-
-                celda0.textContent = dato;
-                celda1.textContent = doc.data().Nombre;
-                celda2.textContent = doc.data().Apellidos;
-                celda3.textContent = doc.data().Grupo;
-                celda4.textContent = doc.data().Contrasena;
-                console.log("Id del documento => " + dato);
-
+                var jsonAux = {};
+                jsonAux['id'] = doc.id;
+                jsonAux['Name'] = doc.data().Nombre;
+                jsonAux['App'] = doc.data().Apellidos;
+                jsonAux['Group'] = doc.data().Grupo;
+                jsonAux['Pass'] = doc.data().Contrasena;
+                datosOut.push(jsonAux);
             })
+            setUsersList(datosOut);
         })
             .catch(err => {
                 console.log("error" + err);
             });
 
+    }
+
+    const handelDatosChanges = (event) => {
+        setDatos({
+            ...datos,
+            [event.target.name]: event.target.value
+        })
+    }
+
+    const editarUsuario = (event) => {
+        setMostrarFormulario(true)
+        setSlctdUser(usersList[event.target.name]);
+        console.log("Funciona!:", slctdUser)
     }
 
     return (
@@ -69,14 +75,89 @@ function EdicionClientes() {
                         <center>
                             <table id="ClientTable" border="1px">
                                 <tr>
-                                    <td>ID</td>
                                     <td>Nombre    </td>
                                     <td>Apellido  </td>
                                     <td>Grupo     </td>
                                     <td>Contraseña</td>
+                                    <td><span class="material-icons-outlined">manage_accounts</span></td>
                                 </tr>
+                                {usersList.map((eachUser, idx) => (
+                                    <tr>
+                                        <td>{eachUser.Name}</td>
+                                        <td>{eachUser.App}</td>
+                                        <td>{eachUser.Group}</td>
+                                        <td>{eachUser.Pass}</td>
+                                        <td><button name={idx} onClick={editarUsuario}>Editar</button></td>
+                                    </tr>
+                                ))}
                             </table>
                         </center>
+
+                        {mostrarFormularioEdicion == true ?
+                            <>
+                                <div class="bg-azul">
+                                    <form >
+                                        <div className="title-cliente"> Por favor edite datos de la cuenta</div>
+
+                                        <label>
+                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges}
+                                                value={slctdUser.Name}
+                                                placeholder="Nombre" ></input>
+                                        </label>
+
+                                        <label>
+                                            <input type="text" name="originLastname" className="inputs" onChange={handelDatosChanges}
+                                                value={slctdUser.App}
+                                                placeholder="Apellido" ></input>
+                                        </label>
+                                        <label>
+                                            <input type="text" name="originGroup" className="inputs" onChange={handelDatosChanges} 
+                                            value={slctdUser.Group}
+                                            placeholder="Grupo" ></input>
+                                        </label>
+                                        <label>
+                                            <input disabled type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
+                                            value={slctdUser.Pass}
+                                            placeholder="Clave" ></input>
+                                        </label>
+                                        <label>
+                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
+                                            
+                                            placeholder="Porcentaje servicios 'I' " ></input>
+                                        </label>
+                                        <label>
+                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
+                                            
+                                            placeholder="Porcentaje servicios 'O'" ></input>
+                                        </label>
+                                        <label>
+                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
+                                            
+                                            placeholder="Porcentaje servicios '1'" ></input>
+                                        </label>
+                                        <label>
+                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
+                                            
+                                            placeholder="Porcentaje servicios 'G'" ></input>
+                                        </label>
+                                        <label>
+                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
+                                            
+                                            placeholder="Porcentaje servicios 'N'" ></input>
+                                        </label>
+                                        <label>
+                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
+                                            
+                                            placeholder="Editar todos los porcentajes" ></input>
+                                        </label>
+                                    </form>
+                                    <div className="w-100 text-right mt-2 contBtn">
+                                        <Button className="btnGuardar" variant="contained">Guardar</Button>
+                                    </div>
+                                </div>
+                            </>
+                            : ""
+                        }
 
                         <Link to="/admin/adicion-clientes" className="noLinkStyle">
                             <button>Agregar Cliente</button>

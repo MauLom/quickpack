@@ -31,10 +31,7 @@ function ListaClientes() {
         const q = query(collection(database, "Cuenta"))
         getDocs(q).then(res => {
             res.forEach((doc) => {
-
                 let dato = doc.id;
-
-
                 console.log("Id del documento => " + dato);
 
             })

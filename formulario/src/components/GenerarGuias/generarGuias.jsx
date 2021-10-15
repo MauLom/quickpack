@@ -13,8 +13,6 @@ import Dialog from '@mui/material/Dialog';
 import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
 
-import './Cotizador.css';
-
 firebaseApp()
 const db = firestore.getFirestore();
 function TabPanel(props) {
@@ -47,7 +45,7 @@ function a11yProps(index) {
 
 function renderSwitch(param) {
     const generarGuia = () => {
-       console.log("Funcion pendiente")
+        console.log("Funcion pendiente")
     }
 
     switch (param['@type']) {
@@ -146,16 +144,27 @@ function renderSwitch(param) {
     }
 }
 
-export default function Cotizaciones() {
+
+export default function GenerarGuias() {
     const [datos, setDatos] = useState({
         userName: '',
         shipmentDate: '',
         originCity: '',
         originZip: '',
         originCC: '',
+        originStreet: '',
+        originPerson: '',
+        originCompany: '',
+        originPhone: '',
+        originEmail: '',
         destinyCity: '',
         destinyZip: '',
         destinyCC: '',
+        destinyStreet: '',
+        destinyPerson: '',
+        destinyCompany: '',
+        destinyPhone: '',
+        destinyEmail: '',
         insurance: '',
         quantity: '',
         weight: '',
@@ -172,6 +181,7 @@ export default function Cotizaciones() {
     const [errorMsg, setErrorMsg] = React.useState("Si puedes leer esto, contacta al soporte.");
     const [arrServiciosYCargos, setArrServicios] = React.useState([])
 
+
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
         setDatos({
@@ -184,14 +194,24 @@ export default function Cotizaciones() {
     //API Consulta
     const consultaAPI = (event) => {
         event.preventDefault()
-        var dataString = "https://quickpack-back-al2vij23ta-uc.a.run.app/rateRequest"
+        var dataString = "https://quickpack-back-al2vij23ta-uc.a.run.app/shipmentResquest"
             + "?AA01=" + datos.shipmentDate + "T12:00:00+GMT+0100"
             + "&BB01=" + datos.originCity
             + "&BB02=" + datos.originZip
             + "&BB03=" + datos.originCC
+            + "&BB04=" + datos.originStreet
+            + "&BB05=" + datos.originCompany
+            + "&BB06=" + datos.originPhone
+            + "&BB07=" + datos.originEmail
+            + "&BB08=" + datos.originPerson
             + "&CC01=" + datos.destinyCity
             + "&CC02=" + datos.destinyZip
             + "&CC03=" + datos.destinyCC
+            + "&CC04=" + datos.destinyStreet
+            + "&CC05=" + datos.destinyCompany
+            + "&CC06=" + datos.destinyPhone
+            + "&CC07=" + datos.destinyEmail
+            + "&CC08=" + datos.destinyPerson
             + "&DD01=" + datos.weight
             + "&DD02=" + datos.longitude
             + "&DD03=" + datos.width
@@ -254,8 +274,6 @@ export default function Cotizaciones() {
                     console.log("Error:", error)
                 })
                 handleClickOpen()
-
-                // background-color: #02cfaa !important;
                 return data
             })
             .catch((error) => {
@@ -283,139 +301,152 @@ export default function Cotizaciones() {
 
     };
 
+
     return (
         <>
-            <div className="bg-azul">
-                <div>
-                    <form >
+            <div className="bg-azul-guias">
+                <form >
 
-                        <div className="title-cliente">Información de envio
+                    <div className="title-cliente">Asegurar envio</div>
+                    <label>
+                        <input type="text" name="insurance" className="inputs" onChange={handelDatosChanges} placeholder="valor de envio" />
+                    </label>
+                    <label>
+                        <input type="date" name="shipmentDate" className="inputs" onChange={handelDatosChanges} placeholder="Fecha de envio" />
+                    </label>
+                    <div className="title-cliente">Información de origen</div>
+                    <label>
+                        <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad origen" />
+                    </label>
+                    <label>
+                        <input type="text" name="originZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal origen" />
+                    </label>
+                    <label>
+                        <input type="text" name="originCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais origen" />
+                    </label>
+                    <label>
+                        <input type="text" name="originStreet" className="inputs" onChange={handelDatosChanges} placeholder="Entre calles" />
+                    </label>
+                    <label>
+                        <input type="text" name="originPerson" className="inputs" onChange={handelDatosChanges} placeholder="Nombre " />
+                    </label>
+                    <label>
+                        <input type="text" name="originCompany" className="inputs" onChange={handelDatosChanges} placeholder="Nombre compañia" />
+                    </label>
+                    <label>
+                        <input type="text" name="originPhone" className="inputs" onChange={handelDatosChanges} placeholder="Numero celular" />
+                    </label>
+                    <label>
+                        <input type="text" name="originEmail" className="inputs" onChange={handelDatosChanges} placeholder="Correo" />
+                    </label>
+
+                    <br />
+
+                    <div className="title-cliente">Informacion de destino</div>
+
+                    <label>
+                        <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad destino" />
+                    </label>
+                    <label>
+                        <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
+                    </label>
+                    <label>
+                        <input type="text" name="destinyCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais destino" />
+                    </label>
+
+
+                    <label>
+                        <input type="text" name="destinyStreet" className="inputs" onChange={handelDatosChanges} placeholder="Entre calles" />
+                    </label>
+                    <label>
+                        <input type="text" name="destinyPerson" className="inputs" onChange={handelDatosChanges} placeholder="Nombre" />
+                    </label>
+                    <label>
+                        <input type="text" name="destinyCompany" className="inputs" onChange={handelDatosChanges} placeholder="Nombre compañia" />
+                    </label>
+                    <label>
+                        <input type="text" name="destinyPhone" className="inputs" onChange={handelDatosChanges} placeholder="Numero celular" />
+                    </label>
+                    <label>
+                        <input type="text" name="destinyEmail" className="inputs" onChange={handelDatosChanges} placeholder="Correo" />
+                    </label>
+
+
+                    {/*  */}
+                    <div className="title-cliente">Paquete</div>
+
+                    <div className={classes.root} className="pieza">
+                        <div>
+                            <AppBar position="static">
+                                <Tabs value={tabIdx} onChange={handleTabChange} aria-label="simple tabs example" className="principal">
+                                    <Tab label="1 Cantidad" {...a11yProps(0)} />
+                                    <Tab label="2 Peso" {...a11yProps(1)} />
+                                    <Tab label="3 Alto" {...a11yProps(2)} />
+                                    <Tab label="4 Ancho" {...a11yProps(3)} />
+                                    <Tab label="5 Profundidad" {...a11yProps(4)} />
+                                    <Tab label="6 Referencia" {...a11yProps(5)} />
+                                </Tabs>
+                            </AppBar>
+                            <TabPanel value={tabIdx} index={0} >
+                                <div className="display-contentTabPanel">
+                                    <div>Cantidad</div>
+                                    <label>
+                                        <input type="number" name="quantity" className="selector" onChange={handelDatosChanges} />
+                                    </label>
+                                </div>
+                            </TabPanel>
+                            <TabPanel value={tabIdx} index={1}>
+                                <div className="display-contentTabPanel">
+                                    <div>Indique el peso</div>
+                                    <label>
+                                        <input type="number" name="weight" className="selector" onChange={handelDatosChanges} />
+                                    </label>
+                                    <div>Kg.</div>
+                                </div>
+                            </TabPanel>
+                            <TabPanel value={tabIdx} index={2}>
+                                <div className="display-contentTabPanel">
+                                    <div>Indique la altura</div>
+                                    <label>
+                                        <input type="number" name="height" className="selector" onChange={handelDatosChanges} />
+                                    </label>
+                                    <div>cm.</div>
+                                </div>
+                            </TabPanel>
+                            <TabPanel value={tabIdx} index={3}>
+                                <div className="display-contentTabPanel">
+                                    <div>Indique el ancho</div>
+                                    <label>
+                                        <input type="number" name="width" className="selector" onChange={handelDatosChanges} />
+                                    </label>
+                                    <div>cm.</div>
+                                </div>
+                            </TabPanel>
+                            <TabPanel value={tabIdx} index={4}>
+                                <div className="display-contentTabPanel">
+                                    <div>Seleccione la profundidad</div>
+                                    <label>
+                                        <input type="number" name="longitude" className="selector" onChange={handelDatosChanges} />
+                                    </label>
+                                    <div>cm.</div>
+                                </div>
+                            </TabPanel>
+                            <TabPanel value={tabIdx} index={5}>
+                                <div className="display-contentTabPanel">
+                                    <div>ingrese una referencia</div>
+                                    <label>
+                                        <input type="text" name="ref" onChange={handelDatosChanges} />
+                                    </label>
+                                </div>
+                            </TabPanel>
                         </div>
-
-                        <label>
-                            <input type="date" name="shipmentDate" className="inputs" onChange={handelDatosChanges} placeholder="Fecha de envio" />
-                        </label>
-
-                        <label>
-                            <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad origen" />
-                        </label>
-                        <label>
-                            <input type="text" name="originZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal origen" />
-                        </label>
-                        <label>
-                            <input type="text" name="originCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais origen" />
-                        </label>
-                        <br />
-                        <label>
-                            <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad destino" />
-                        </label>
-                        <label>
-                            <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
-                        </label>
-                        <label>
-                            <input type="text" name="destinyCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais destino" />
-                        </label>
-
-                        <div className="title-cliente">Asegurar envio
-                        </div>
-
-                        <label>
-                            <input type="text" name="insurance" className="inputs" onChange={handelDatosChanges} placeholder="valor de envio" />
-                        </label>
-
-                        <div className="title-cliente">Paquete
-                        </div>
-                        {/*  */}
-
-
-                        <div className={classes.root} className="pieza">
-                            <div>
-                                <AppBar position="static">
-                                    <Tabs value={tabIdx} onChange={handleTabChange} aria-label="simple tabs example" className="principal">
-                                        <Tab label="1 Cantidad" {...a11yProps(0)} />
-                                        <Tab label="2 Peso" {...a11yProps(1)} />
-                                        <Tab label="3 Alto" {...a11yProps(2)} />
-                                        <Tab label="4 Ancho" {...a11yProps(3)} />
-                                        <Tab label="5 Profundidad" {...a11yProps(4)} />
-                                        <Tab label="6 Referencia" {...a11yProps(5)} />
-                                    </Tabs>
-                                </AppBar>
-                                <TabPanel value={tabIdx} index={0} >
-                                    <div className="display-contentTabPanel">
-                                        <div>Cantidad</div>
-                                        <label>
-                                            <input type="number" name="quantity" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={1}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique el peso</div>
-                                        <label>
-                                            <input type="number" name="weight" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>Kg.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={2}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique la altura</div>
-                                        <label>
-                                            <input type="number" name="height" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={3}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique el ancho</div>
-                                        <label>
-                                            <input type="number" name="width" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={4}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Seleccione la profundidad</div>
-                                        <label>
-                                            <input type="number" name="longitude" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={5}>
-                                    <div className="display-contentTabPanel">
-                                        <div>ingrese una referencia</div>
-                                        <label>
-                                            <input type="text" name="ref" onChange={handelDatosChanges} />
-                                        </label>
-                                    </div>
-                                </TabPanel>
-                            </div>
-                        </div>
-                        <div className="boton">
-                            <button onClick={consultaAPI} className="boton-color"> Cotizar </button>
-                        </div>
-                    </form>
-
-                    <div>
-                        <Dialog onClose={handleClose} open={open} >
-                            <DialogTitle>Cotizacion:</DialogTitle>
-
-                            <Divider />
-                            {hasErrorAPI ?
-                                <div>Error: {String(errorMsg)}</div>
-                                :
-                                arrServiciosYCargos.map(each => (
-                                    renderSwitch(each)
-                                ))}
-                        </Dialog>
                     </div>
-                </div>
-            </div>
+                    <div className="boton">
+                        <button onClick={consultaAPI} className="boton-color"> Generar Guia </button>
+                    </div>
+                </form>
 
+            </div>
         </>
     )
-
-};
+}

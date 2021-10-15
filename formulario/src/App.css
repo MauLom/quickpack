@@ -27,6 +27,15 @@
   border-radius: 15px;
   padding-top: 20px;
 }
+.bg-azul-guias{
+  background-color: #214462;
+  width: 85%;
+  margin-left: 8%;
+  margin-top: 25px;
+
+  border-radius: 15px;
+  padding-top: 20px;
+}
 .title-cliente{
   text-transform: uppercase ;
   font-size: 19px;

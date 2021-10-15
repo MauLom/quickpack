@@ -54,29 +54,29 @@ function EdicionDetallesClientes() {
     return (
         <>
             <button id="editar"> editar </button>
-                <div class="bg-azul">
-                    <form >
-                        <div className="title-cliente"> Por favor edite datos de la cuenta</div>
+            <div class="bg-azul">
+                <form >
+                    <div className="title-cliente"> Por favor edite datos de la cuenta</div>
 
-                        <label>
-                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} placeholder="Nombre" ></input>
-                        </label>
+                    <label>
+                        <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} placeholder="Nombre" ></input>
+                    </label>
 
-                        <label>
-                            <input type="text" name="originLastname" className="inputs" onChange={handelDatosChanges} placeholder="Apellido" ></input>
-                        </label>
-                        <label>
-                            <input type="text" name="originGroup" className="inputs" onChange={handelDatosChanges} placeholder="Grupo" ></input>
-                        </label>
-                        <label>
-                            <input disabled type="text" name="originName" className="inputs" onChange={handelDatosChanges} placeholder="Clave" value={datos.originId} ></input>
+                    <label>
+                        <input type="text" name="originLastname" className="inputs" onChange={handelDatosChanges} placeholder="Apellido" ></input>
+                    </label>
+                    <label>
+                        <input type="text" name="originGroup" className="inputs" onChange={handelDatosChanges} placeholder="Grupo" ></input>
+                    </label>
+                    <label>
+                        <input disabled type="text" name="originName" className="inputs" onChange={handelDatosChanges} placeholder="Clave" value={datos.originId} ></input>
 
-                        </label>
-                    </form>
-                    <div className="w-100 text-right mt-2 contBtn">
-                        <Button className="btnGuardar" variant="contained" onClick={setData}>Guardar</Button>
-                    </div>
+                    </label>
+                </form>
+                <div className="w-100 text-right mt-2 contBtn">
+                    <Button className="btnGuardar" variant="contained" onClick={setData}>Guardar</Button>
                 </div>
+            </div>
 
         </>
 
