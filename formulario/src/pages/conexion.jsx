@@ -8,14 +8,12 @@ import { Redirect } from 'react-router';
 import Button from '@mui/material/Button';
 import firebaseApp from '../firebaseApp';
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
-
 import { Col, Row, Container } from 'react-bootstrap'
-
 import { Link } from "react-router-dom";
-
-import './conexion.css'
+import './conexion.css';
 
 firebaseApp();
+
 const database = getFirestore();
 function Main() {
     const [showPassClient, setShowPassClient] = React.useState(false)
@@ -27,8 +25,6 @@ function Main() {
     const [adminPass, setAdminPass] = React.useState("");
     const [clientPass, setClientPass] = React.useState("");
     const [passexiste, setPassExiste] = React.useState(false);
-
-
 
     const handlePassChange = (event) => {
         setClientPass(event.target.value)
@@ -43,17 +39,19 @@ function Main() {
 
     if (clientPass.length == 5) {
         const q = query(collection(database, "Cuenta"), where("Contrasena", "==", clientPass))
-        getDocs(q).then(res => {
-
-            res.forEach((doc) => {
-                console.log(" Document:  ", doc.data());
+        getDocs(q)
+            .then(res => {
+                if (res.docs.length > 0) {
+                    setPassExiste(true);
+                    res.forEach((doc) => {
+                        var auxString = doc.data().Nombre + " " +doc.data().Apellidos;
+                        localStorage.setItem("userName", auxString)
+                        localStorage.setItem("Id",doc.data().Id)
+                    })
+                } else {
+                    alert("No se encontro coincidencia, pruebe otra vez")
+                }
             })
-            if (res.docs.length > 0) {
-                setPassExiste(true);
-            } else {
-                alert("No se encontro coincidencia, pruebe otra vez")
-            }
-        })
             .catch(err => {
                 alert("la contraseña no existe: " + err);
             });

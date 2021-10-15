@@ -23,44 +23,6 @@ const database = getFirestore();
 
 function AdminMain() {
 
-  function getDatos() {
-    let tabla= document.getElementById("ClientTable");
-    
-    
-    console.log('entra en setData');
-    const q=query(collection(database,"Cuenta"))
-     getDocs(q).then(res=>{
-      res.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-        let dato=doc.id;
-        
-        let fila= tabla.insertRow(-1);
-        let celda0=fila.insertCell(0);
-        let celda1=fila.insertCell(1);
-        let celda2=fila.insertCell(2);
-        let celda3=fila.insertCell(3);
-        let celda4=fila.insertCell(4);
-        
-        celda0.textContent=dato;
-        celda1.textContent=doc.data().Nombre;
-        celda2.textContent=doc.data().Apellidos;
-        celda3.textContent=doc.data().Grupo;
-        celda4.textContent=doc.data().Contrasena;
-        console.log("Id del documento => "+dato);
-        
-        
-      })
-    })
-    .catch(err=>{
-      console.log("error"+err);
-    });
-    
-    
-  
-  }
-  
-
   const [listaAcciones, setListaAcciones] = React.useState([]);
   React.useEffect(() => {
     const jsonFake = [
@@ -72,8 +34,6 @@ function AdminMain() {
       setListaAcciones(jsonFake);
     }, 200);
   })
-
-
 
   return (
     <>
@@ -129,27 +89,12 @@ function AdminMain() {
                   &nbsp;&nbsp;&nbsp;
                   <span>Regresar</span>
                 </Button>
-
               </Link>
             </div>
-            <p></p>
-            <p></p><button onClick={getDatos}> Ver clientes</button>
-            <p></p><center><table id="ClientTable" border="1px">
-              <tr>
-                <td>ID</td>
-                <td>Nombre    </td>
-                <td>Apellido  </td>
-                <td>Grupo     </td>
-                <td>Contraseña</td>
-              </tr>
-              </table></center>
-
-
             <EdicionClientes />
-
           </Route>
           <Route exact path="/admin/pedidos">
-          <div className="contBackButton">
+            <div className="contBackButton">
               <Link to="/admin" className="noLinkStyle">
                 <Button >
                   <span className="material-icons">
@@ -160,7 +105,8 @@ function AdminMain() {
                 </Button>
               </Link>
             </div>
-                <ListaPedidos />
+
+            <ListaPedidos />
           </Route>
         </Switch>
       </Router>

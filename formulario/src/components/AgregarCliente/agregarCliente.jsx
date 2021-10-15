@@ -9,8 +9,8 @@ import './agregarCliente.css'
 
 firebaseApp();
 const db = firestore.getFirestore();
+const randomId = Math.floor((Math.random() * (99999 - 10000 + 1)) + 10000);
 function AgregarCliente() {
-    const randomId = Math.floor((Math.random() * (99999 - 10000 + 1)) + 10000);
     const [claveGenerada, setClaveGenerada] = React.useState(false)
     const [datos, setDatos] = React.useState({
         originId: '',
@@ -19,12 +19,15 @@ function AgregarCliente() {
         originGroup: '',
         originPass: ''
     })
-    const  collectionRef =firestore.collection(db, "Claves");
+
+    const  collectionRef =firestore.collection(db, "Cuenta");
     const setData =() => {
         firestore.addDoc(collectionRef, {
             Nombre: datos.originName,
             Apellidos: datos.originLastname,
             Grupo: datos.originGroup,
+            id: randomId.toString(),
+            Contrasena: randomId.toString()
         }).then((response) => {
             console.log("Sucessfull: ", response)
             alert("Ok")
@@ -33,20 +36,7 @@ function AgregarCliente() {
             alert("Error, contacta a soporte")
         });
     }
-    // const setData = () => {
-    //     console.log('entra aquí');
-    //     set(ref(baseddt, 'Cuenta/'), {
-    //         Nombre: datos.originName,
-    //         Apellidos: datos.originLastname,
-    //         Grupo: datos.originGroup,
-    //     }).then(response =>{
-    //         alert("Ok")
-    //         console.log("Response:", response)
-    //     }).catch(error => {
-    //         alert("Error de ejecucion, contacta soporte")
-    //         console.log("Error:", error)
-    //     });
-    // }
+
     const handelDatosChanges = (event) => {
         setDatos({
             ...datos,

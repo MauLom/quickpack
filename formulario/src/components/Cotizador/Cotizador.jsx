@@ -16,7 +16,7 @@ import * as firestore from "firebase/firestore"
 import './Cotizador.css';
 
 firebaseApp()
-const db =firestore.getFirestore();
+const db = firestore.getFirestore();
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -96,8 +96,6 @@ export default function Cotizaciones() {
             + "&DD04=" + datos.height
             + "&EE01=" + datos.insurance
 
-
-        var dataJSONParsed = {};
         fetch(dataString, {
             method: 'GET',
             headers: {
@@ -131,27 +129,28 @@ export default function Cotizaciones() {
 
                 }
                 var collectionRef = firestore.collection(db, "Cotizaciones");
-                var setData = () =>{
-                    firestore.addDoc(collectionRef, {
-                        DestinyCC: datos.destinyCC,
-                        DestinyCity: datos.destinyCity,
-                        DestinyZip: datos.destinyZip,
-                        OriginCity: datos.originCity,
-                        OriginCC: datos.originCC,
-                        OriginZip: datos.originZip,
-                        Height: datos.height,
-                        Insurance: datos.insurance,
-                        Longitude: datos.longitude,
-                        ShipmentDate: datos.shipmentDate,
-                        Weight: datos.weight,
-                        Width: datos.width,
-                        statusGuia: 0,
-                    }).then(response => {
-                        console.log("Response", response)
-                    }).catch(error => {
-                        console.log("Error:", error)
-                    }) 
-                }
+
+                firestore.addDoc(collectionRef, {
+                    DestinyCC: datos.destinyCC,
+                    DestinyCity: datos.destinyCity,
+                    DestinyZip: datos.destinyZip,
+                    OriginCity: datos.originCity,
+                    OriginCC: datos.originCC,
+                    OriginZip: datos.originZip,
+                    Height: datos.height,
+                    Insurance: datos.insurance,
+                    Longitude: datos.longitude,
+                    ShipmentDate: datos.shipmentDate,
+                    Weight: datos.weight,
+                    Width: datos.width,
+                    statusGuia: 0,
+                    userCreador: localStorage.getItem("userName"),
+                    userCreadorId: localStorage.getItem("Id")
+                }).then(response => {
+                    console.log("Response firestore", response)
+                }).catch(error => {
+                    console.log("Error:", error)
+                })
                 handleClickOpen()
 
                 // background-color: #02cfaa !important;

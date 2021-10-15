@@ -22,15 +22,12 @@ import firebaseApp from '../../firebaseApp';
 import { getDatabase, ref, set} from "firebase/database"
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 import { initializeApp } from 'firebase/app';
+
 firebaseApp();
 const database = getFirestore();
 var datosOut=[]
 function UserMain() {
-  
   const [listaAcciones, setListaAcciones] = React.useState([]);
-
-  
-
   const [datos, setDatos] = useState({
     originId: '',
     originName: '',
@@ -38,9 +35,12 @@ function UserMain() {
     originGroup: '',
     originPass: ''
 })
+const[userName, setUserName] = useState(localStorage.getItem("userName"));
+const[userId, setUserId] = useState(localStorage.getItem("Id"));
+
+
 const getData=()=>{
   console.log('entra aquí');
-  
   
   addDoc(collection(database, "Cuenta"), {
     Id:datos.originId,
@@ -137,7 +137,7 @@ const UpdateDatos = (event) => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Hola! Pruebas
+            Hola! {userName}
           </Typography>
           <Link to="/" className="noLinkStyle">
             <Button color="inherit">
