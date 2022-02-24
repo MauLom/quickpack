@@ -6,6 +6,7 @@
 .MuiAppBar-colorPrimary {
 
     border-style: hidden;
+    color: red !important;   
 }
 .PrivateTabIndicator-root-2{
     display: none;
