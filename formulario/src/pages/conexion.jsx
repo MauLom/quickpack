@@ -6,13 +6,17 @@ import TextField from '@mui/material/TextField';
 import Fab from '@mui/material/Fab';
 import { Redirect } from 'react-router';
 import Button from '@mui/material/Button';
-
+import firebaseApp from '../firebaseApp';
+import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 import { Col, Row, Container } from 'react-bootstrap'
-
 import { Link } from "react-router-dom";
+import './conexion.css';
 
-import './conexion.css'
+firebaseApp();
 
+
+
+const database = getFirestore();
 function Main() {
     const [showPassClient, setShowPassClient] = React.useState(false)
     const showOrHidePass = () => setShowPassClient(!showPassClient)
@@ -22,8 +26,11 @@ function Main() {
     const [adminUser, setAdminUser] = React.useState("");
     const [adminPass, setAdminPass] = React.useState("");
     const [clientPass, setClientPass] = React.useState("");
+    const [passexiste, setPassExiste] = React.useState(false);
+
     const handlePassChange = (event) => {
         setClientPass(event.target.value)
+
     }
     const handleUserChange = (event) => {
         setAdminUser(event.target.value);
@@ -32,10 +39,26 @@ function Main() {
         setAdminPass(event.target.value);
     }
 
-    if (clientPass == 12345) {
-        return (<Redirect to="/user" />);
+    if (clientPass.length == 5) {
+        const q = query(collection(database, "Cuenta"), where("Pass", "==", clientPass))
+        getDocs(q)
+            .then(res => {
+                if (res.docs.length > 0 && !passexiste) {
+                    res.forEach((doc) => {
+                        var auxString = doc.data().Nombre + " " + doc.data().Apellidos;
+                        localStorage.setItem("userName", auxString)
+                        localStorage.setItem("userId", doc.data().id)
+                    })
+                    setPassExiste(true);
+                }else {
+                    alert("No se encontro la contraseña")
+                }
+            })
+            .catch(err => {
+                alert("la contraseña no existe: " + err);
+            });
     }
-    if( adminUser == "admin" && adminPass == "admin") {
+    if (adminUser == "admin" && adminPass == "admin") {
         return (<Redirect to="/admin" />);
     }
 
@@ -57,23 +80,21 @@ function Main() {
                                     <br />
                                     <br />
                                     {showPassClient ?
-                                        <TextField className="inputsTxtFields" onChange={handlePassChange}  label="Clave de cliente" variant="outlined" />
+                                        <TextField className="inputsTxtFields" onChange={handlePassChange} id="Contrasena" label="Clave de cliente" variant="outlined" />
                                         : null}
 
                                 </Row>
                                 <Row className="mt-2">
                                     <Button variant=" btnConexion" onClick={showOrHideCreds}>
-
                                         Soy Administrador
-
                                     </Button>
                                     <br />
                                     <br />
-                                    {askForAdminCredentials?
+                                    {askForAdminCredentials ?
                                         <>
-                                            <TextField className="inputsTxtFields" onChange={handleUserChange}  label="Usuario" variant="outlined" />
+                                            <TextField className="inputsTxtFields" onChange={handleUserChange} label="Usuario" variant="outlined" />
                                             &nbsp; &nbsp; &nbsp;
-                                            <TextField className="inputsTxtFields" onChange={handleAdminPassChange}  label="Clave" variant="outlined" />
+                                            <TextField className="inputsTxtFields" onChange={handleAdminPassChange} label="Clave" variant="outlined" />
                                         </>
                                         : null}
 
@@ -91,6 +112,13 @@ function Main() {
                     </Card>
                 </Col>
             </Row>
+            {passexiste == true ? <Redirect to="/user" /> : ''}
+            {/* if (condition=3) {
+                axion1
+            }else{
+                axion2
+            }
+           condition==3?axion1:axion2  */}
         </Container>
 
     );
