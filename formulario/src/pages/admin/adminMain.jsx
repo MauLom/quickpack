@@ -15,6 +15,7 @@ import {
 
 import EdicionClientes from '../../components/EdicionClientes/edicionClientes';
 import ListaPedidos from '../../components/Pedidos/Pedidos';
+import EdicionValores from '../../components/EdicionValores/edicionValores'
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 
 import './adminMain.css'
@@ -27,8 +28,9 @@ function AdminMain() {
   React.useEffect(() => {
     const jsonFake = [
       { id: 0, txt: "Editar clientes", ico: "manage_accounts", destiny: "/admin/edicion-clientes" },
-      { id: 1, txt: "Editar grupos", ico: "supervisor_account", destiny: "#" },
-      { id: 2, txt: "Ver pedidos", ico: "find_in_page", destiny: "/admin/pedidos" }
+      { id: 1, txt: "Editar Valores", ico: "supervisor_account", destiny: "/admin/edicionValores" },
+      { id: 2, txt: "Ver pedidos", ico: "find_in_page", destiny: "/admin/pedidos" },
+      //{ id: 3, txt: "Editar Valores", ico: "drag-horizontal-variant", destiny: "/admin/edicion-valores"}
     ];
     setTimeout(() => {
       setListaAcciones(jsonFake);
@@ -107,6 +109,21 @@ function AdminMain() {
             </div>
 
             <ListaPedidos />
+          </Route>
+          <Route exact path="/admin/edicionValores">
+            <div className="contBackButton">
+              <Link to="/admin" className="noLinkStyle">
+                <Button >
+                  <span className="material-icons">
+                    reply
+                  </span>
+                  &nbsp;&nbsp;&nbsp;
+                  <span>Regresar</span>
+                </Button>
+              </Link>
+            </div>
+
+            <EdicionValores />
           </Route>
         </Switch>
       </Router>

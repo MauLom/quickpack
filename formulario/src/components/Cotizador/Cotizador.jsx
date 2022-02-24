@@ -12,6 +12,7 @@ import Dialog from '@mui/material/Dialog';
 
 import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
+import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 
 import './Cotizador.css';
 
@@ -47,21 +48,21 @@ function a11yProps(index) {
 
 function renderSwitch(param) {
     const generarGuia = () => {
-       console.log("Funcion pendiente")
+        console.log("Funcion pendiente")
     }
 
     switch (param['@type']) {
-        case "I":
+        case "I": case "O": case "1": case "G": case "N":
             return (<>
                 <div>Cargos:</div>
                 <div>Moneda: {param['TotalNet']['Currency']}</div>
 
-                {param['Charges']['Charge'].map(eachCharge => (
-                    <>
+                {param['Charges']['Charge'].map((eachCharge, idx) => (
+                    <div key={"key-" + idx}>
                         <br />
                         <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
                         <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
-                    </>
+                    </div>
                 ))}
                 <br />
                 <div>Tiempo de entrega: {param['DeliveryTime']} </div>
@@ -70,82 +71,74 @@ function renderSwitch(param) {
                 <Divider />
             </>)
 
-        case "O":
-            return (<>
-                <div>Cargos:</div>
-                <div>Moneda: {param['TotalNet']['Currency']}</div>
-
-                {param['Charges']['Charge'].map(eachCharge => (
-                    <>
-                        <br />
-                        <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
-                        <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
-                    </>
-                ))}
-                <br />
-                <div>Tiempo de entrega: {param['DeliveryTime']} </div>
-                <div>Total:  {param['TotalNet']['Amount']} </div>
-                <button onClick={generarGuia}>Generar Guia</button>
-                <Divider />
-            </>)
-        case "1":
-            return (<>
-                <div>Cargos:</div>
-                <div>Moneda: {param['TotalNet']['Currency']}</div>
-
-                {param['Charges']['Charge'].map(eachCharge => (
-                    <>
-                        <br />
-                        <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
-                        <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
-                    </>
-                ))}
-                <br />
-                <div>Tiempo de entrega: {param['DeliveryTime']} </div>
-                <div>Total:  {param['TotalNet']['Amount']} </div>
-                <button onClick={generarGuia}>Generar Guia</button>
-                <Divider />
-            </>)
-        case "G":
-            return (<>
-                <div>Cargos:</div>
-                <div>Moneda: {param['TotalNet']['Currency']}</div>
-
-                {param['Charges']['Charge'].map(eachCharge => (
-                    <>
-                        <br />
-                        <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
-                        <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
-                    </>
-                ))}
-                <br />
-                <div>Tiempo de entrega: {param['DeliveryTime']} </div>
-                <div>Total:  {param['TotalNet']['Amount']} </div>
-                <button onClick={generarGuia}>Generar Guia</button>
-                <Divider />
-            </>)
-        case "N":
-            return (
-                <>
-                    <div>Cargos:</div>
-                    <div>Moneda: {param['TotalNet']['Currency']}</div>
-
-                    {param['Charges']['Charge'].map(eachCharge => (
-                        <>
-                            <br />
-                            <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
-                            <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
-                        </>
-                    ))}
-                    <br />
-                    <div>Tiempo de entrega: {param['DeliveryTime']} </div>
-                    <div>Total:  {param['TotalNet']['Amount']} </div>
-                    <button onClick={generarGuia}>Generar Guia</button>
-                    <Divider />
-                </>)
     }
 }
 
+function generarArrNuevosPrecios(arrApi, objBd, cantKgs, idxZona) {
+    const zonaStr = "zone" + idxZona
+    const arrDepurada = []
+    const porcFFAereo = 0.0844
+
+    ///  (altura . ancho . profundidad) /5000 = pesoVolumetrico
+    ///  Si  peso Volumetrico > peso real,   usar peso volumetrico   para   calculo
+   
+    /// Mostrar Zona en el cotizador para el  cliente
+    /// cargo por seguro...
+
+    arrApi.forEach(
+        cadaServicio => {
+            const validServices = ["I", "O", "1", "G", "N"]
+            if (validServices.indexOf(cadaServicio['@type']) >= 0) {
+                let arrParseadaBD = JSON.parse(objBd.matriz[cadaServicio['@type']][zonaStr]?.data)
+                arrParseadaBD[0].forEach((cadaKgEnMatriz, idx) => {
+                    let parsedKgOnBD = Number.parseInt(cadaKgEnMatriz.value)
+                    if (!Number.isNaN(parsedKgOnBD) && Number.parseInt(cadaKgEnMatriz.value) == cantKgs) {
+                        cadaServicio['Charges']['Charge'][0].ChargeAmount = Number(arrParseadaBD[1][idx].value)
+                        if (cadaServicio['Charges']['Charge'].length > 2) {
+                            let valoresParaSumarFF = 0
+                            cadaServicio['Charges']['Charge'].forEach(
+                                cadaCargo => {
+                                    if (cadaCargo.ChargeCode == "YY") {
+                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
+                                        valoresParaSumarFF += cadaCargo.ChargeAmount
+                                    }
+                                    if (cadaCargo.ChargeCode == "OO") {
+                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
+                                        valoresParaSumarFF += cadaCargo.ChargeAmount
+                                    }
+                                    if (cadaCargo.ChargeCode == "YB") {
+                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
+                                        valoresParaSumarFF += cadaCargo.ChargeAmount
+                                    }
+                                    if (cadaCargo.ChargeCode == "FF") {
+                                        valoresParaSumarFF += Number(parseFloat(Number(arrParseadaBD[1][idx].value)).toFixed(2))
+                                        cadaCargo.ChargeAmount = Number(parseFloat(valoresParaSumarFF * porcFFAereo).toFixed(2))
+                                    }
+                                })
+                        } else {
+                            cadaServicio['Charges']['Charge'][1].ChargeAmount = parseFloat(Number(arrParseadaBD[1][idx].value) * porcFFAereo).toFixed(2)
+                        }
+                        const subTotalCharge = { 'ChargeType': 'SubTotal', 'ChargeAmount': 0 }
+
+                        cadaServicio['Charges']['Charge'].forEach(cadaSubCargo => {
+                            console.log('Montos a sumar', Number(cadaSubCargo['ChargeAmount']))
+                            //subTotalCharge.ChargeAmount = parseFloat(Number(cadaServicio['TotalNet'].Amount) + Number(cadaSubCargo['ChargeAmount'])).toFixed(2)
+                            subTotalCharge.ChargeAmount += Number(cadaSubCargo['ChargeAmount']);
+                        })
+                        subTotalCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount).toFixed(2)
+                        cadaServicio['Charges']['Charge'].push(subTotalCharge)
+                        const ivaCharge = { 'ChargeType': 'IVA', 'ChargeAmount': 0 }
+                        ivaCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount * 0.16).toFixed(2)
+                        cadaServicio['Charges']['Charge'].push(ivaCharge)
+                        cadaServicio['TotalNet'].Amount = parseFloat(Number(subTotalCharge.ChargeAmount) + Number(ivaCharge.ChargeAmount)).toFixed(2);
+                        arrDepurada.push(cadaServicio)
+                    }
+                })
+            }
+
+        })
+    return arrDepurada;
+}
 export default function Cotizaciones() {
     const [datos, setDatos] = useState({
         userName: '',
@@ -167,7 +160,6 @@ export default function Cotizaciones() {
     })
     const [tabIdx, setTab] = useState(0);
     const [open, setOpen] = React.useState(false);
-    const [dataResponse, setDataResponse] = React.useState();
     const [hasErrorAPI, setHasErrorAPI] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState("Si puedes leer esto, contacta al soporte.");
     const [arrServiciosYCargos, setArrServicios] = React.useState([])
@@ -178,7 +170,6 @@ export default function Cotizaciones() {
             ...datos,
             [event.target.name]: event.target.value
         })
-        console.log("El date: ", datos.shipmentDate)
     }
 
     //API Consulta
@@ -198,6 +189,9 @@ export default function Cotizaciones() {
             + "&DD04=" + datos.height
             + "&EE01=" + datos.insurance
 
+        var dataZoneString = "https://quickpack-back-al2vij23ta-uc.a.run.app/getZoneRequest"
+            + "?AA01=" + datos.originZip
+            + "&BB01=" + datos.destinyZip
         fetch(dataString, {
             method: 'GET',
             headers: {
@@ -212,21 +206,48 @@ export default function Cotizaciones() {
                 var dataJSONParsed = JSON.parse(data)
                 var code = dataJSONParsed.RateResponse.Provider[0].Notification[0]['@code']
                 setHasErrorAPI(code != 0 ? true : false)
-                setDataResponse(dataJSONParsed);
                 if (hasErrorAPI == true) {
                     setErrorMsg(dataJSONParsed.RateResponse.Provider[0].Notification[0]['Message'])
                 } else {
                     var auxString = JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service)
                     var auxArr = [];
                     if (auxString.charAt(0) == "{") {
-
                         auxArr.push(JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service)))
                         setArrServicios(auxArr)
 
                     } else if (auxString.charAt(0) == "[") {
-
                         auxArr = JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service))
-                        setArrServicios(JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service)))
+                        const q = query(collection(db, "Cuenta"), where("id", "==", localStorage.getItem("userId")))
+                        let dataUsuario = ""
+                        getDocs(q)
+                            .then(res => {
+                                if (res.docs.length > 0) {
+                                    res.forEach((doc) => {
+                                        dataUsuario = doc.data()
+                                        fetch(dataZoneString, {
+                                            method: 'GET',
+                                            headers: {
+                                                'Access-Control-Allow-Origin': '*'
+                                            }
+                                        })
+                                            .then(response => {
+                                                return response.json()
+                                            })
+                                            .then((dataZoneIndex) => {
+                                                let volumetricWeight = (datos.height * datos.width * datos.longitude) / 5000
+                                                setArrServicios(generarArrNuevosPrecios(auxArr, dataUsuario, datos.weight > volumetricWeight ? datos.weight : volumetricWeight, dataZoneIndex));
+                                            })
+
+
+                                    })
+                                } else {
+                                    console.log("Problemas Consultando API")
+                                }
+                            })
+                            .catch(err => {
+                                console.log("Problemas...")
+                            });
+                        //console.log("Array",arrServiciosYCargos);
                     }
 
                 }

@@ -32,9 +32,9 @@ function EdicionDetallesClientes() {
         firestore.addDoc(collectionRef, {
             Nombre: datos.originName,
             Apellidos: datos.originLastname,
-            Grupo: datos.originGroup,
+            matriz: [],
             id: randomId.toString(),
-            Contrasena: randomId.toString()
+            Pass: randomId.toString()
         }).then((response) => {
             console.log("Sucessfull: ", response)
             alert("Ok")

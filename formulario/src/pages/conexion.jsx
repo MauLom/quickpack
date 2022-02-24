@@ -14,6 +14,8 @@ import './conexion.css';
 
 firebaseApp();
 
+
+
 const database = getFirestore();
 function Main() {
     const [showPassClient, setShowPassClient] = React.useState(false)
@@ -38,18 +40,18 @@ function Main() {
     }
 
     if (clientPass.length == 5) {
-        const q = query(collection(database, "Cuenta"), where("Contrasena", "==", clientPass))
+        const q = query(collection(database, "Cuenta"), where("Pass", "==", clientPass))
         getDocs(q)
             .then(res => {
-                if (res.docs.length > 0) {
-                    setPassExiste(true);
+                if (res.docs.length > 0 && !passexiste) {
                     res.forEach((doc) => {
-                        var auxString = doc.data().Nombre + " " +doc.data().Apellidos;
+                        var auxString = doc.data().Nombre + " " + doc.data().Apellidos;
                         localStorage.setItem("userName", auxString)
-                        localStorage.setItem("Id",doc.data().Id)
+                        localStorage.setItem("userId", doc.data().id)
                     })
-                } else {
-                    alert("No se encontro coincidencia, pruebe otra vez")
+                    setPassExiste(true);
+                }else {
+                    alert("No se encontro la contraseña")
                 }
             })
             .catch(err => {

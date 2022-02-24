@@ -6,32 +6,36 @@ import {
     Link
 } from "react-router-dom";
 import firebaseApp from '../../firebaseApp';
-
-import * as firestore from "firebase/firestore"
 import Button from '@mui/material/Button';
 
 import AgregarCliente from '../AgregarCliente/agregarCliente';
 import ListaClientes from '../ListaClientes/listaClientes';
 
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
+import Select from 'react-select';
+import TextField from '@mui/material/TextField';
+
+import Spreadsheet from "react-spreadsheet";
 
 firebaseApp();
-
-const db = firestore.getFirestore();
 const database = getFirestore();
 
 function EdicionClientes() {
     const [usersList, setUsersList] = React.useState([])
-    const [slctdUser, setSlctdUser] = React.useState();
+    const [slctdUser, setSlctdUser] = React.useState({});
+    const [mostrarDiagrama, setMostrarDiagrama] = React.useState(false);
     const [mostrarFormularioEdicion, setMostrarFormulario] = React.useState(false)
-    const [datos, setDatos] = React.useState({
-        originId: '',
-        originName: '',
-        originLastname: '',
-        originGroup: '',
-        originPass: ''
-    })
-
+    const [slctdServicioTipo, setSlctdServicioTipo] = React.useState(0);
+    const [slctdZona, setSlctdZona] = React.useState("sinZona");
+    const [beneficiosList, setBeneficiosList] = React.useState();
+    const [dataTabla, setDataTabla] = React.useState([]);
+    const defaultDatosTabla = [
+        [{ value: "Kgs", readOnly: true }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }],
+        [{ value: "Costo", readOnly: true }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }],
+        [{ value: "Valor adicional", readOnly: true }, { value: "" }],
+    ]
+    ///(altura . ancho . profundidad) /5000 = pesoVolumetrico
+    ///  Si  peso Volumetrico > peso real,   usar peso volumetrico   para   calculo
     var datosOut = []
     function getDatos() {
         const q = query(collection(database, "Cuenta"))
@@ -39,10 +43,12 @@ function EdicionClientes() {
             res.forEach((doc) => {
                 var jsonAux = {};
                 jsonAux['id'] = doc.id;
-                jsonAux['Name'] = doc.data().Nombre;
-                jsonAux['App'] = doc.data().Apellidos;
-                jsonAux['Group'] = doc.data().Grupo;
-                jsonAux['Pass'] = doc.data().Contrasena;
+                jsonAux['Nombre'] = doc.data().Nombre;
+                jsonAux['Apellidos'] = doc.data().Apellidos;
+                jsonAux['Pass'] = doc.data().Pass;
+
+                jsonAux['tipoBeneficio'] = doc.data().tipoBeneficio;
+                jsonAux['matriz'] = doc.data().matriz;
                 datosOut.push(jsonAux);
             })
             setUsersList(datosOut);
@@ -54,8 +60,8 @@ function EdicionClientes() {
     }
 
     const handelDatosChanges = (event) => {
-        setDatos({
-            ...datos,
+        setSlctdUser({
+            ...slctdUser,
             [event.target.name]: event.target.value
         })
     }
@@ -63,7 +69,85 @@ function EdicionClientes() {
     const editarUsuario = (event) => {
         setMostrarFormulario(true)
         setSlctdUser(usersList[event.target.name]);
-        console.log("Funciona!:", slctdUser)
+        console.log("userList:", usersList)
+    }
+
+    const handleCambioModelo = () => {
+        setMostrarDiagrama(!mostrarDiagrama)
+        setBeneficiosList(slctdUser.beneficios)
+    }
+
+    const handleZonaChange = (event) => {
+        setSlctdZona(event.value)
+        if (slctdUser.hasOwnProperty('matriz') && Object.getOwnPropertyNames(slctdUser.matriz).indexOf(slctdServicioTipo) > -1 && Object.getOwnPropertyNames(slctdUser.matriz[slctdServicioTipo]).indexOf(slctdZona) > -1) {
+            setDataTabla(JSON.parse(slctdUser.matriz[slctdServicioTipo][slctdZona]['data']));
+        } else {
+            setDataTabla(defaultDatosTabla)
+        }
+    }
+    const guardarDatos = () => {
+        if (Object.getOwnPropertyNames(slctdUser.matriz).indexOf(slctdServicioTipo) > -1 && Object.getOwnPropertyNames(slctdUser.matriz[slctdServicioTipo]).indexOf(slctdZona) > -1) {
+            slctdUser.matriz[slctdServicioTipo][slctdZona]['data'] = JSON.stringify(dataTabla);
+        } else {
+            if (!slctdUser.matriz.hasOwnProperty(slctdServicioTipo)) {
+                slctdUser.matriz[slctdServicioTipo] = {};
+            }
+            slctdUser.matriz[slctdServicioTipo][slctdZona] = {};
+            slctdUser.matriz[slctdServicioTipo][slctdZona]['data'] = JSON.stringify(dataTabla);
+
+        }
+
+        let documentUserRef = doc(database, "Cuenta/" + slctdUser.id)
+   
+        setDoc(documentUserRef, slctdUser)
+            .then(res => { console.log("Response ok: ", res) })
+            .catch(error => { console.log.length("Error: ", error) });
+
+
+    }
+    const cambiarPorcentajes = (event) => {
+        console.log("porcentaje Name:", event.target.name)
+        console.log("porcentaje Value", event.target.value)
+    }
+    const optionsSelectProducto = [
+        { value: 'I', label: 'Servicio tipo I' },
+        { value: 'O', label: 'Servicio tipo O' },
+        { value: '1', label: 'Servicio tipo 1' },
+        { value: "G", label: 'Servicio tipo G' },
+        { value: 'N', label: 'Servicio tipo N' }
+    ]
+    const optionsSelectZona = [
+        { value: 'zone1', label: 'Zona 1' },
+        { value: 'zone2', label: 'Zona 2' },
+        { value: 'zone3', label: 'Zona 3' },
+        { value: 'zone4', label: 'Zona 4' },
+        { value: 'zone5', label: 'Zona 5' },
+        { value: 'zone6', label: 'Zona 6' },
+        { value: 'zone7', label: 'Zona 7' },
+        { value: 'zone8', label: 'Zona 8' },
+    ]
+    const botonModelo = {
+        'border': "1px solid",
+        'background-color': "white",
+        'color': 'black',
+        'font-size': '14px',
+        'width': '100%',
+        'padding': '3px',
+        'cursor': 'pointer'
+    }
+
+    const styleTableSelects = {
+        "display": "flex",
+        "padding": "0 25px 0 25px"
+    }
+    const styleSelect = {
+        'width': '40% ',
+        'padding': '0 15% 0 15%',
+        'margin': '3% 0 3% 0'
+    }
+
+    const styleTablaSheet = {
+        'overflow': 'auto'
     }
 
     return (
@@ -77,15 +161,15 @@ function EdicionClientes() {
                                 <tr>
                                     <td>Nombre    </td>
                                     <td>Apellido  </td>
-                                    <td>Grupo     </td>
+                                    <td>Tipo Beneficio </td>
                                     <td>Contraseña</td>
                                     <td><span class="material-icons-outlined">manage_accounts</span></td>
                                 </tr>
                                 {usersList.map((eachUser, idx) => (
                                     <tr>
-                                        <td>{eachUser.Name}</td>
-                                        <td>{eachUser.App}</td>
-                                        <td>{eachUser.Group}</td>
+                                        <td>{eachUser.Nombre}</td>
+                                        <td>{eachUser.Apellidos}</td>
+                                        <td>{eachUser.tipoBeneficio == 1 ? 'Diagrama por KG' : 'Porcentual'}</td>
                                         <td>{eachUser.Pass}</td>
                                         <td><button name={idx} onClick={editarUsuario}>Editar</button></td>
                                     </tr>
@@ -100,59 +184,77 @@ function EdicionClientes() {
                                         <div className="title-cliente"> Por favor edite datos de la cuenta</div>
 
                                         <label>
-                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges}
-                                                value={slctdUser.Name}
-                                                placeholder="Nombre" ></input>
+                                            <input type="text" name="Nombre" className="inputs" onChange={handelDatosChanges}
+                                                placeholder={slctdUser.Nombre} ></input>
                                         </label>
 
                                         <label>
-                                            <input type="text" name="originLastname" className="inputs" onChange={handelDatosChanges}
-                                                value={slctdUser.App}
-                                                placeholder="Apellido" ></input>
+                                            <input type="text" name="Apellidos" className="inputs" onChange={handelDatosChanges}
+                                                placeholder={slctdUser.Apellidos} ></input>
                                         </label>
+
                                         <label>
-                                            <input type="text" name="originGroup" className="inputs" onChange={handelDatosChanges} 
-                                            value={slctdUser.Group}
-                                            placeholder="Grupo" ></input>
+                                            <input disabled type="text" name="Contrasena" className="inputs" onChange={handelDatosChanges}
+                                                value={slctdUser.Pass}></input>
                                         </label>
-                                        <label>
-                                            <input disabled type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
-                                            value={slctdUser.Pass}
-                                            placeholder="Clave" ></input>
-                                        </label>
-                                        <label>
-                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
-                                            
-                                            placeholder="Porcentaje servicios 'I' " ></input>
-                                        </label>
-                                        <label>
-                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
-                                            
-                                            placeholder="Porcentaje servicios 'O'" ></input>
-                                        </label>
-                                        <label>
-                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
-                                            
-                                            placeholder="Porcentaje servicios '1'" ></input>
-                                        </label>
-                                        <label>
-                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
-                                            
-                                            placeholder="Porcentaje servicios 'G'" ></input>
-                                        </label>
-                                        <label>
-                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
-                                            
-                                            placeholder="Porcentaje servicios 'N'" ></input>
-                                        </label>
-                                        <label>
-                                            <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} 
-                                            
-                                            placeholder="Editar todos los porcentajes" ></input>
-                                        </label>
+                                        <div > <div className="title-cliente">Por favor edite la informacion de descuento&nbsp;&nbsp;&nbsp;<span style={botonModelo} onClick={handleCambioModelo} >Cambiar Modelo Edicion</span></div> </div>
+                                        {
+                                            mostrarDiagrama ?
+
+                                                (
+                                                    <div>
+                                                        <div style={styleTableSelects}>
+                                                            <div className="col" style={styleSelect}>
+                                                                <Select options={optionsSelectProducto} onChange={(event) => setSlctdServicioTipo(event.value)} placeholder="Tipo Servicio" />
+                                                            </div>
+                                                            <div className="col" style={styleSelect}>
+                                                                <Select options={optionsSelectZona} onChange={handleZonaChange} placeholder="Zona " />
+                                                            </div>
+                                                        </div>
+                                                        <div className="title-cliente"> Especificar rango peso y costos  </div>
+                                                        <br />
+                                                        <div style={styleTablaSheet}>
+                                                            <Spreadsheet data={dataTabla} onChange={setDataTabla} />
+                                                        </div>
+
+                                                    </div>
+
+                                                )
+                                                :
+                                                (<div>
+                                                    <label>
+                                                        <input type="text" name="porcentajeI" className="inputs" onChange={cambiarPorcentajes}
+                                                            placeholder="Porcentaje servicios 'I' " ></input>
+                                                    </label>
+                                                    <label>
+                                                        <input type="text" name="porcentajeO" className="inputs" onChange={cambiarPorcentajes}
+
+                                                            placeholder="Porcentaje servicios 'O'" ></input>
+                                                    </label>
+                                                    <label>
+                                                        <input type="text" name="porcentaje1" className="inputs" onChange={cambiarPorcentajes}
+
+                                                            placeholder="Porcentaje servicios '1'" ></input>
+                                                    </label>
+                                                    <label>
+                                                        <input type="text" name="porcentajeG" className="inputs" onChange={cambiarPorcentajes}
+
+                                                            placeholder="Porcentaje servicios 'G'" ></input>
+                                                    </label>
+                                                    <label>
+                                                        <input type="text" name="porcentajeN" className="inputs" onChange={cambiarPorcentajes}
+
+                                                            placeholder="Porcentaje servicios 'N'" ></input>
+                                                    </label>
+                                                    <label>
+                                                        <input type="text" name="porcentajeAll" className="inputs" onChange={cambiarPorcentajes}
+
+                                                            placeholder="Editar todos los porcentajes" ></input>
+                                                    </label>
+                                                </div>)}
                                     </form>
                                     <div className="w-100 text-right mt-2 contBtn">
-                                        <Button className="btnGuardar" variant="contained">Guardar</Button>
+                                        <Button className="btnGuardar" variant="contained" onClick={guardarDatos}>Guardar</Button>
                                     </div>
                                 </div>
                             </>

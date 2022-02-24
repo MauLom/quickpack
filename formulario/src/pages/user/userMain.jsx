@@ -47,8 +47,8 @@ function UserMain() {
       Id: datos.originId,
       Nombre: datos.originName,
       Apellidos: datos.originLastname,
-      Grupo: datos.originGroup,
-      Contrasena: datos.originPass
+      matriz: [],
+      Pass: datos.originPass
     })
       .then(respuesta => {
         console.log("respuesta" + respuesta);
