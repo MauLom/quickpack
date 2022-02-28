@@ -16,6 +16,9 @@ import Select from 'react-select';
 import TextField from '@mui/material/TextField';
 
 import Spreadsheet from "react-spreadsheet";
+import Stack from '@mui/material/Stack';
+import { Box } from '@mui/material'
+
 
 firebaseApp();
 const database = getFirestore();
@@ -98,7 +101,7 @@ function EdicionClientes() {
         }
 
         let documentUserRef = doc(database, "Cuenta/" + slctdUser.id)
-   
+
         setDoc(documentUserRef, slctdUser)
             .then(res => { console.log("Response ok: ", res) })
             .catch(error => { console.log.length("Error: ", error) });
@@ -184,9 +187,35 @@ function EdicionClientes() {
                                         <div className="title-cliente"> Por favor edite datos de la cuenta</div>
 
                                         <label>
-                                            <input type="text" name="Nombre" className="inputs" onChange={handelDatosChanges}
-                                                placeholder={slctdUser.Nombre} ></input>
-                                        </label>
+                                            <Stack direcion="column"
+                                                spacing={4}>
+                                                <Stack direction="row"
+                                                    justifyContent="space-around"
+                                                    spacing={0.5}>
+                                                    <TextField name="Nombre" className="inputs" onChange={handelDatosChanges}
+                                                        placeholder={slctdUser.Nombre} />
+                                                    <TextField name="Apellidos" className="inputs" onChange={handelDatosChanges}
+                                                        placeholder={slctdUser.Apellidos} />
+
+                                                </Stack>
+                                                <Stack direction="row"
+                                                    justifyContent="space-around"
+
+                                                    spacing={0.5} >
+                                                    <TextField name="Contraseña" className="inputs" onChange={handelDatosChanges}
+                                                        value={slctdUser.Pass} />
+                                                    <Box className="inputs" sx={{visibility:"hidden"}}>
+                                                    <TextField name="Contraseña" onChange={handelDatosChanges}
+                                                        value={slctdUser.Pass} />
+                                                        </Box>
+                                                </Stack>
+                                            </Stack>
+
+
+
+                                            {/* <input type="text" name="Nombre" className="inputs" onChange={handelDatosChanges}
+                                                placeholder={slctdUser.Nombre} ></input> */}
+                                            {/* </label>
 
                                         <label>
                                             <input type="text" name="Apellidos" className="inputs" onChange={handelDatosChanges}
@@ -195,7 +224,7 @@ function EdicionClientes() {
 
                                         <label>
                                             <input disabled type="text" name="Contrasena" className="inputs" onChange={handelDatosChanges}
-                                                value={slctdUser.Pass}></input>
+                                                value={slctdUser.Pass}></input> */}
                                         </label>
                                         <div > <div className="title-cliente">Por favor edite la informacion de descuento&nbsp;&nbsp;&nbsp;<span style={botonModelo} onClick={handleCambioModelo} >Cambiar Modelo Edicion</span></div> </div>
                                         {
@@ -222,35 +251,99 @@ function EdicionClientes() {
                                                 )
                                                 :
                                                 (<div>
-                                                    <label>
+                                                    {/* Codigo que debes borrar */}
+                                                    <Box sx={{ margingTop: "50px !important" }}>
+
+                                                        <Stack direcion="column"
+                                                            spacing={4}>
+                                                            <Stack direction="row"
+                                                                justifyContent="space-around"
+                                                                spacing={0.5}>
+                                                                <TextField name="porcentajeN" className="inputs" label="Porcentaje servicios 'N' " variant="outlined" onChange={cambiarPorcentajes} />
+                                                                <TextField name="porcentajeALL" className="inputs" label="Editar todos los porcentajes" variant="outlined" onChange={cambiarPorcentajes}
+                                                                />
+                                                            </Stack>
+
+                                                            <Stack direction="row"
+                                                                justifyContent="space-around"
+                                                                spacing={0.5}>
+                                                                <TextField name="porcentajeI" className="inputs" label="Porcentaje servicios 'I' " variant="outlined" onChange={cambiarPorcentajes} />
+                                                                <TextField name="porcentaje0" className="inputs" label="Porcentaje servicios '0' " variant="outlined" onChange={cambiarPorcentajes}
+                                                                /></Stack>
+                                                            <Stack direction="row"
+                                                                justifyContent="space-around"
+                                                                spacing={0.5}>
+                                                                <TextField name="porcentajeG" className="inputs" label="Porcentaje servicios 'G'" variant="outlined" onChange={cambiarPorcentajes} />
+
+
+                                                                <TextField name="porcentaje1" className="inputs" label="Porcentaje servicios '1' " variant="outlined" onChange={cambiarPorcentajes}
+                                                                /></Stack>
+
+
+                                                        </Stack>
+                                                    </Box>
+                                                    {/* Que ko borres dije */}
+
+
+
+
+                                                    {/* <Stack
+                                                        direction="column"
+                                                        justifyContent="space-around"
+                                                        alignItems="flex-start"
+                                                        spacing={0.5}
+                                                    >
+                                                        <Stack
+                                                            direction="row"
+                                                            justifyContent="space-around"
+                                                            alignItems="flex-start"
+                                                            spacing={0.5}
+                                                        >
+                                                            
+                                                            />
+                                                            
+                                                            
+
+
+                                                        </Stack>
+                                                        
+                                                       
+                                                       
+                                                    </Stack> */}
+                                                    {/* <label>
                                                         <input type="text" name="porcentajeI" className="inputs" onChange={cambiarPorcentajes}
                                                             placeholder="Porcentaje servicios 'I' " ></input>
-                                                    </label>
-                                                    <label>
+                                                    </label> */}
+
+                                                    {/* <label>
                                                         <input type="text" name="porcentajeO" className="inputs" onChange={cambiarPorcentajes}
 
-                                                            placeholder="Porcentaje servicios 'O'" ></input>
-                                                    </label>
-                                                    <label>
+                                                       placeholder="Porcentaje servicios 'O'" ></input>
+                                                    </label> */}
+
+                                                    {/* <label>
                                                         <input type="text" name="porcentaje1" className="inputs" onChange={cambiarPorcentajes}
 
                                                             placeholder="Porcentaje servicios '1'" ></input>
-                                                    </label>
-                                                    <label>
+                                                    </label> */}
+
+                                                    {/* <label>
                                                         <input type="text" name="porcentajeG" className="inputs" onChange={cambiarPorcentajes}
 
                                                             placeholder="Porcentaje servicios 'G'" ></input>
-                                                    </label>
-                                                    <label>
+                                                    </label> */}
+
+                                                    {/* <label>
                                                         <input type="text" name="porcentajeN" className="inputs" onChange={cambiarPorcentajes}
 
                                                             placeholder="Porcentaje servicios 'N'" ></input>
-                                                    </label>
-                                                    <label>
+                                                    </label> */}
+
+                                                    {/* <label>
                                                         <input type="text" name="porcentajeAll" className="inputs" onChange={cambiarPorcentajes}
 
                                                             placeholder="Editar todos los porcentajes" ></input>
-                                                    </label>
+                                                    </label> */}
                                                 </div>)}
                                     </form>
                                     <div className="w-100 text-right mt-2 contBtn">

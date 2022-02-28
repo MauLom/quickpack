@@ -15,6 +15,8 @@ import * as firestore from "firebase/firestore"
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 
 import './Cotizador.css';
+import { Stack, TextField } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 
 firebaseApp()
 const db = firestore.getFirestore();
@@ -78,10 +80,10 @@ function generarArrNuevosPrecios(arrApi, objBd, cantKgs, idxZona) {
     const zonaStr = "zone" + idxZona
     const arrDepurada = []
     const porcFFAereo = 0.0844
-
+    
     ///  (altura . ancho . profundidad) /5000 = pesoVolumetrico
     ///  Si  peso Volumetrico > peso real,   usar peso volumetrico   para   calculo
-   
+
     /// Mostrar Zona en el cotizador para el  cliente
     /// cargo por seguro...
 
@@ -158,12 +160,17 @@ export default function Cotizaciones() {
         ref: '',
         insurance: ''
     })
-    const [tabIdx, setTab] = useState(0);
+    const [tabIdx, setTab] = useState(0)
+    const [asegurarEnvioCheck, setAsegurarEnvioCheck] = React.useState(false)
     const [open, setOpen] = React.useState(false);
     const [hasErrorAPI, setHasErrorAPI] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState("Si puedes leer esto, contacta al soporte.");
     const [arrServiciosYCargos, setArrServicios] = React.useState([])
 
+
+    const handleChangeCasillaAsegurarEnvio = (event) => {
+        setAsegurarEnvioCheck(event.target.checked);
+      };
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
         setDatos({
@@ -312,36 +319,62 @@ export default function Cotizaciones() {
 
                         <div className="title-cliente">Información de envio
                         </div>
+                        <Stack
+                            direcion="column"
+                            spacing={4}>
+                            <Stack
+                                direction="row"
+                                justifyContent="space-around"
+                                spacing={0.5}>
+                                <TextField name="shipmentDate" className="inputs" variant="outlined" onChange={handelDatosChanges} label="Fecha de envio" />
+                                <TextField name="originCity" className="inputs" variant="outlined" onChange={handelDatosChanges} label="Ciudad origen" />
+                            </Stack>
 
-                        <label>
-                            <input type="date" name="shipmentDate" className="inputs" onChange={handelDatosChanges} placeholder="Fecha de envio" />
-                        </label>
-
-                        <label>
-                            <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad origen" />
-                        </label>
-                        <label>
-                            <input type="text" name="originZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal origen" />
-                        </label>
-                        <label>
-                            <input type="text" name="originCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais origen" />
-                        </label>
+                            <Stack
+                                direction="row"
+                                justifyContent="space-around"
+                                spacing={0.5}>
+                                <TextField name="originZip" className="inputs" variant="outlined" onChange={handelDatosChanges} label="Codigo postal origen" />
+                                <TextField name="originCC" className="inputs" variant="outlined" onChange={handelDatosChanges} label="Codigo pais origen" disabled />
+                            </Stack>
+                        </Stack>
                         <br />
-                        <label>
-                            <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad destino" />
-                        </label>
-                        <label>
-                            <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
-                        </label>
-                        <label>
-                            <input type="text" name="destinyCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais destino" />
-                        </label>
+                        <Stack
+                            direcion="column"
+                            spacing={4}>
+                            <Stack
+                                direction="row"
+                                justifyContent="space-around"
+                                spacing={0.5}>
+                                <TextField name="destinyCity" className="inputs" variant="outlined" onChange={handelDatosChanges} label="Ciudad destino" />
+                                <TextField name="destinyZip" className="inputs" variant="outlined" onChange={handelDatosChanges} label="Codigo postal destino" />
+                            </Stack>
+                            <Stack
+                                direction="row"
+                                justifyContent="space-around"
+                                spacing={0.5}>
+                                <TextField name="destinyCC" className="inputs" variant="outlined" onChange={handelDatosChanges} label="Codigo pais destino" />
+                                <TextField name="destinyCC" className="inputs" variant="outlined" onChange={handelDatosChanges} label="es este manao yayaju" style={{ visibility: "hidden" }} />
+                            </Stack>
+                        </Stack>
 
                         <div className="title-cliente">Asegurar envio
                         </div>
 
                         <label>
-                            <input type="text" name="insurance" className="inputs" onChange={handelDatosChanges} placeholder="valor de envio" />
+                            <Stack
+                                direction="row"
+                                justifyContent="space-around"
+                                spacing={0.5}>
+                                <TextField name="insurance" className="inputs" variant="outlined" onChange={handelDatosChanges} label="valor de envio" disabled={asegurarEnvioCheck} />
+                                
+                                <TextField name="insurance" className="inputs" variant="outlined" onChange={handelDatosChanges} label="valor de envio" style={{ visibility: "hidden" }} />
+                            </Stack>
+                            <Checkbox
+                                   checked={asegurarEnvioCheck}
+                                   onChange={handleChangeCasillaAsegurarEnvio}
+                                className="margin-checkbox"
+                                />
                         </label>
 
                         <div className="title-cliente">Paquete
