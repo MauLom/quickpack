@@ -2,10 +2,12 @@ import * as React from 'react';
 import firebaseApp from '../../firebaseApp'
 
 import * as firestore from "firebase/firestore"
-
-
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import './agregarCliente.css'
+import Box from '@mui/material/Box';
+
 
 firebaseApp();
 const db = firestore.getFirestore();
@@ -196,11 +198,24 @@ function AgregarCliente() {
 
                     </label>
                 </form>
+                <Box sx={{ marginLeft: "50px !important", marginTop: "50px" }}>
+                    <Stack direction="column"
+                        justifyContent="space-around"
+                        spacing={0.5}>
+                        <TextField className="inputs" label="servicios N" />
+                        <TextField className="inputs" label="servicios I" />
+                        <TextField className="inputs" label="servicios 0" />
+                        <TextField className="inputs" label="servicios G" />
+                        <TextField className="inputs" label="servicios 1" />
+                    </Stack>
+                </Box>
+
                 <div className="w-100 text-right mt-2 contBtn">
                     <Button disabled={claveGenerada} className="btnGuardar" variant="contained" onClick={getRandomClave}>Generar Clave</Button>
                     &nbsp; &nbsp; &nbsp;
                     <Button className="btnGuardar" variant="contained" onClick={setData}>Guardar</Button>
                 </div>
+
             </div>
 
         </>
