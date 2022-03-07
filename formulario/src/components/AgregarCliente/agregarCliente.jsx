@@ -7,13 +7,21 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import './agregarCliente.css'
 import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
 
 
 firebaseApp();
 const db = firestore.getFirestore();
 const randomId = Math.floor((Math.random() * (99999 - 10000 + 1)) + 10000);
+
 function AgregarCliente() {
     const [claveGenerada, setClaveGenerada] = React.useState(false)
+    const [bloquearServicioCheck, setBloquearServicioCheck] = React.useState(false)
+    const [bloquearServicioICheck, setBloquearServicioICheck] = React.useState(false)
+    const [bloquearServicio0Check, setBloquearServicio0Check] = React.useState(false)
+    const [bloquearServicioGCheck, setBloquearServicioGCheck] = React.useState(false)
+    const [bloquearServicio1Check, setBloquearServicio1Check] = React.useState(false)
+
     const [datos, setDatos] = React.useState({
         originId: '',
         originName: '',
@@ -21,6 +29,31 @@ function AgregarCliente() {
         originPass: ''
     })
 
+    const handleChangeBloquearServicio = (event) => {
+
+        setBloquearServicioCheck(event.target.checked);
+
+    };
+    const handleChangeBloquearServicioI = (event) => {
+
+        setBloquearServicioICheck(event.target.checked);
+
+    };
+    const handleChangeBloquearServicio0 = (event) => {
+
+        setBloquearServicio0Check(event.target.checked);
+
+    };
+    const handleChangeBloquearServicioG = (event) => {
+
+        setBloquearServicioGCheck(event.target.checked);
+
+    };
+    const handleChangeBloquearServicio1 = (event) => {
+
+        setBloquearServicio1Check(event.target.checked);
+
+    };
     const collectionRef = firestore.collection(db, "Cuenta");
     const setData = () => {
         firestore.addDoc(collectionRef, {
@@ -184,29 +217,84 @@ function AgregarCliente() {
             <div class="bg-azul">
                 <form >
                     <div className="title-cliente"> Por favor ingrese datos de la cuenta</div>
-
-                    <label>
-                        <input type="text" name="originName" className="inputs" onChange={handelDatosChanges} placeholder="Nombre" ></input>
-                    </label>
-
-                    <label>
-                        <input type="text" name="originLastname" className="inputs" onChange={handelDatosChanges} placeholder="Apellido" ></input>
-                    </label>
-
-                    <label>
-                        <input disabled type="text" name="originPass" className="inputs" onChange={handelDatosChanges} placeholder="Clave" value={datos.originId} ></input>
-
-                    </label>
+                    
+                    <Stack
+                        direction="row"
+                        justifyContent="space-around"
+                        spacing={0.5}
+                    >
+                        <TextField type="text" name="originName" className="inputs" onChange={handelDatosChanges} label="Nombre" />
+                        <TextField type="text" name="originLastname" className="inputs" onChange={handelDatosChanges} label="Apellido" />
+                    </Stack>
+                    <Box sx={{ marginTop: "50px" }}>
+                    <Stack
+                    direction="row"
+                    justifyContent="space-around"
+                    spacing={0.5}>
+                    <TextField disabled type="text" name="originPass" className="inputs" onChange={handelDatosChanges} label="Clave" value={datos.originId} />
+                    <div 
+                    className="padding-left-42">&nbsp;</div>
+                    </Stack>
+                    </Box>
                 </form>
+                <Box sx={{ marginLeft: "292px !important"}}>
+                <div className="title-cliente"> Bloquear Servicios</div>
+                </Box>
                 <Box sx={{ marginLeft: "50px !important", marginTop: "50px" }}>
                     <Stack direction="column"
-                        justifyContent="space-around"
+                        justifyContent="center"
                         spacing={0.5}>
-                        <TextField className="inputs" label="servicios N" />
-                        <TextField className="inputs" label="servicios I" />
-                        <TextField className="inputs" label="servicios 0" />
-                        <TextField className="inputs" label="servicios G" />
-                        <TextField className="inputs" label="servicios 1" />
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            spacing={{ xs: 1 }}
+                            spacing={0.1}>
+                            <TextField className="textFieldsLimitantesServicios" label="servicios N" disabled />
+                            <Checkbox
+                                checked={bloquearServicioCheck}
+                                className="margin-checkbox"
+                                onChange={handleChangeBloquearServicio} />
+                        </Stack>
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            spacing={0.1}>
+                            <TextField className="textFieldsLimitantesServicios" label="servicios I" disabled />
+                            <Checkbox
+                                checked={bloquearServicioICheck}
+                                className="margin-checkbox"
+                                onChange={handleChangeBloquearServicioI} />
+                        </Stack>
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            spacing={0.1}>
+                            <TextField className="textFieldsLimitantesServicios" label="servicios 0" disabled />
+                            <Checkbox
+                                checked={bloquearServicio0Check}
+                                className="margin-checkbox"
+                                onChange={handleChangeBloquearServicio0} />
+                        </Stack>
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            spacing={0.1}>
+                            <TextField className="textFieldsLimitantesServicios" label="servicios G" disabled />
+                            <Checkbox
+                                checked={bloquearServicioGCheck}
+                                className="margin-checkbox"
+                                onChange={handleChangeBloquearServicioG} />
+                        </Stack>
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            spacing={0.1}>
+                            <TextField className="textFieldsLimitantesServicios" label="servicios 1" disabled />
+                            <Checkbox
+                                checked={bloquearServicio1Check}
+                                className="margin-checkbox"
+                                onChange={handleChangeBloquearServicio1} />
+                        </Stack>
                     </Stack>
                 </Box>
 

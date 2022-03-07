@@ -44,6 +44,12 @@
   margin-left: 4%;
   margin-top: 20px;
 }
+
+.textFieldsLimitantesServicios{
+  background-color: white;
+  width:20%
+}
+
 .inputs{
   border-radius: 25px;
   width: 43%;

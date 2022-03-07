@@ -253,30 +253,30 @@ function EdicionClientes() {
                                                 (<div>
                                                     {/* Codigo que debes borrar */}
                                                     <Box sx={{ margingTop: "50px !important" }}>
-
+                                                        
                                                         <Stack direcion="column"
                                                             spacing={4}>
                                                             <Stack direction="row"
                                                                 justifyContent="space-around"
                                                                 spacing={0.5}>
-                                                                <TextField name="porcentajeN" className="inputs" label="Porcentaje servicios 'N' " variant="outlined" onChange={cambiarPorcentajes} />
-                                                                <TextField name="porcentajeALL" className="inputs" label="Editar todos los porcentajes" variant="outlined" onChange={cambiarPorcentajes}
+                                                                <TextField name="porcentajeN"  label="Porcentaje servicios 'N' " variant="outlined" onChange={cambiarPorcentajes} />
+                                                                <TextField name="porcentajeALL"  label="Editar todos los porcentajes" variant="outlined" onChange={cambiarPorcentajes}
                                                                 />
                                                             </Stack>
 
                                                             <Stack direction="row"
                                                                 justifyContent="space-around"
                                                                 spacing={0.5}>
-                                                                <TextField name="porcentajeI" className="inputs" label="Porcentaje servicios 'I' " variant="outlined" onChange={cambiarPorcentajes} />
-                                                                <TextField name="porcentaje0" className="inputs" label="Porcentaje servicios '0' " variant="outlined" onChange={cambiarPorcentajes}
+                                                                <TextField name="porcentajeI"  label="Porcentaje servicios 'I' " variant="outlined" onChange={cambiarPorcentajes} />
+                                                                <TextField name="porcentaje0"  label="Porcentaje servicios '0' " variant="outlined" onChange={cambiarPorcentajes}
                                                                 /></Stack>
                                                             <Stack direction="row"
                                                                 justifyContent="space-around"
                                                                 spacing={0.5}>
-                                                                <TextField name="porcentajeG" className="inputs" label="Porcentaje servicios 'G'" variant="outlined" onChange={cambiarPorcentajes} />
+                                                                <TextField name="porcentajeG"  label="Porcentaje servicios 'G'" variant="outlined" onChange={cambiarPorcentajes} />
 
 
-                                                                <TextField name="porcentaje1" className="inputs" label="Porcentaje servicios '1' " variant="outlined" onChange={cambiarPorcentajes}
+                                                                <TextField name="porcentaje1"  label="Porcentaje servicios '1' " variant="outlined" onChange={cambiarPorcentajes}
                                                                 /></Stack>
 
 
