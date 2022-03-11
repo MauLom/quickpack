@@ -6,25 +6,24 @@ import {
     Link
 } from "react-router-dom";
 import firebaseApp from '../../firebaseApp';
-import Button from '@mui/material/Button';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, Stack } from '@mui/material';
 
 import AgregarCliente from '../AgregarCliente/agregarCliente';
 import ListaClientes from '../ListaClientes/listaClientes';
 
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
-import Select from 'react-select';
-import TextField from '@mui/material/TextField';
 
+import Select from 'react-select';
 import Spreadsheet from "react-spreadsheet";
 
 firebaseApp();
 const database = getFirestore();
-
 function EdicionClientes() {
     const [usersList, setUsersList] = React.useState([])
     const [slctdUser, setSlctdUser] = React.useState({});
     const [mostrarDiagrama, setMostrarDiagrama] = React.useState(false);
     const [mostrarFormularioEdicion, setMostrarFormulario] = React.useState(false)
+    const [mostrarAgregarCliente, setMostrarAgregarCliente] = React.useState(false)
     const [slctdServicioTipo, setSlctdServicioTipo] = React.useState(0);
     const [slctdZona, setSlctdZona] = React.useState("sinZona");
     const [beneficiosList, setBeneficiosList] = React.useState();
@@ -34,30 +33,47 @@ function EdicionClientes() {
         [{ value: "Costo", readOnly: true }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }],
         [{ value: "Valor adicional", readOnly: true }, { value: "" }],
     ]
+    const [porcentajeDeServicios, setPorcentajeDeServicios] = React.useState({
+        porcentajeI: undefined,
+        porcentaje1: undefined,
+        porcentajeG: undefined,
+        porcentajeN: undefined,
+        porcentajeO: undefined,
+    })
+    const handleChangePorcentajeDeServicios = (e) => {
+        setPorcentajeDeServicios({
+            ...porcentajeDeServicios,
+            [e.target.name]: e.target.value
+        })
+    }
     ///(altura . ancho . profundidad) /5000 = pesoVolumetrico
     ///  Si  peso Volumetrico > peso real,   usar peso volumetrico   para   calculo
     var datosOut = []
-    function getDatos() {
-        const q = query(collection(database, "Cuenta"))
-        getDocs(q).then(res => {
-            res.forEach((doc) => {
-                var jsonAux = {};
-                jsonAux['id'] = doc.id;
-                jsonAux['Nombre'] = doc.data().Nombre;
-                jsonAux['Apellidos'] = doc.data().Apellidos;
-                jsonAux['Pass'] = doc.data().Pass;
 
-                jsonAux['tipoBeneficio'] = doc.data().tipoBeneficio;
-                jsonAux['matriz'] = doc.data().matriz;
-                datosOut.push(jsonAux);
+    function formatFilasClientes(id, Nombre, Apellidos, tipoBeneficio, Pass, matriz, porcentajes) {
+        return { id, Nombre, Apellidos, tipoBeneficio, Pass, matriz, porcentajes };
+    }
+    const q = query(collection(database, "Cuenta"))
+    React.useState(() => {
+        getDocs(q)
+            .then(res => {
+                res.forEach((doc) => {
+
+                    // jsonAux['id'] = doc.id;
+                    // jsonAux['Nombre'] = doc.data().Nombre;
+                    // jsonAux['Apellidos'] = doc.data().Apellidos;
+                    // jsonAux['Pass'] = doc.data().Pass;
+
+                    // jsonAux['tipoBeneficio'] = doc.data().tipoBeneficio;
+                    // jsonAux['matriz'] = doc.data().matriz;
+                    datosOut.push(formatFilasClientes(doc.id, doc.data().Nombre, doc.data().Apellidos, doc.data().tipoBeneficio, doc.data().Pass, doc.data().matriz, doc.data().porcentajes ? doc.data().porcentajes : {}));
+                })
+                setUsersList(datosOut);
             })
-            setUsersList(datosOut);
-        })
             .catch(err => {
                 console.log("error" + err);
             });
-
-    }
+    }, [q])
 
     const handelDatosChanges = (event) => {
         setSlctdUser({
@@ -66,10 +82,12 @@ function EdicionClientes() {
         })
     }
 
-    const editarUsuario = (event) => {
+    const editarUsuario = (event, idx) => {
         setMostrarFormulario(true)
-        setSlctdUser(usersList[event.target.name]);
-        console.log("userList:", usersList)
+        setSlctdUser(usersList[idx]);
+        if (usersList[idx].porcentajes.porcentaje1 != undefined) {
+            setPorcentajeDeServicios(usersList[idx].porcentajes)
+        }
     }
 
     const handleCambioModelo = () => {
@@ -86,6 +104,11 @@ function EdicionClientes() {
         }
     }
     const guardarDatos = () => {
+        if (porcentajeDeServicios.porcentaje1 != undefined) {
+            var objUserAux = slctdUser;
+            objUserAux['porcentajes'] = porcentajeDeServicios
+            setSlctdUser(objUserAux);
+        }
         if (Object.getOwnPropertyNames(slctdUser.matriz).indexOf(slctdServicioTipo) > -1 && Object.getOwnPropertyNames(slctdUser.matriz[slctdServicioTipo]).indexOf(slctdZona) > -1) {
             slctdUser.matriz[slctdServicioTipo][slctdZona]['data'] = JSON.stringify(dataTabla);
         } else {
@@ -94,21 +117,15 @@ function EdicionClientes() {
             }
             slctdUser.matriz[slctdServicioTipo][slctdZona] = {};
             slctdUser.matriz[slctdServicioTipo][slctdZona]['data'] = JSON.stringify(dataTabla);
-
         }
 
         let documentUserRef = doc(database, "Cuenta/" + slctdUser.id)
-   
         setDoc(documentUserRef, slctdUser)
             .then(res => { console.log("Response ok: ", res) })
             .catch(error => { console.log.length("Error: ", error) });
+    }
 
 
-    }
-    const cambiarPorcentajes = (event) => {
-        console.log("porcentaje Name:", event.target.name)
-        console.log("porcentaje Value", event.target.value)
-    }
     const optionsSelectProducto = [
         { value: 'I', label: 'Servicio tipo I' },
         { value: 'O', label: 'Servicio tipo O' },
@@ -150,135 +167,123 @@ function EdicionClientes() {
         'overflow': 'auto'
     }
 
+
     return (
         <>
-            <Router>
-                <Switch>
-                    <Route exact path="/admin/edicion-clientes">
-                        <p></p><button onClick={getDatos}> Cargar Lista clientes</button>
-                        <center>
-                            <table id="ClientTable" border="1px">
-                                <tr>
-                                    <td>Nombre    </td>
-                                    <td>Apellido  </td>
-                                    <td>Tipo Beneficio </td>
-                                    <td>Contraseña</td>
-                                    <td><span class="material-icons-outlined">manage_accounts</span></td>
-                                </tr>
-                                {usersList.map((eachUser, idx) => (
-                                    <tr>
-                                        <td>{eachUser.Nombre}</td>
-                                        <td>{eachUser.Apellidos}</td>
-                                        <td>{eachUser.tipoBeneficio == 1 ? 'Diagrama por KG' : 'Porcentual'}</td>
-                                        <td>{eachUser.Pass}</td>
-                                        <td><button name={idx} onClick={editarUsuario}>Editar</button></td>
-                                    </tr>
-                                ))}
-                            </table>
-                        </center>
 
-                        {mostrarFormularioEdicion == true ?
-                            <>
-                                <div class="bg-azul">
-                                    <form >
-                                        <div className="title-cliente"> Por favor edite datos de la cuenta</div>
 
+            {mostrarFormularioEdicion == true ?
+                <>
+                    <Button onClick={() => { setMostrarFormulario(false) }}><span className="material-icons">keyboard_backspace</span>&nbsp;Regresar a lista</Button>
+                    <div className="bg-azul">
+                        <form >
+                            <div className="title-cliente"> Por favor edite datos de la cuenta</div>
+
+                            <label>
+                                <input type="text" name="Nombre" className="inputs" onChange={handelDatosChanges}
+                                    placeholder={slctdUser.Nombre} ></input>
+                            </label>
+
+                            <label>
+                                <input type="text" name="Apellidos" className="inputs" onChange={handelDatosChanges}
+                                    placeholder={slctdUser.Apellidos} ></input>
+                            </label>
+
+                            <label>
+                                <input disabled type="text" name="Pass" className="inputs" onChange={handelDatosChanges}
+                                    value={slctdUser.Pass}></input>
+                            </label>
+                            <div > <div className="title-cliente">Por favor edite la informacion de descuento&nbsp;&nbsp;&nbsp;<span style={botonModelo} onClick={handleCambioModelo} >Cambiar Modelo Edicion</span></div> </div>
+                            {
+                                mostrarDiagrama ?
+
+                                    (
+                                        <div>
+                                            <div style={styleTableSelects}>
+                                                <div className="col" style={styleSelect}>
+                                                    <Select options={optionsSelectProducto} onChange={(event) => setSlctdServicioTipo(event.value)} placeholder="Tipo Servicio" />
+                                                </div>
+                                                <div className="col" style={styleSelect}>
+                                                    <Select options={optionsSelectZona} onChange={handleZonaChange} placeholder="Zona " />
+                                                </div>
+                                            </div>
+                                            <div className="title-cliente"> Especificar rango peso y costos  </div>
+                                            <br />
+                                            <div style={styleTablaSheet}>
+                                                <Spreadsheet data={dataTabla} onChange={setDataTabla} />
+                                            </div>
+
+                                        </div>
+
+                                    )
+                                    :
+                                    (<div>
                                         <label>
-                                            <input type="text" name="Nombre" className="inputs" onChange={handelDatosChanges}
-                                                placeholder={slctdUser.Nombre} ></input>
+                                            <input type="text" name="porcentajeI" className="inputs" onChange={(event) => { handleChangePorcentajeDeServicios(event) }} placeholder="Porcentaje servicios 'I' " value={porcentajeDeServicios.porcentajeI} />
+                                        </label>
+                                        <label>
+                                            <input type="text" name="porcentajeO" className="inputs" onChange={(event) => { handleChangePorcentajeDeServicios(event) }} placeholder="Porcentaje servicios 'O'" value={porcentajeDeServicios.porcentajeO} />
+                                        </label>
+                                        <label>
+                                            <input type="text" name="porcentaje1" className="inputs" onChange={(event) => { handleChangePorcentajeDeServicios(event) }} placeholder="Porcentaje servicios '1'" value={porcentajeDeServicios.porcentaje1} />
+                                        </label>
+                                        <label>
+                                            <input type="text" name="porcentajeG" className="inputs" onChange={(event) => { handleChangePorcentajeDeServicios(event) }} placeholder="Porcentaje servicios 'G'" value={porcentajeDeServicios.porcentajeG} />
+                                        </label>
+                                        <label>
+                                            <input type="text" name="porcentajeN" className="inputs" onChange={(event) => { handleChangePorcentajeDeServicios(event) }} placeholder="Porcentaje servicios 'N'" value={porcentajeDeServicios.porcentajeN} />
                                         </label>
 
-                                        <label>
-                                            <input type="text" name="Apellidos" className="inputs" onChange={handelDatosChanges}
-                                                placeholder={slctdUser.Apellidos} ></input>
-                                        </label>
-
-                                        <label>
-                                            <input disabled type="text" name="Contrasena" className="inputs" onChange={handelDatosChanges}
-                                                value={slctdUser.Pass}></input>
-                                        </label>
-                                        <div > <div className="title-cliente">Por favor edite la informacion de descuento&nbsp;&nbsp;&nbsp;<span style={botonModelo} onClick={handleCambioModelo} >Cambiar Modelo Edicion</span></div> </div>
-                                        {
-                                            mostrarDiagrama ?
-
-                                                (
-                                                    <div>
-                                                        <div style={styleTableSelects}>
-                                                            <div className="col" style={styleSelect}>
-                                                                <Select options={optionsSelectProducto} onChange={(event) => setSlctdServicioTipo(event.value)} placeholder="Tipo Servicio" />
-                                                            </div>
-                                                            <div className="col" style={styleSelect}>
-                                                                <Select options={optionsSelectZona} onChange={handleZonaChange} placeholder="Zona " />
-                                                            </div>
-                                                        </div>
-                                                        <div className="title-cliente"> Especificar rango peso y costos  </div>
-                                                        <br />
-                                                        <div style={styleTablaSheet}>
-                                                            <Spreadsheet data={dataTabla} onChange={setDataTabla} />
-                                                        </div>
-
-                                                    </div>
-
-                                                )
-                                                :
-                                                (<div>
-                                                    <label>
-                                                        <input type="text" name="porcentajeI" className="inputs" onChange={cambiarPorcentajes}
-                                                            placeholder="Porcentaje servicios 'I' " ></input>
-                                                    </label>
-                                                    <label>
-                                                        <input type="text" name="porcentajeO" className="inputs" onChange={cambiarPorcentajes}
-
-                                                            placeholder="Porcentaje servicios 'O'" ></input>
-                                                    </label>
-                                                    <label>
-                                                        <input type="text" name="porcentaje1" className="inputs" onChange={cambiarPorcentajes}
-
-                                                            placeholder="Porcentaje servicios '1'" ></input>
-                                                    </label>
-                                                    <label>
-                                                        <input type="text" name="porcentajeG" className="inputs" onChange={cambiarPorcentajes}
-
-                                                            placeholder="Porcentaje servicios 'G'" ></input>
-                                                    </label>
-                                                    <label>
-                                                        <input type="text" name="porcentajeN" className="inputs" onChange={cambiarPorcentajes}
-
-                                                            placeholder="Porcentaje servicios 'N'" ></input>
-                                                    </label>
-                                                    <label>
-                                                        <input type="text" name="porcentajeAll" className="inputs" onChange={cambiarPorcentajes}
-
-                                                            placeholder="Editar todos los porcentajes" ></input>
-                                                    </label>
-                                                </div>)}
-                                    </form>
-                                    <div className="w-100 text-right mt-2 contBtn">
-                                        <Button className="btnGuardar" variant="contained" onClick={guardarDatos}>Guardar</Button>
-                                    </div>
-                                </div>
-                            </>
-                            : ""
-                        }
-
-                        <Link to="/admin/adicion-clientes" className="noLinkStyle">
-                            <button>Agregar Cliente</button>
-                        </Link>
-
-                        <Link to="/admin/lista-clientes" className="noLinkStyle">
-                            <button>Editar detalles de clientes</button>
-                        </Link>
-
-                    </Route>
-                    <Route exact path="/admin/adicion-clientes" >
+                                    </div>)}
+                        </form>
+                        <div className="w-100 text-right mt-2 contBtn">
+                            <Button className="btnGuardar" variant="contained" onClick={guardarDatos}>Guardar</Button>
+                        </div>
+                    </div>
+                </>
+                :
+                mostrarAgregarCliente == true ?
+                    <>
+                        <Button onClick={() => { setMostrarAgregarCliente(false); setSlctdUser(undefined); setPorcentajeDeServicios({ porcentajeI: undefined, porcentaje1: undefined, porcentajeG: undefined, porcentajeN: undefined, porcentajeO: undefined}) }}><span className="material-icons">keyboard_backspace</span>&nbsp;Regresar a lista</Button>
                         <AgregarCliente />
-                    </Route>
-                    <Route exact path="/admin/lista-clientes" >
-                        <ListaClientes />
-                    </Route>
-                </Switch>
-            </Router>
-
+                    </> :
+                    <>
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell sx={{ fontWeight: "700" }} align="center">Nombre</TableCell>
+                                        <TableCell sx={{ fontWeight: "700" }} align="center">Apellido(s)</TableCell>
+                                        <TableCell sx={{ fontWeight: "700" }} align="center">Tipo Beneficio</TableCell>
+                                        <TableCell sx={{ fontWeight: "700" }} align="center">Contrasena</TableCell>
+                                        <TableCell sx={{ fontWeight: "700" }} align="center">Editar</TableCell>
+                                        <TableCell sx={{ fontWeight: "700" }} align="center">Eliminar</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {usersList.map((eachUser, idx) => (
+                                        <TableRow
+                                            key={eachUser.id}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell align="center">{eachUser.Nombre}</TableCell>
+                                            <TableCell align="center">{eachUser.Apellidos}</TableCell>
+                                            <TableCell align="center">{eachUser.tipoBeneficio == 1 ? <>Base Porcentual</> : <>Matriz datos</>}</TableCell>
+                                            <TableCell align="center">{eachUser.Pass}</TableCell>
+                                            <TableCell align="center"> <Button variant="contained" name={idx} onClick={(e) => editarUsuario(e, idx)}><span className="material-icons-outlined">manage_accounts</span></Button></TableCell>
+                                            <TableCell align="center"> <Button variant="contained" name={idx} onClick={() => alert("Funcion en desarrollo")}><span className="material-icons-outlined">delete</span></Button></TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Box>
+                            <Stack direction="row">
+                                <Button variant="contained" onClick={() => { setMostrarAgregarCliente(true) }} >Agregar cliente</Button>
+                            </Stack>
+                        </Box>
+                    </>
+            }
         </>
 
     );

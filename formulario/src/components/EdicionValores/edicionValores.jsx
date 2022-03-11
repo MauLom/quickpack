@@ -6,7 +6,7 @@ function edicionValores() {
 
  return (
   <>
-   <div class="bg-azul">
+   <div className="bg-azul">
     <form >
      <div className="title-cliente"> Porcentaje de cargo por combustible servicios aereos</div>
      <label>

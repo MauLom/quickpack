@@ -4,7 +4,7 @@ import firebaseApp from '../../firebaseApp'
 import * as firestore from "firebase/firestore"
 
 
-import Button from '@mui/material/Button';
+import { Button, TextField, Stack, Checkbox, Box } from '@mui/material';
 import './agregarCliente.css'
 
 firebaseApp();
@@ -17,6 +17,14 @@ function AgregarCliente() {
         originName: '',
         originLastname: '',
         originPass: ''
+    })
+    const [serviciosDeshabilitados, setServiciosDeshabilitados] = React.useState({
+        servicioI: false,
+        servicio1: false,
+        servicioG: false,
+        servicioN: false,
+        servicioO: false,
+
     })
 
     const collectionRef = firestore.collection(db, "Cuenta");
@@ -151,7 +159,8 @@ function AgregarCliente() {
                         }
                     }
                 },
-                tipoBeneficio: 1
+                tipoBeneficio: 1,
+                serviciosBloqueados: serviciosDeshabilitados
             })
                 .then(res => { console.log("Response ok: ", res) })
                 .catch(error => { console.log.length("Error: ", error) });
@@ -177,9 +186,16 @@ function AgregarCliente() {
         setClaveGenerada(true)
         alert("Clave Generada Exitosamente")
     }
+    const handleChangeBloqueoServicios = (e) => {
+        setServiciosDeshabilitados({
+            ...serviciosDeshabilitados,
+            [e.target.name]: !serviciosDeshabilitados[e.target.name]
+        })
+        console.log("Servicios despues del cambio:", serviciosDeshabilitados)
+    }
     return (
         <>
-            <div class="bg-azul">
+            <div className="bg-azul">
                 <form >
                     <div className="title-cliente"> Por favor ingrese datos de la cuenta</div>
 
@@ -196,6 +212,39 @@ function AgregarCliente() {
 
                     </label>
                 </form>
+                <Stack sx={{ marginTop: "3%" }} direction="row" justifyContent="space-around" alignItems="center">
+                    <Stack direction="column" spacing={2}>
+                        <TextField sx={{ backgroundColor: 'white' }} id="outlined-basic" label="Deshabilitar Servicio '1'" variant="outlined" disabled />
+                        <TextField sx={{ backgroundColor: 'white' }} id="outlined-basic" label="Deshabilitar Servicio 'I'" variant="outlined" disabled />
+                        <TextField sx={{ backgroundColor: 'white' }} id="outlined-basic" label="Deshabilitar Servicio 'N'" variant="outlined" disabled />
+                        <TextField sx={{ backgroundColor: 'white' }} id="outlined-basic" label="Deshabilitar Servicio 'G'" variant="outlined" disabled />
+                        <TextField sx={{ backgroundColor: 'white' }} id="outlined-basic" label="Deshabilitar Servicio 'O'" variant="outlined" disabled />
+
+                    </Stack>
+                    <Stack direction="column" spacing={2}>
+                        <Stack direction="row">
+                            <Box sx={serviciosDeshabilitados.servicio1 === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>Se desactivo el servicio '1'</Box>
+                            <Checkbox name="servicio1" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                        </Stack>
+                        <Stack direction="row">
+                            <Box sx={serviciosDeshabilitados.servicioI === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>Se desactivo el servicio 'I'</Box>
+                            <Checkbox name="servicioI" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                        </Stack>
+                        <Stack direction="row">
+                            <Box sx={serviciosDeshabilitados.servicioN === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>Se desactivo el servicio 'N'</Box>
+                            <Checkbox name="servicioN" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                        </Stack>
+                        <Stack direction="row">
+                            <Box sx={serviciosDeshabilitados.servicioG === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>Se desactivo el servicio 'G'</Box>
+                            <Checkbox name="servicioG" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                        </Stack>
+                        <Stack direction="row">
+                            <Box sx={serviciosDeshabilitados.servicioO === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>Se desactivo el servicio 'O'</Box>
+                            <Checkbox name="servicioO" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                        </Stack>
+                    </Stack>
+                </Stack>
+
                 <div className="w-100 text-right mt-2 contBtn">
                     <Button disabled={claveGenerada} className="btnGuardar" variant="contained" onClick={getRandomClave}>Generar Clave</Button>
                     &nbsp; &nbsp; &nbsp;

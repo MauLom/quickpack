@@ -54,7 +54,7 @@ function EdicionDetallesClientes() {
     return (
         <>
             <button id="editar"> editar </button>
-            <div class="bg-azul">
+            <div className="bg-azul">
                 <form >
                     <div className="title-cliente"> Por favor edite datos de la cuenta</div>
 

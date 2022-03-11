@@ -5,14 +5,20 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-
+import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-
+import Button from '@mui/material/Button';
 import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
+
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import './Cotizador.css';
 
@@ -50,26 +56,37 @@ function renderSwitch(param) {
     const generarGuia = () => {
         console.log("Funcion pendiente")
     }
-
     switch (param['@type']) {
         case "I": case "O": case "1": case "G": case "N":
-            return (<>
-                <div>Cargos:</div>
-                <div>Moneda: {param['TotalNet']['Currency']}</div>
+            return (
+                <Box sx={{ backgroundColor: "#F2FAFC" }} key={param['@type']}>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
+                        >
+                            {/* <Typography><div>Zona de envio: {zona}</div></Typography> */}
+                            <Typography><b>{param['Charges']['Charge'][0]['ChargeType']}</b></Typography>
+                        </AccordionSummary>
+                        <AccordionDetails >
+                            <Typography>
+                                {param['Charges']['Charge'].map((eachCharge, idx) => (
+                                    <div key={"key-" + idx}>
+                                        <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
+                                        <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
+                                    </div>
+                                ))}
+                                <br />
+                                <div>Tiempo de entrega: {param['DeliveryTime']} </div>
+                                <div>Total:  {param['TotalNet']['Amount']} </div>
+                            </Typography>
+                            {/* <Button variant="outlined" onClick={generarGuia}>Generar Guia</Button> */}
 
-                {param['Charges']['Charge'].map((eachCharge, idx) => (
-                    <div key={"key-" + idx}>
-                        <br />
-                        <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
-                        <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
-                    </div>
-                ))}
-                <br />
-                <div>Tiempo de entrega: {param['DeliveryTime']} </div>
-                <div>Total:  {param['TotalNet']['Amount']} </div>
-                <button onClick={generarGuia}>Generar Guia</button>
-                <Divider />
-            </>)
+                        </AccordionDetails>
+                    </Accordion>
+                    <Divider />
+                </Box>)
 
     }
 }
@@ -81,7 +98,7 @@ function generarArrNuevosPrecios(arrApi, objBd, cantKgs, idxZona) {
 
     ///  (altura . ancho . profundidad) /5000 = pesoVolumetrico
     ///  Si  peso Volumetrico > peso real,   usar peso volumetrico   para   calculo
-   
+
     /// Mostrar Zona en el cotizador para el  cliente
     /// cargo por seguro...
 
@@ -145,10 +162,10 @@ export default function Cotizaciones() {
         shipmentDate: '',
         originCity: '',
         originZip: '',
-        originCC: '',
+        originCC: 'MX',
         destinyCity: '',
         destinyZip: '',
-        destinyCC: '',
+        destinyCC: 'MX',
         insurance: '',
         quantity: '',
         weight: '',
@@ -163,7 +180,8 @@ export default function Cotizaciones() {
     const [hasErrorAPI, setHasErrorAPI] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState("Si puedes leer esto, contacta al soporte.");
     const [arrServiciosYCargos, setArrServicios] = React.useState([])
-
+    const [arrDataAll, setArrDataAll] = React.useState([])
+    const [zoneOfService, setZoneofService] = React.useState(undefined)
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
         setDatos({
@@ -192,6 +210,7 @@ export default function Cotizaciones() {
         var dataZoneString = "https://quickpack-back-al2vij23ta-uc.a.run.app/getZoneRequest"
             + "?AA01=" + datos.originZip
             + "&BB01=" + datos.destinyZip
+
         fetch(dataString, {
             method: 'GET',
             headers: {
@@ -202,7 +221,6 @@ export default function Cotizaciones() {
                 return response.json()
             })
             .then((data) => {
-
                 var dataJSONParsed = JSON.parse(data)
                 var code = dataJSONParsed.RateResponse.Provider[0].Notification[0]['@code']
                 setHasErrorAPI(code != 0 ? true : false)
@@ -234,6 +252,7 @@ export default function Cotizaciones() {
                                                 return response.json()
                                             })
                                             .then((dataZoneIndex) => {
+                                                setZoneofService(dataZoneIndex)
                                                 let volumetricWeight = (datos.height * datos.width * datos.longitude) / 5000
                                                 setArrServicios(generarArrNuevosPrecios(auxArr, dataUsuario, datos.weight > volumetricWeight ? datos.weight : volumetricWeight, dataZoneIndex));
                                             })
@@ -247,18 +266,17 @@ export default function Cotizaciones() {
                             .catch(err => {
                                 console.log("Problemas...")
                             });
-                        //console.log("Array",arrServiciosYCargos);
                     }
 
                 }
                 var collectionRef = firestore.collection(db, "Cotizaciones");
 
                 firestore.addDoc(collectionRef, {
-                    DestinyCC: datos.destinyCC,
+                    DestinyCC: "MX",
                     DestinyCity: datos.destinyCity,
                     DestinyZip: datos.destinyZip,
                     OriginCity: datos.originCity,
-                    OriginCC: datos.originCC,
+                    OriginCC: "MX",
                     OriginZip: datos.originZip,
                     Height: datos.height,
                     Insurance: datos.insurance,
@@ -275,9 +293,10 @@ export default function Cotizaciones() {
                     console.log("Error:", error)
                 })
                 handleClickOpen()
-
-                // background-color: #02cfaa !important;
-                return data
+                var objDataParsedAux = JSON.parse(data)
+                setArrServicios(data)
+                setArrDataAll(objDataParsedAux.RateResponse.Provider[0].Service)
+                // return data
             })
             .catch((error) => {
                 console.log(error)
@@ -323,9 +342,6 @@ export default function Cotizaciones() {
                         <label>
                             <input type="text" name="originZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal origen" />
                         </label>
-                        <label>
-                            <input type="text" name="originCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais origen" />
-                        </label>
                         <br />
                         <label>
                             <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad destino" />
@@ -333,9 +349,7 @@ export default function Cotizaciones() {
                         <label>
                             <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
                         </label>
-                        <label>
-                            <input type="text" name="destinyCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais destino" />
-                        </label>
+
 
                         <div className="title-cliente">Asegurar envio
                         </div>
@@ -347,77 +361,22 @@ export default function Cotizaciones() {
                         <div className="title-cliente">Paquete
                         </div>
                         {/*  */}
-
-
-                        <div className={classes.root} className="pieza">
+                        <div className={classes.root} >
                             <div>
-                                <AppBar position="static">
-                                    <Tabs value={tabIdx} onChange={handleTabChange} aria-label="simple tabs example" className="principal">
-                                        <Tab label="1 Cantidad" {...a11yProps(0)} />
-                                        <Tab label="2 Peso" {...a11yProps(1)} />
-                                        <Tab label="3 Alto" {...a11yProps(2)} />
-                                        <Tab label="4 Ancho" {...a11yProps(3)} />
-                                        <Tab label="5 Profundidad" {...a11yProps(4)} />
-                                        <Tab label="6 Referencia" {...a11yProps(5)} />
-                                    </Tabs>
-                                </AppBar>
-                                <TabPanel value={tabIdx} index={0} >
-                                    <div className="display-contentTabPanel">
-                                        <div>Cantidad</div>
-                                        <label>
-                                            <input type="number" name="quantity" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={1}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique el peso</div>
-                                        <label>
-                                            <input type="number" name="weight" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>Kg.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={2}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique la altura</div>
-                                        <label>
-                                            <input type="number" name="height" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={3}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique el ancho</div>
-                                        <label>
-                                            <input type="number" name="width" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={4}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Seleccione la profundidad</div>
-                                        <label>
-                                            <input type="number" name="longitude" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={5}>
-                                    <div className="display-contentTabPanel">
-                                        <div>ingrese una referencia</div>
-                                        <label>
-                                            <input type="text" name="ref" onChange={handelDatosChanges} />
-                                        </label>
-                                    </div>
-                                </TabPanel>
+
+                                <TextField sx={{ backgroundColor: "white" }} name="quantity" label="Cantidad" variant="outlined" onChange={handelDatosChanges} />
+                                <TextField sx={{ backgroundColor: "white" }} name="weight" label="Peso" variant="outlined" onChange={handelDatosChanges} />
+                                <TextField sx={{ backgroundColor: "white" }} name="height" label="Alto" variant="outlined" onChange={handelDatosChanges} />
+                                <TextField sx={{ backgroundColor: "white" }} name="width" label="Ancho" variant="outlined" onChange={handelDatosChanges} />
+                                <TextField sx={{ backgroundColor: "white" }} name="longitude" label="Profundidad" variant="outlined" onChange={handelDatosChanges} />
+                                <TextField sx={{ backgroundColor: "white" }} id="outlined-basic" label="Referencia" variant="outlined" onChange={handelDatosChanges} />
+                                <TextField sx={{ backgroundColor: "white" }} id="outlined-basic" label="Descripcion paquete" variant="outlined" onChange={handelDatosChanges} />
                             </div>
                         </div>
-                        <div className="boton">
-                            <button onClick={consultaAPI} className="boton-color"> Cotizar </button>
-                        </div>
+                        <Stack justifyContent="center" spacing={2} direction="columm">
+                            <Button onClick={consultaAPI} variant="contained">Cotizar</Button>
+                        </Stack>
+
                     </form>
 
                     <div>
@@ -428,10 +387,33 @@ export default function Cotizaciones() {
                             {hasErrorAPI ?
                                 <div>Error: {String(errorMsg)}</div>
                                 :
-                                arrServiciosYCargos.map(each => (
-                                    renderSwitch(each)
-                                ))}
+                                <>
+                                    <Box sx={{fontSize:"20px", fontWeight:"700", textAlign:"center"}}>Zona de servicio {zoneOfService}</Box >
+                                    {arrDataAll.map(each => (
+                                        renderSwitch(each,)
+                                    ))}
+                                </>
+
+                            }
                         </Dialog>
+                        <div>
+                            {/* <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography>Accordion 1</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Typography>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                        malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                    </Typography>
+                                </AccordionDetails>
+                            </Accordion> */}
+
+                        </div>
                     </div>
                 </div>
             </div>
