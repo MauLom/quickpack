@@ -6,12 +6,15 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Divider from '@mui/material/Divider';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
 import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
+import { Stack } from '@material-ui/core';
 
 firebaseApp()
 const db = firestore.getFirestore();
@@ -174,14 +177,35 @@ export default function GenerarGuias() {
         ref: '',
         insurance: ''
     })
+    const handleDatosPaquetesChange = (event, indice) => {
+        var arrAux = paquetesList
+        console.log("event.target.name", event.target.name)
+        switch (event.target.name) {
+            case 'weight':
+                arrAux[indice]['Weight']['Value'] = event.target.value;
+                break;
+            case 'height':
+                arrAux[indice]['Dimensions']['Height'] = event.target.value;
+                break;
+            case 'width':
+                arrAux[indice]['Dimensions']['Width'] = event.target.value;
+                break;
+            case 'lenght':
+                arrAux[indice]['Dimensions']['Length'] = event.target.value;
+                break;
+        }
+    }
+       
+
     const [tabIdx, setTab] = useState(0);
     const [open, setOpen] = React.useState(false);
     const [dataResponse, setDataResponse] = React.useState();
     const [hasErrorAPI, setHasErrorAPI] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState("Si puedes leer esto, contacta al soporte.");
     const [arrServiciosYCargos, setArrServicios] = React.useState([])
-
-
+    const [loaderBtnAgregarPaquete, setLoaderBtnAgregarPaquete] = React.useState(false)
+    const [mostrarLimitePaquetes, setMostrarLimitePaquetes] = React.useState(false)
+    const [paquetesList, setPaquetesList] = React.useState([{ "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }])
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
         setDatos({
@@ -301,6 +325,19 @@ export default function GenerarGuias() {
 
     };
 
+    // Boton +
+    const agregarPaqueteVacio = () => {
+        setLoaderBtnAgregarPaquete(true);
+        if (paquetesList.length <= 4) {
+            setPaquetesList([
+                ...paquetesList,
+                { "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }
+            ])
+        } else {
+            setMostrarLimitePaquetes(true)
+        }
+        setLoaderBtnAgregarPaquete(false);
+    }
 
     return (
         <>
@@ -377,24 +414,37 @@ export default function GenerarGuias() {
 
                     <div className={classes.root} className="pieza">
                         <div>
-                            <AppBar position="static">
+                            {/* <AppBar position="static">
                                 <Tabs value={tabIdx} onChange={handleTabChange} aria-label="simple tabs example" className="principal">
-                                    <Tab label="1 Cantidad" {...a11yProps(0)} />
+                                    <Tab label="1 cantidad" {...a11yProps(0)} />
                                     <Tab label="2 Peso" {...a11yProps(1)} />
                                     <Tab label="3 Alto" {...a11yProps(2)} />
                                     <Tab label="4 Ancho" {...a11yProps(3)} />
                                     <Tab label="5 Profundidad" {...a11yProps(4)} />
                                     <Tab label="6 Referencia" {...a11yProps(5)} />
                                 </Tabs>
-                            </AppBar>
-                            <TabPanel value={tabIdx} index={0} >
+                            </AppBar> */}
+                             {paquetesList.map((cadaPaquete, idx) => (
+                            <Stack direction="row" spacing={2} justifyContent="center" >
+                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="cantidad" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Peso" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Alto" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Ancho" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Profundiad" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Referencia" variant="outlined" onChange={(e) => { handleTabChange(e ) }} />
+                            </Stack>
+                             ))}
+                            <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
+                                    <Button variant="outlined"><span className="material-icons" onClick={() => { agregarPaqueteVacio() }}>playlist_add</span></Button>
+                                </Stack>
+                            {/* <TabPanel value={tabIdx} index={0} >
                                 <div className="display-contentTabPanel">
                                     <div>Cantidad</div>
                                     <label>
                                         <input type="number" name="quantity" className="selector" onChange={handelDatosChanges} />
                                     </label>
                                 </div>
-                            </TabPanel>
+                            </TabPanel> */}
                             <TabPanel value={tabIdx} index={1}>
                                 <div className="display-contentTabPanel">
                                     <div>Indique el peso</div>
@@ -431,14 +481,14 @@ export default function GenerarGuias() {
                                     <div>cm.</div>
                                 </div>
                             </TabPanel>
-                            <TabPanel value={tabIdx} index={5}>
+                            {/* <TabPanel value={tabIdx} index={5}>
                                 <div className="display-contentTabPanel">
                                     <div>ingrese una referencia</div>
                                     <label>
                                         <input type="text" name="ref" onChange={handelDatosChanges} />
                                     </label>
                                 </div>
-                            </TabPanel>
+                            </TabPanel> */}
                         </div>
                     </div>
                     <div className="boton">
