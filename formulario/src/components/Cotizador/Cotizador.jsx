@@ -15,11 +15,13 @@ import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 
+
+import LoadingButton from '@mui/lab/LoadingButton';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import LoadingSpinner from '../Loader/loader';
 import './Cotizador.css';
 
 firebaseApp()
@@ -72,21 +74,24 @@ function renderSwitch(param) {
                         <AccordionDetails >
                             <Typography>
                                 {param['Charges']['Charge'].map((eachCharge, idx) => (
-                                    <div key={"key-" + idx}>
-                                        <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
-                                        <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
-                                    </div>
+                                    <>
+                                        <div key={"key-" + idx}>
+                                            <div>-{eachCharge['ChargeType']} </div>
+                                            <div>${eachCharge['ChargeAmount']} </div>
+                                        </div>
+                                    </>
+
                                 ))}
                                 <br />
                                 <div>Tiempo de entrega: {param['DeliveryTime']} </div>
-                                <div>Total:  {param['TotalNet']['Amount']} </div>
+                                <div>Total:  ${param['TotalNet']['Amount']} </div>
                             </Typography>
                             {/* <Button variant="outlined" onClick={generarGuia}>Generar Guia</Button> */}
 
                         </AccordionDetails>
                     </Accordion>
                     <Divider />
-                </Box>)
+                </Box >)
 
     }
 }
@@ -161,13 +166,13 @@ export default function Cotizaciones() {
         userName: '',
         shipmentDate: '',
         originCity: '',
-        originZip: '',
+        originZip: undefined,
         originCC: 'MX',
         destinyCity: '',
-        destinyZip: '',
+        destinyZip: undefined,
         destinyCC: 'MX',
         insurance: '',
-        quantity: '',
+        quantity: undefined,
         weight: '',
         height: '',
         width: '',
@@ -175,23 +180,74 @@ export default function Cotizaciones() {
         ref: '',
         insurance: ''
     })
-    const [tabIdx, setTab] = useState(0);
     const [open, setOpen] = React.useState(false);
     const [hasErrorAPI, setHasErrorAPI] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState("Si puedes leer esto, contacta al soporte.");
     const [arrServiciosYCargos, setArrServicios] = React.useState([])
     const [arrDataAll, setArrDataAll] = React.useState([])
     const [zoneOfService, setZoneofService] = React.useState(undefined)
+    const [isLoading, setIsLoading] = useState(false);
+    const [loaderBtnCotizar, setLoaderBtnCotizar] = React.useState(false);
+    const [loaderBtnAgregarPaquete, setLoaderBtnAgregarPaquete] = React.useState(false)
+    //Example: { "@number": "1","Weight": { "Value": 4  },  "Dimensions": { "Length": 2,   "Width": 2,  "Height": 2 } },
+    const [paquetesList, setPaquetesList] = React.useState([{ "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }])
+    const [mostrarLimitePaquetes, setMostrarLimitePaquetes] = React.useState(false)
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
+        if (event.target.name == "originZip" && event.target.value.length >= 5) {
+            consultaZipCodes(event.target.value, "origen")
+        } else if (event.target.name == "destinyZip" && event.target.value.length >= 5) {
+            // consultaZipCodes(event.target.value, "destino")
+        } else {
+            setDatos({
+                ...datos,
+                [event.target.name]: event.target.value
+            })
+        }
         setDatos({
             ...datos,
             [event.target.name]: event.target.value
         })
     }
 
+    const handleDatosPaquetesChange = (event, indice) => {
+        var arrAux = paquetesList
+        console.log("event.target.name", event.target.name)
+        switch (event.target.name) {
+            case 'weight':
+                arrAux[indice]['Weight']['Value'] = event.target.value;
+                break;
+            case 'height':
+                arrAux[indice]['Dimensions']['Height'] = event.target.value;
+                break;
+            case 'width':
+                arrAux[indice]['Dimensions']['Width'] = event.target.value;
+                break;
+            case 'lenght':
+                arrAux[indice]['Dimensions']['Length'] = event.target.value;
+                break;
+        }
+        arrAux[indice]['@number'] = indice
+        setPaquetesList(arrAux)
+        console.log("los paquetes... ", paquetesList)
+    }
+
+    const agregarPaqueteVacio = () => {
+        setLoaderBtnAgregarPaquete(true);
+        if (paquetesList.length <= 4) {
+            setPaquetesList([
+                ...paquetesList,
+                { "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }
+            ])
+        } else {
+            setMostrarLimitePaquetes(true)
+        }
+        setLoaderBtnAgregarPaquete(false);
+    }
     //API Consulta
     const consultaAPI = (event) => {
+        // setIsLoading(true);
+        setLoaderBtnCotizar(true)
         event.preventDefault()
         var dataString = "https://quickpack-back-al2vij23ta-uc.a.run.app/rateRequest"
             + "?AA01=" + datos.shipmentDate + "T12:00:00+GMT+0100"
@@ -201,11 +257,8 @@ export default function Cotizaciones() {
             + "&CC01=" + datos.destinyCity
             + "&CC02=" + datos.destinyZip
             + "&CC03=" + datos.destinyCC
-            + "&DD01=" + datos.weight
-            + "&DD02=" + datos.longitude
-            + "&DD03=" + datos.width
-            + "&DD04=" + datos.height
             + "&EE01=" + datos.insurance
+            + "&FF01=" + JSON.stringify(paquetesList)
 
         var dataZoneString = "https://quickpack-back-al2vij23ta-uc.a.run.app/getZoneRequest"
             + "?AA01=" + datos.originZip
@@ -214,7 +267,9 @@ export default function Cotizaciones() {
         fetch(dataString, {
             method: 'GET',
             headers: {
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'Accept': 'application/json',
+                'Access-Control-Allow-Origin': 'http://localhost:3000'
             }
         })
             .then(response => {
@@ -296,6 +351,9 @@ export default function Cotizaciones() {
                 var objDataParsedAux = JSON.parse(data)
                 setArrServicios(data)
                 setArrDataAll(objDataParsedAux.RateResponse.Provider[0].Service)
+                setLoaderBtnCotizar(false)
+
+                // setIsLoading(false);
                 // return data
             })
             .catch((error) => {
@@ -303,9 +361,46 @@ export default function Cotizaciones() {
             })
     }
 
-    ///Tabs de detalle producto
-    const handleTabChange = (event, newValue) => {
-        setTab(newValue);
+    ///API Zipcodes
+    const consultaZipCodes = (zipCode, ubicacion) => {
+        // setIsLoading(true)
+        setLoaderBtnCotizar(true)
+        var apiURLOwn = "https://quickpack-back-al2vij23ta-uc.a.run.app/getCitybyZipCode"
+            + "zipCode" + zipCode
+        fetch(apiURLOwn, {
+            method: 'GET',
+            headers: {
+               'Access-Control-Allow-Origin': '*',
+                'Accept': 'application/json',
+                'Access-Control-Allow-Origin': 'http://localhost:3000'
+            }
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                console.log("Data de zip:", data)
+                if (ubicacion == "origen") {
+                    setDatos({
+                        ...datos,
+                        "originCity": data.results.formatted_address,
+                        "originZip": data.codigo_postal
+                    })
+                    // setIsLoading(false)
+                    setLoaderBtnCotizar(false)
+
+                } else if (ubicacion == "destino") {
+                    setDatos({
+                        ...datos,
+                        "destinyCity": data.results.formatted_address,
+                        "destinyZip": data.codigo_postal
+                    })
+                    // setIsLoading(false)
+                    setLoaderBtnCotizar(false)
+
+                }
+
+            })
     }
     const classes = makeStyles((theme) => ({
         root: {
@@ -325,57 +420,65 @@ export default function Cotizaciones() {
 
     return (
         <>
+            {isLoading ? <LoadingSpinner /> : <></>}
             <div className="bg-azul">
                 <div>
                     <form >
-
-                        <div className="title-cliente">Información de envio
-                        </div>
-
+                        <Stack>
+                            <div className="title-cliente">Información de envio
+                            </div>
+                            <Box sx={{ color: "#33FFD4", marginLeft: "25%" }}>El nombre del municipio se autocompleta al llenar el codigo postal</Box>
+                        </Stack>
                         <label>
                             <input type="date" name="shipmentDate" className="inputs" onChange={handelDatosChanges} placeholder="Fecha de envio" />
                         </label>
 
                         <label>
-                            <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad origen" />
+                            <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} value={datos.originCity != undefined ? datos.originCity : undefined} placeholder="Ciudad origen" />
                         </label>
                         <label>
                             <input type="text" name="originZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal origen" />
                         </label>
                         <br />
                         <label>
-                            <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad destino" />
+                            <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} value={datos.destinyCity != undefined ? datos.destinyCity : undefined} placeholder="Ciudad destino" />
                         </label>
                         <label>
                             <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
                         </label>
-
-
-                        <div className="title-cliente">Asegurar envio
-                        </div>
+                        <div className="title-cliente">Asegurar envio </div>
 
                         <label>
                             <input type="text" name="insurance" className="inputs" onChange={handelDatosChanges} placeholder="valor de envio" />
                         </label>
 
-                        <div className="title-cliente">Paquete
-                        </div>
-                        {/*  */}
-                        <div className={classes.root} >
-                            <div>
+                        <div className="title-cliente">Paquete(s) </div>
+                        <br />
+                        <Box>
+                            <Stack direction="column" spacing={2}>
+                                <Stack direction="column" justifyContent="center" alignItems="center">
+                                    {paquetesList.map((cadaPaquete, idx) => (
+                                        <Stack key={"paquete-" + idx} direction="row" justifyContent="center" alignItems="center">
+                                            <Box sx={{ color: "#33FFD4", fontSize: "1.5rem" }}>#{idx + 1}&nbsp;</Box>
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Peso" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} name="height" label="Alto" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} name="width" label="Ancho" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} name="lenght" label="Profundidad" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} id="outlined-basic" label="Referencia" variant="outlined" />
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} id="outlined-basic" label="Descripcion paquete" variant="outlined" />
+                                        </Stack>
+                                    ))}
+                                    {mostrarLimitePaquetes == true ? <Box sx={{ color: "red", fontSize: "1.5rem" }}>Se alcanzo el limite de paquetes</Box> : <></>}
+                                </Stack>
+                                <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
+                                    <LoadingButton loading={loaderBtnAgregarPaquete} variant="outlined"><span className="material-icons" onClick={() => { agregarPaqueteVacio() }}>playlist_add</span></LoadingButton>
+                                    <LoadingButton loading={loaderBtnCotizar} onClick={consultaAPI} variant="contained">Cotizar</LoadingButton>
+                                </Stack>
 
-                                <TextField sx={{ backgroundColor: "white" }} name="quantity" label="Cantidad" variant="outlined" onChange={handelDatosChanges} />
-                                <TextField sx={{ backgroundColor: "white" }} name="weight" label="Peso" variant="outlined" onChange={handelDatosChanges} />
-                                <TextField sx={{ backgroundColor: "white" }} name="height" label="Alto" variant="outlined" onChange={handelDatosChanges} />
-                                <TextField sx={{ backgroundColor: "white" }} name="width" label="Ancho" variant="outlined" onChange={handelDatosChanges} />
-                                <TextField sx={{ backgroundColor: "white" }} name="longitude" label="Profundidad" variant="outlined" onChange={handelDatosChanges} />
-                                <TextField sx={{ backgroundColor: "white" }} id="outlined-basic" label="Referencia" variant="outlined" onChange={handelDatosChanges} />
-                                <TextField sx={{ backgroundColor: "white" }} id="outlined-basic" label="Descripcion paquete" variant="outlined" onChange={handelDatosChanges} />
-                            </div>
-                        </div>
-                        <Stack justifyContent="center" spacing={2} direction="columm">
-                            <Button onClick={consultaAPI} variant="contained">Cotizar</Button>
-                        </Stack>
+                            </Stack>
+
+
+                        </Box>
 
                     </form>
 
@@ -388,7 +491,9 @@ export default function Cotizaciones() {
                                 <div>Error: {String(errorMsg)}</div>
                                 :
                                 <>
-                                    <Box sx={{fontSize:"20px", fontWeight:"700", textAlign:"center"}}>Zona de servicio {zoneOfService}</Box >
+                                    <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>Zona de servicio
+                                        <Box sx={{ color: "purple" }}>{zoneOfService}</Box></Box >
+                                    <Divider />
                                     {arrDataAll.map(each => (
                                         renderSwitch(each,)
                                     ))}
