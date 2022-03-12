@@ -3,14 +3,9 @@ import { makeStyles } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { Stack, Divider, TextField, Dialog, DialogTitle, Button, Checkbox } from '@mui/material'
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import Button from '@mui/material/Button';
 import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
@@ -143,7 +138,6 @@ function generarArrNuevosPrecios(arrApi, objBd, cantKgs, idxZona) {
                         const subTotalCharge = { 'ChargeType': 'SubTotal', 'ChargeAmount': 0 }
 
                         cadaServicio['Charges']['Charge'].forEach(cadaSubCargo => {
-                            console.log('Montos a sumar', Number(cadaSubCargo['ChargeAmount']))
                             //subTotalCharge.ChargeAmount = parseFloat(Number(cadaServicio['TotalNet'].Amount) + Number(cadaSubCargo['ChargeAmount'])).toFixed(2)
                             subTotalCharge.ChargeAmount += Number(cadaSubCargo['ChargeAmount']);
                         })
@@ -192,12 +186,13 @@ export default function Cotizaciones() {
     //Example: { "@number": "1","Weight": { "Value": 4  },  "Dimensions": { "Length": 2,   "Width": 2,  "Height": 2 } },
     const [paquetesList, setPaquetesList] = React.useState([{ "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }])
     const [mostrarLimitePaquetes, setMostrarLimitePaquetes] = React.useState(false)
+    const [mostrarAsegurarEnvio, setMostrarAsegurarEnvio] = React.useState(false)
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
         if (event.target.name == "originZip" && event.target.value.length >= 5) {
             consultaZipCodes(event.target.value, "origen")
         } else if (event.target.name == "destinyZip" && event.target.value.length >= 5) {
-            // consultaZipCodes(event.target.value, "destino")
+            consultaZipCodes(event.target.value, "destino")
         } else {
             setDatos({
                 ...datos,
@@ -212,7 +207,6 @@ export default function Cotizaciones() {
 
     const handleDatosPaquetesChange = (event, indice) => {
         var arrAux = paquetesList
-        console.log("event.target.name", event.target.name)
         switch (event.target.name) {
             case 'weight':
                 arrAux[indice]['Weight']['Value'] = event.target.value;
@@ -229,7 +223,6 @@ export default function Cotizaciones() {
         }
         arrAux[indice]['@number'] = indice
         setPaquetesList(arrAux)
-        console.log("los paquetes... ", paquetesList)
     }
 
     const agregarPaqueteVacio = () => {
@@ -343,7 +336,7 @@ export default function Cotizaciones() {
                     userCreador: localStorage.getItem("userName"),
                     userCreadorId: localStorage.getItem("Id")
                 }).then(response => {
-                    console.log("Response firestore", response)
+                    var respuesta = response;
                 }).catch(error => {
                     console.log("Error:", error)
                 })
@@ -366,11 +359,11 @@ export default function Cotizaciones() {
         // setIsLoading(true)
         setLoaderBtnCotizar(true)
         var apiURLOwn = "https://quickpack-back-al2vij23ta-uc.a.run.app/getCitybyZipCode"
-            + "zipCode" + zipCode
+            + "?zipCode=" + zipCode
         fetch(apiURLOwn, {
             method: 'GET',
             headers: {
-               'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*',
                 'Accept': 'application/json',
                 'Access-Control-Allow-Origin': 'http://localhost:3000'
             }
@@ -379,21 +372,22 @@ export default function Cotizaciones() {
                 return response.json()
             })
             .then(data => {
-                console.log("Data de zip:", data)
+                var dataParsed = JSON.parse(data)
                 if (ubicacion == "origen") {
                     setDatos({
                         ...datos,
-                        "originCity": data.results.formatted_address,
-                        "originZip": data.codigo_postal
+                        "originCity": dataParsed.results[0].formatted_address,
+                        "originZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)
                     setLoaderBtnCotizar(false)
 
-                } else if (ubicacion == "destino") {
+                }
+                else if (ubicacion == "destino") {
                     setDatos({
                         ...datos,
-                        "destinyCity": data.results.formatted_address,
-                        "destinyZip": data.codigo_postal
+                        "destinyCity": dataParsed.results[0].formatted_address,
+                        "destinyZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)
                     setLoaderBtnCotizar(false)
@@ -402,12 +396,9 @@ export default function Cotizaciones() {
 
             })
     }
-    const classes = makeStyles((theme) => ({
-        root: {
-            flexGrow: 1,
-            backgroundColor: theme.palette.background.paper,
-        }
-    }));
+    const handleChangeMostrarAsegurar = () => {
+        setMostrarAsegurarEnvio(!mostrarAsegurarEnvio)
+    }
 
     // Dialog Stuff
     const handleClickOpen = () => {
@@ -446,11 +437,21 @@ export default function Cotizaciones() {
                         <label>
                             <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
                         </label>
-                        <div className="title-cliente">Asegurar envio </div>
 
-                        <label>
-                            <input type="text" name="insurance" className="inputs" onChange={handelDatosChanges} placeholder="valor de envio" />
-                        </label>
+                        <div className="title-cliente">Asegurar envio </div>
+                        <Stack direction="row">
+                            {mostrarAsegurarEnvio == true ? <TextField sx={{ backgroundColor: "white" }} name="insurance" onChange={handelDatosChanges} label="valor de envio" /> : <></>}
+                            <Box>
+                                <Checkbox
+                                    checked={mostrarAsegurarEnvio}
+                                    onChange={handleChangeMostrarAsegurar}
+                                    inputProps={{ 'aria-label': 'controlled' }}
+                                />
+                                <Box>¿Desea asegurar el envio?</Box>
+                            </Box>
+
+                        </Stack>
+
 
                         <div className="title-cliente">Paquete(s) </div>
                         <br />
