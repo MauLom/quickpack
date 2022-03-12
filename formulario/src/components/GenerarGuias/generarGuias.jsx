@@ -412,7 +412,7 @@ export default function GenerarGuias() {
                     {/*  */}
                     <div className="title-cliente">Paquete</div>
 
-                    <div className={classes.root} className="pieza">
+                    <div className={classes.root} >
                         <div>
                             {/* <AppBar position="static">
                                 <Tabs value={tabIdx} onChange={handleTabChange} aria-label="simple tabs example" className="principal">
