@@ -440,14 +440,18 @@ export default function Cotizaciones() {
 
                         <div className="title-cliente">Asegurar envio </div>
                         <Stack direction="row">
-                            {mostrarAsegurarEnvio == true ? <TextField sx={{ backgroundColor: "white" }} name="insurance" onChange={handelDatosChanges} label="valor de envio" /> : <></>}
-                            <Box>
-                                <Checkbox
-                                    checked={mostrarAsegurarEnvio}
-                                    onChange={handleChangeMostrarAsegurar}
-                                    inputProps={{ 'aria-label': 'controlled' }}
-                                />
-                                <Box>¿Desea asegurar el envio?</Box>
+
+                            <Box sx={{ margin: "0 0 0 5%" }}>
+                                <Stack direction="row" justifyContent="center" alignItems="center">
+                                    <TextField sx={mostrarAsegurarEnvio? { backgroundColor: "white" } : {visibility: "hidden"}} name="insurance" onChange={handelDatosChanges} label="valor de envio" />
+                                    <Checkbox
+                                        checked={mostrarAsegurarEnvio}
+                                        onChange={handleChangeMostrarAsegurar}
+                                        inputProps={{ 'aria-label': 'controlled' }}
+                                    />
+                                    <Box sx={{color:"#33FFD4"}}>¿Desea asegurar el envio?</Box>
+                                </Stack>
+
                             </Box>
 
                         </Stack>
@@ -484,7 +488,7 @@ export default function Cotizaciones() {
                     </form>
 
                     <div>
-                        <Dialog onClose={handleClose} open={open} >
+                        <Dialog onClose={handleClose} open={open} sx={{width:"50%", height:"70%"}} >
                             <DialogTitle>Cotizacion:</DialogTitle>
 
                             <Divider />

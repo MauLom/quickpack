@@ -16,6 +16,9 @@ import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
 import { Stack } from '@material-ui/core';
 
+import LoadingButton from '@mui/lab/LoadingButton';
+
+
 firebaseApp()
 const db = firestore.getFirestore();
 function TabPanel(props) {
@@ -195,7 +198,6 @@ export default function GenerarGuias() {
                 break;
         }
     }
-       
 
     const [tabIdx, setTab] = useState(0);
     const [open, setOpen] = React.useState(false);
@@ -206,6 +208,7 @@ export default function GenerarGuias() {
     const [loaderBtnAgregarPaquete, setLoaderBtnAgregarPaquete] = React.useState(false)
     const [mostrarLimitePaquetes, setMostrarLimitePaquetes] = React.useState(false)
     const [paquetesList, setPaquetesList] = React.useState([{ "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }])
+    const [loaderBtnGuia, setLoaderBtnGuia] = React.useState(false)
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
         setDatos({
@@ -341,7 +344,35 @@ export default function GenerarGuias() {
 
     return (
         <>
+            <Box>
+                <Stack>
+                    {/* Informacion Origen */}
+                    <Stack>
+                        {/* Persona */}
+                        <Box>Quien recibe</Box>
+                        {/* Direccion */}
+                        <Box>Donde recibe</Box>
+                    </Stack>
+
+                    {/* Informacion Destino */}
+                    <Stack>
+                        {/* Persona */}
+                        <Box>Quien envia</Box>
+                        {/* Direccion */}
+                        <Box>De donde envia</Box>
+                    </Stack>
+
+                    {/* Informacion Paquete */}
+                    <Stack>
+                        Paquetes
+                    </Stack>
+                </Stack>
+            </Box>
+
             <div className="bg-azul-guias">
+
+                <TextField></TextField>
+
                 <form >
 
                     <div className="title-cliente">Asegurar envio</div>
@@ -410,7 +441,7 @@ export default function GenerarGuias() {
 
 
                     {/*  */}
-                    <div className="title-cliente">Paquete</div>
+                    <div className="title-cliente">Paquete(s)</div>
 
                     <div className={classes.root} >
                         <div>
@@ -424,19 +455,19 @@ export default function GenerarGuias() {
                                     <Tab label="6 Referencia" {...a11yProps(5)} />
                                 </Tabs>
                             </AppBar> */}
-                             {paquetesList.map((cadaPaquete, idx) => (
-                            <Stack direction="row" spacing={2} justifyContent="center" >
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="cantidad" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Peso" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Alto" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Ancho" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Profundiad" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Referencia" variant="outlined" onChange={(e) => { handleTabChange(e ) }} />
-                            </Stack>
-                             ))}
-                            <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
-                                    <Button variant="outlined"><span className="material-icons" onClick={() => { agregarPaqueteVacio() }}>playlist_add</span></Button>
+                            {paquetesList.map((cadaPaquete, idx) => (
+                                <Stack direction="row" spacing={2} justifyContent="center" >
+                                    <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="cantidad" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                    <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Peso" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                    <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Alto" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                    <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Ancho" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                    <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Profundiad" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
+                                    <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Referencia" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
                                 </Stack>
+                            ))}
+                            <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
+                                <Button variant="outlined"><span className="material-icons" onClick={() => { agregarPaqueteVacio() }}>playlist_add</span></Button>
+                            </Stack>
                             {/* <TabPanel value={tabIdx} index={0} >
                                 <div className="display-contentTabPanel">
                                     <div>Cantidad</div>
@@ -481,18 +512,11 @@ export default function GenerarGuias() {
                                     <div>cm.</div>
                                 </div>
                             </TabPanel>
-                            {/* <TabPanel value={tabIdx} index={5}>
-                                <div className="display-contentTabPanel">
-                                    <div>ingrese una referencia</div>
-                                    <label>
-                                        <input type="text" name="ref" onChange={handelDatosChanges} />
-                                    </label>
-                                </div>
-                            </TabPanel> */}
                         </div>
                     </div>
                     <div className="boton">
-                        <button onClick={consultaAPI} className="boton-color"> Generar Guia </button>
+                        <LoadingButton loading={loaderBtnGuia} onClick={consultaAPI} variant="contained">Generar Guia</LoadingButton>
+                        {/* <button onClick={consultaAPI} className="boton-color"> Generar Guia </button> */}
                     </div>
                 </form>
 
