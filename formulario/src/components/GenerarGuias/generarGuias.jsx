@@ -7,7 +7,13 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepContent from '@mui/material/StepContent';
+import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+
 
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
@@ -15,6 +21,7 @@ import Dialog from '@mui/material/Dialog';
 import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
 import { Stack } from '@material-ui/core';
+import FormPersonalDetails from '../FormularioGuiaDestino/formDestino';
 
 firebaseApp()
 const db = firestore.getFirestore();
@@ -341,162 +348,9 @@ export default function GenerarGuias() {
 
     return (
         <>
-            <div className="bg-azul-guias">
-                <form >
+        
+        <FormPersonalDetails/>
 
-                    <div className="title-cliente">Asegurar envio</div>
-                    <label>
-                        <input type="text" name="insurance" className="inputs" onChange={handelDatosChanges} placeholder="valor de envio" />
-                    </label>
-                    <label>
-                        <input type="date" name="shipmentDate" className="inputs" onChange={handelDatosChanges} placeholder="Fecha de envio" />
-                    </label>
-                    <div className="title-cliente">Información de origen</div>
-                    <label>
-                        <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad origen" />
-                    </label>
-                    <label>
-                        <input type="text" name="originZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal origen" />
-                    </label>
-                    <label>
-                        <input type="text" name="originCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais origen" />
-                    </label>
-                    <label>
-                        <input type="text" name="originStreet" className="inputs" onChange={handelDatosChanges} placeholder="Entre calles" />
-                    </label>
-                    <label>
-                        <input type="text" name="originPerson" className="inputs" onChange={handelDatosChanges} placeholder="Nombre " />
-                    </label>
-                    <label>
-                        <input type="text" name="originCompany" className="inputs" onChange={handelDatosChanges} placeholder="Nombre compañia" />
-                    </label>
-                    <label>
-                        <input type="text" name="originPhone" className="inputs" onChange={handelDatosChanges} placeholder="Numero celular" />
-                    </label>
-                    <label>
-                        <input type="text" name="originEmail" className="inputs" onChange={handelDatosChanges} placeholder="Correo" />
-                    </label>
-
-                    <br />
-
-                    <div className="title-cliente">Informacion de destino</div>
-
-                    <label>
-                        <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad destino" />
-                    </label>
-                    <label>
-                        <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
-                    </label>
-                    <label>
-                        <input type="text" name="destinyCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais destino" />
-                    </label>
-
-
-                    <label>
-                        <input type="text" name="destinyStreet" className="inputs" onChange={handelDatosChanges} placeholder="Entre calles" />
-                    </label>
-                    <label>
-                        <input type="text" name="destinyPerson" className="inputs" onChange={handelDatosChanges} placeholder="Nombre" />
-                    </label>
-                    <label>
-                        <input type="text" name="destinyCompany" className="inputs" onChange={handelDatosChanges} placeholder="Nombre compañia" />
-                    </label>
-                    <label>
-                        <input type="text" name="destinyPhone" className="inputs" onChange={handelDatosChanges} placeholder="Numero celular" />
-                    </label>
-                    <label>
-                        <input type="text" name="destinyEmail" className="inputs" onChange={handelDatosChanges} placeholder="Correo" />
-                    </label>
-
-
-                    {/*  */}
-                    <div className="title-cliente">Paquete</div>
-
-                    <div className={classes.root} >
-                        <div>
-                            {/* <AppBar position="static">
-                                <Tabs value={tabIdx} onChange={handleTabChange} aria-label="simple tabs example" className="principal">
-                                    <Tab label="1 cantidad" {...a11yProps(0)} />
-                                    <Tab label="2 Peso" {...a11yProps(1)} />
-                                    <Tab label="3 Alto" {...a11yProps(2)} />
-                                    <Tab label="4 Ancho" {...a11yProps(3)} />
-                                    <Tab label="5 Profundidad" {...a11yProps(4)} />
-                                    <Tab label="6 Referencia" {...a11yProps(5)} />
-                                </Tabs>
-                            </AppBar> */}
-                             {paquetesList.map((cadaPaquete, idx) => (
-                            <Stack direction="row" spacing={2} justifyContent="center" >
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="cantidad" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Peso" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Alto" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Ancho" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Profundiad" variant="outlined" onChange={(e) => { handleTabChange(e) }} />
-                                <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Referencia" variant="outlined" onChange={(e) => { handleTabChange(e ) }} />
-                            </Stack>
-                             ))}
-                            <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
-                                    <Button variant="outlined"><span className="material-icons" onClick={() => { agregarPaqueteVacio() }}>playlist_add</span></Button>
-                                </Stack>
-                            {/* <TabPanel value={tabIdx} index={0} >
-                                <div className="display-contentTabPanel">
-                                    <div>Cantidad</div>
-                                    <label>
-                                        <input type="number" name="quantity" className="selector" onChange={handelDatosChanges} />
-                                    </label>
-                                </div>
-                            </TabPanel> */}
-                            <TabPanel value={tabIdx} index={1}>
-                                <div className="display-contentTabPanel">
-                                    <div>Indique el peso</div>
-                                    <label>
-                                        <input type="number" name="weight" className="selector" onChange={handelDatosChanges} />
-                                    </label>
-                                    <div>Kg.</div>
-                                </div>
-                            </TabPanel>
-                            <TabPanel value={tabIdx} index={2}>
-                                <div className="display-contentTabPanel">
-                                    <div>Indique la altura</div>
-                                    <label>
-                                        <input type="number" name="height" className="selector" onChange={handelDatosChanges} />
-                                    </label>
-                                    <div>cm.</div>
-                                </div>
-                            </TabPanel>
-                            <TabPanel value={tabIdx} index={3}>
-                                <div className="display-contentTabPanel">
-                                    <div>Indique el ancho</div>
-                                    <label>
-                                        <input type="number" name="width" className="selector" onChange={handelDatosChanges} />
-                                    </label>
-                                    <div>cm.</div>
-                                </div>
-                            </TabPanel>
-                            <TabPanel value={tabIdx} index={4}>
-                                <div className="display-contentTabPanel">
-                                    <div>Seleccione la profundidad</div>
-                                    <label>
-                                        <input type="number" name="longitude" className="selector" onChange={handelDatosChanges} />
-                                    </label>
-                                    <div>cm.</div>
-                                </div>
-                            </TabPanel>
-                            {/* <TabPanel value={tabIdx} index={5}>
-                                <div className="display-contentTabPanel">
-                                    <div>ingrese una referencia</div>
-                                    <label>
-                                        <input type="text" name="ref" onChange={handelDatosChanges} />
-                                    </label>
-                                </div>
-                            </TabPanel> */}
-                        </div>
-                    </div>
-                    <div className="boton">
-                        <button onClick={consultaAPI} className="boton-color"> Generar Guia </button>
-                    </div>
-                </form>
-
-            </div>
         </>
     )
 }
