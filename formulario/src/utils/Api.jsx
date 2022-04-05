@@ -66,7 +66,7 @@ export default {
     instance({
       method: "POST",
       headers: { 'Accept': 'application/pdf' },
-      url: "https://api.labelary.com/v1/printers/8dpmm/labels/4x8/0/",
+      url: "https://api.labelary.com/v1/printers/8dpmm/labels/4x8/",
       data: zpl,
       responseType: "blob",
     }),

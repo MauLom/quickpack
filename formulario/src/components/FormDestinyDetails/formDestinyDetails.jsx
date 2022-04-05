@@ -49,13 +49,18 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
     Api.getCityDataBasedOnZipCode(zipCode)
       .then(response => {
         var dataParsed = JSON.parse(response.data)
+        let stringAddress = dataParsed.results[0].formatted_address
+        let primerIndice = stringAddress.indexOf(",")
+        let partirDesde = Number.parseInt(primerIndice) + 1
+        let segundoIndice = stringAddress.indexOf(",", partirDesde)
+        let stringCortada = stringAddress.substring(primerIndice, segundoIndice)
         setDataDestiny({
           ...dataDestiny,
-          "cityDestiny": dataParsed.results[0].formatted_address,
+          "cityDestiny": stringCortada,
           "zipCodeDestiny": dataParsed.results[0].address_components[0].long_name
         })
       })
-    
+
 
   }
   return (

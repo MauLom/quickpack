@@ -107,7 +107,7 @@ export default function Cotizaciones() {
             let auxobj = []
             console.log("paquetes: ", paquetesList)
             paquetesList.forEach(cadaPaquete => {
-                let paqueteToGuias = { "@number":0, "Weight":0, "Dimensions": {} }
+                let paqueteToGuias = { "@number": 0, "Weight": 0, "Dimensions": {} }
                 paqueteToGuias['@number'] = cadaPaquete['@number']
                 paqueteToGuias.Weight = cadaPaquete['Weight']['Value']
                 paqueteToGuias.Dimensions['Height'] = cadaPaquete['Dimensions']['Height']
@@ -432,11 +432,19 @@ export default function Cotizaciones() {
         Api.getCityDataBasedOnZipCode(zipCode)
 
             .then(response => {
+
+                var dataParsed = JSON.parse(response.data)
+                let stringAddress = dataParsed.results[0].formatted_address
+                let primerIndice = stringAddress.indexOf(",")
+                let partirDesde = Number.parseInt(primerIndice) + 1
+                let segundoIndice = stringAddress.indexOf(",", partirDesde)
+                let stringCortada = stringAddress.substring(primerIndice, segundoIndice)
+
                 var dataParsed = JSON.parse(response.data)
                 if (ubicacion == "origen") {
                     setDatos({
                         ...datos,
-                        "originCity": dataParsed.results[0].formatted_address,
+                        "originCity": stringCortada,
                         "originZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)
@@ -445,7 +453,7 @@ export default function Cotizaciones() {
                 else if (ubicacion == "destino") {
                     setDatos({
                         ...datos,
-                        "destinyCity": dataParsed.results[0].formatted_address,
+                        "destinyCity": stringCortada,
                         "destinyZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)
@@ -568,7 +576,7 @@ export default function Cotizaciones() {
                             }
                         </Dialog>
                         <div>
-                 
+
 
                         </div>
                     </div>

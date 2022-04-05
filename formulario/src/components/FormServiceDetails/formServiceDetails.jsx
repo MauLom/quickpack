@@ -24,9 +24,7 @@ export default function FormServiceDetails({ changeLoading }) {
   const [numeroDeGuia, setNumeroDeGuia] = React.useState('')
   const [guiaGenerada, setGuiaGenerada] = React.useState(false)
   const [ZPLstring, setZPLString] = React.useState("")
-  React.useState(() => {
-    setDataGuia(JSON.parse(sessionStorage.getItem("generacionGuia")))
-  })
+
 
   const servicioOptions = [
     { value: 'I', label: 'Servicio tipo I' },
@@ -37,6 +35,7 @@ export default function FormServiceDetails({ changeLoading }) {
   ]
 
   React.useState(() => {
+    setDataGuia(JSON.parse(sessionStorage.getItem("generacionGuia")))
     var objAux = JSON.parse(sessionStorage.getItem("generacionGuia"))
     if (objAux.serviceType != null) {
       function findCoincidence(option) {
@@ -78,6 +77,7 @@ export default function FormServiceDetails({ changeLoading }) {
 
   }
   const handleConvertZPLToIMG = () => {
+
     Api.getImageFroZPL(ZPLstring)
       .then(response =>
         // console.log("response", response)
