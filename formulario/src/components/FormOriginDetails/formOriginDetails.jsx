@@ -13,11 +13,11 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
     mailOrigin: '',
     streetLinesDetiny: '',
     cityOrigin: '',
-    zipCodeOrigin: ''
+    zipCodeOrigin: '',
   })
-  const [direccionLinea1, setDireccionLinea1] = React.useState("")
-  const [direccionLinea2, setDireccionLinea2] = React.useState("")
-  const [direccionLinea3, setDireccionLinea3] = React.useState("")
+  const [direccionLinea1, setDireccionLinea1] = React.useState('')
+  const [direccionLinea2, setDireccionLinea2] = React.useState('')
+  const [direccionLinea3, setDireccionLinea3] = React.useState('')
 
 
   React.useState(() => {
@@ -77,7 +77,15 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
 
       })
   }
-
+  const handleChangeDireccionLinea1 = (event) => {
+    setDireccionLinea1(event.target.value)
+  }
+  const handleChangeDireccionLinea2 = (event) => {
+    setDireccionLinea2(event.target.value)
+  }
+  const handleChangeDireccionLinea3 = (event) => {
+    setDireccionLinea3(event.target.value)
+  }
   return (
     <>
       <Box sx={{ backgroundColor: "white", textAlign: "center", margin: "5% 5% 5% 5%" }}>
@@ -95,10 +103,10 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.mailOrigin} placeholder="Correo" label="Correo de Origen" margin="normal" name="mailOrigin" />
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.zipCodeOrigin} placeholder="Codigo Postal" label="Codigo postal de Origen" margin="normal" name="zipCodeOrigin" />
 
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.streetLinesDetiny} placeholder="Entre Calles" label="Entre Calles del Origen" margin="normal" name="streetLinesDetiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.streetLinesDetiny} placeholder="Direccion 1 (Calle y numero)" label="Calle y numero" margin="normal" name="streetLinesDetiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.streetLinesDetiny} placeholder="Direccion 2 (Colonia)" label="Colonia" margin="normal" name="streetLinesDetiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.streetLinesDetiny} placeholder="Direccion 3 (Referencia)" label="Referencia" margin="normal" name="streetLinesDetiny" />
+            {/* <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.streetLinesDetiny} placeholder="Entre Calles" label="Entre Calles del Origen" margin="normal" name="streetLinesDetiny" /> */}
+            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea1} value={direccionLinea1} placeholder="Direccion 1 (Calle y numero)" label="Calle y numero de Origen" margin="normal" name="streetAndNumberOrigin" />
+            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea2} value={direccionLinea2} placeholder="Direccion 2 (Colonia)" label="Colonia de Origen" margin="normal" name="suburbOrigin" />
+            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea3} value={direccionLinea3} placeholder="Direccion 3 (Referencia)" label="Referencia de Origen" margin="normal" name="referenceOrigin" />
 
 
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.cityOrigin} placeholder="Ciudad Origen" label="Ciudad de Origen" margin="normal" name="cityOrigin" />
