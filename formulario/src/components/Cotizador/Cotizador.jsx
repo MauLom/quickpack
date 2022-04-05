@@ -434,17 +434,33 @@ export default function Cotizaciones() {
             .then(response => {
 
                 var dataParsed = JSON.parse(response.data)
-                let stringAddress = dataParsed.results[0].formatted_address
-                let primerIndice = stringAddress.indexOf(",")
-                let partirDesde = Number.parseInt(primerIndice) + 1
-                let segundoIndice = stringAddress.indexOf(",", partirDesde)
-                let stringCortada = stringAddress.substring(primerIndice, segundoIndice)
+
+                // let stringAddress = dataParsed.results[0].formatted_address
+                // let primerIndice = stringAddress.indexOf(",")
+                // let partirDesde = Number.parseInt(primerIndice) + 1
+                // let segundoIndice = stringAddress.indexOf(",", partirDesde)
+                // let stringCortadaConCP = stringAddress.substring(primerIndice, segundoIndice)
+
+
+                // let stringAddres = stringCortadaConCP
+                // let tercerIndice = stringAddres.indexOf(" , ")
+                // let partiDesde = Number.parseInt(tercerIndice) + 1
+                // let cuartoIndice = stringAddres.indexOf(" , ", partiDesde)
+                // let stringCortarSinCp = stringAddres.substring(tercerIndice, cuartoIndice)
+
+                
+                let auxCadena = dataParsed.results[0].formatted_address
+                let primerIndiceComa = auxCadena.indexOf(",")
+                let auxNumerIndice = Number(primerIndiceComa) +1
+                let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
+                let indicePartida = auxNumerIndice+6
+                let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
 
                 var dataParsed = JSON.parse(response.data)
                 if (ubicacion == "origen") {
                     setDatos({
                         ...datos,
-                        "originCity": stringCortada,
+                        "originCity":  cadenaCortada,
                         "originZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)
@@ -453,7 +469,7 @@ export default function Cotizaciones() {
                 else if (ubicacion == "destino") {
                     setDatos({
                         ...datos,
-                        "destinyCity": stringCortada,
+                        "destinyCity": cadenaCortada,
                         "destinyZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)

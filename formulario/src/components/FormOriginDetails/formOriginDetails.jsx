@@ -62,16 +62,22 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
     Api.getCityDataBasedOnZipCode(zipCode)
       .then(response => {
         var dataParsed = JSON.parse(response.data)
-        let stringAddress = dataParsed.results[0].formatted_address
-        let primerIndice = stringAddress.indexOf(",")
-        let partirDesde = Number.parseInt(primerIndice) + 1
-        let segundoIndice = stringAddress.indexOf(",", partirDesde)
-        let stringCortada = stringAddress.substring(primerIndice, segundoIndice)
+        // let stringAddress = dataParsed.results[0].formatted_address
+        // let primerIndice = stringAddress.indexOf(",")
+        // let partirDesde = Number.parseInt(primerIndice) + 1
+        // let segundoIndice = stringAddress.indexOf(",", partirDesde)
+        // let stringCortada = stringAddress.substring(primerIndice, segundoIndice)
+                let auxCadena = dataParsed.results[0].formatted_address
+                let primerIndiceComa = auxCadena.indexOf(",")
+                let auxNumerIndice = Number(primerIndiceComa) +1
+                let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
+                let indicePartida = auxNumerIndice+6
+                let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
 
         var dataParsed = JSON.parse(response.data)
         setDataOrigin({
           ...dataOrigin,
-          "cityOrigin":stringCortada,
+          "cityOrigin":cadenaCortada,
           "zipCodeOrigin": dataParsed.results[0].address_components[0].long_name
         })
 
