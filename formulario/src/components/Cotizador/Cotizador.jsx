@@ -18,143 +18,20 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LoadingSpinner from '../Loader/loader';
 import './Cotizador.css';
+import Api from '../../utils/Api';
+
+
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+
 
 firebaseApp()
 const db = firestore.getFirestore();
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
 
-    return (
-        <div className="bg-white"
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box p={3}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
-
-
-function renderSwitch(param) {
-    const generarGuia = () => {
-        console.log("Funcion pendiente")
-    }
-    switch (param['@type']) {
-        case "I": case "O": case "1": case "G": case "N":
-            return (
-                <Box sx={{ backgroundColor: "#F2FAFC" }} key={param['@type']}>
-                    <Accordion>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                        >
-                            {/* <Typography><div>Zona de envio: {zona}</div></Typography> */}
-                            <Typography><b>{param['Charges']['Charge'][0]['ChargeType']}</b></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails >
-                            <Typography>
-                                {param['Charges']['Charge'].map((eachCharge, idx) => (
-                                    <>
-                                        <div key={"key-" + idx}>
-                                            <div>-{eachCharge['ChargeType']} </div>
-                                            <div>${eachCharge['ChargeAmount']} </div>
-                                        </div>
-                                    </>
-
-                                ))}
-                                <br />
-                                <div>Tiempo de entrega: {param['DeliveryTime']} </div>
-                                <div>Total:  ${param['TotalNet']['Amount']} </div>
-                            </Typography>
-                            {/* <Button variant="outlined" onClick={generarGuia}>Generar Guia</Button> */}
-
-                        </AccordionDetails>
-                    </Accordion>
-                    <Divider />
-                </Box >)
-
-    }
-}
-
-function generarArrNuevosPrecios(arrApi, objBd, cantKgs, idxZona) {
-    const zonaStr = "zone" + idxZona
-    const arrDepurada = []
-    const porcFFAereo = 0.0844
-
-    ///  (altura . ancho . profundidad) /5000 = pesoVolumetrico
-    ///  Si  peso Volumetrico > peso real,   usar peso volumetrico   para   calculo
-
-    /// Mostrar Zona en el cotizador para el  cliente
-    /// cargo por seguro...
-
-    arrApi.forEach(
-        cadaServicio => {
-            const validServices = ["I", "O", "1", "G", "N"]
-            if (validServices.indexOf(cadaServicio['@type']) >= 0) {
-                let arrParseadaBD = JSON.parse(objBd.matriz[cadaServicio['@type']][zonaStr]?.data)
-                arrParseadaBD[0].forEach((cadaKgEnMatriz, idx) => {
-                    let parsedKgOnBD = Number.parseInt(cadaKgEnMatriz.value)
-                    if (!Number.isNaN(parsedKgOnBD) && Number.parseInt(cadaKgEnMatriz.value) == cantKgs) {
-                        cadaServicio['Charges']['Charge'][0].ChargeAmount = Number(arrParseadaBD[1][idx].value)
-                        if (cadaServicio['Charges']['Charge'].length > 2) {
-                            let valoresParaSumarFF = 0
-                            cadaServicio['Charges']['Charge'].forEach(
-                                cadaCargo => {
-                                    if (cadaCargo.ChargeCode == "YY") {
-                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                        valoresParaSumarFF += cadaCargo.ChargeAmount
-                                    }
-                                    if (cadaCargo.ChargeCode == "OO") {
-                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                        valoresParaSumarFF += cadaCargo.ChargeAmount
-                                    }
-                                    if (cadaCargo.ChargeCode == "YB") {
-                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                        valoresParaSumarFF += cadaCargo.ChargeAmount
-                                    }
-                                    if (cadaCargo.ChargeCode == "FF") {
-                                        valoresParaSumarFF += Number(parseFloat(Number(arrParseadaBD[1][idx].value)).toFixed(2))
-                                        cadaCargo.ChargeAmount = Number(parseFloat(valoresParaSumarFF * porcFFAereo).toFixed(2))
-                                    }
-                                })
-                        } else {
-                            cadaServicio['Charges']['Charge'][1].ChargeAmount = parseFloat(Number(arrParseadaBD[1][idx].value) * porcFFAereo).toFixed(2)
-                        }
-                        const subTotalCharge = { 'ChargeType': 'SubTotal', 'ChargeAmount': 0 }
-
-                        cadaServicio['Charges']['Charge'].forEach(cadaSubCargo => {
-                            //subTotalCharge.ChargeAmount = parseFloat(Number(cadaServicio['TotalNet'].Amount) + Number(cadaSubCargo['ChargeAmount'])).toFixed(2)
-                            subTotalCharge.ChargeAmount += Number(cadaSubCargo['ChargeAmount']);
-                        })
-                        subTotalCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount).toFixed(2)
-                        cadaServicio['Charges']['Charge'].push(subTotalCharge)
-                        const ivaCharge = { 'ChargeType': 'IVA', 'ChargeAmount': 0 }
-                        ivaCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount * 0.16).toFixed(2)
-                        cadaServicio['Charges']['Charge'].push(ivaCharge)
-                        cadaServicio['TotalNet'].Amount = parseFloat(Number(subTotalCharge.ChargeAmount) + Number(ivaCharge.ChargeAmount)).toFixed(2);
-                        arrDepurada.push(cadaServicio)
-                    }
-                })
-            }
-
-        })
-    return arrDepurada;
-}
 export default function Cotizaciones() {
     const [datos, setDatos] = useState({
         userName: '',
@@ -187,6 +64,197 @@ export default function Cotizaciones() {
     const [paquetesList, setPaquetesList] = React.useState([{ "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }])
     const [mostrarLimitePaquetes, setMostrarLimitePaquetes] = React.useState(false)
     const [mostrarAsegurarEnvio, setMostrarAsegurarEnvio] = React.useState(false)
+
+    const [userData, setUserData] = React.useState()
+    const [porcFFAereo, setPorcFFAereo] = React.useState(0)
+    const [porcFFTerrestre, setPorcFFTerrestre] = React.useState(0)
+
+
+    React.useState(() => {
+        const q = query(collection(db, "Cuenta"), where("id", "==", localStorage.getItem("userId")))
+        getDocs(q)
+            .then(res => {
+                if (res.docs.length > 0) {
+                    res.forEach((doc) => {
+                        setUserData(doc.data())
+                    })
+                } else {
+                    console.log("Problemas Consultando API")
+                }
+            })
+            .catch(err => {
+                console.log("Problemas...")
+            });
+
+        const qFF = query(collection(db, "Valores"))
+        getDocs(qFF)
+            .then(res => {
+                res.forEach((doc) => {
+                    setPorcFFAereo(Number.parseFloat(doc.data().tipoAereo).toFixed(2))
+                    setPorcFFTerrestre(Number.parseFloat(doc.data().tipoTerrestre).toFixed(2))
+                })
+            })
+            .catch(err => {
+                console.log("error" + err);
+            });
+    }, [setUserData, setPorcFFAereo, setPorcFFTerrestre])
+
+
+    const renderSwitch = (param) => {
+
+        const generarGuia = () => {
+            console.log("llamo a generar guia")
+            let auxobj = []
+            console.log("paquetes: ", paquetesList)
+            paquetesList.forEach(cadaPaquete => {
+                let paqueteToGuias = { "@number":0, "Weight":0, "Dimensions": {} }
+                paqueteToGuias['@number'] = cadaPaquete['@number']
+                paqueteToGuias.Weight = cadaPaquete['Weight']['Value']
+                paqueteToGuias.Dimensions['Height'] = cadaPaquete['Dimensions']['Height']
+                paqueteToGuias.Dimensions['Length'] = cadaPaquete['Dimensions']['Length']
+                paqueteToGuias.Dimensions['Width'] = cadaPaquete['Dimensions']['Width']
+                auxobj.push(paqueteToGuias)
+            })
+            let objToStorage = {
+                destinyData: {
+                    cityDestiny: datos.destinyCity,
+                    zipCodeDestiny: datos.destinyZip
+                },
+                originData: {
+                    cityOrigin: datos.originCity,
+                    zipCodeOrigin: datos.originZip
+                },
+                packageData: auxobj,
+                date: datos.shipmentDate,
+                serviceType: param['@type']
+            }
+            console.log("objToStorage: ", objToStorage)
+            sessionStorage.setItem("generacionGuia", JSON.stringify(objToStorage))
+        }
+
+        switch (param['@type']) {
+            case "I": case "O": case "1": case "G": case "N":
+                return (
+                    <Box sx={{ backgroundColor: "#F2FAFC" }} key={param['@type']}>
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography><b>{param['Charges']['Charge'][0]['ChargeType']}</b></Typography>
+                            </AccordionSummary>
+                            <AccordionDetails >
+                                <Typography>
+                                    {param['Charges']['Charge'].map((eachCharge, idx) => (
+                                        <>
+                                            <div key={"key-" + idx}>
+                                                <div>-{eachCharge['ChargeType']} </div>
+                                                <div>${eachCharge['ChargeAmount']} </div>
+                                            </div>
+                                        </>
+
+                                    ))}
+                                    <br />
+                                    <div>Tiempo de entrega: {param['DeliveryTime']} </div>
+                                    <div>Total:  ${param['TotalNet']['Amount']} </div>
+                                </Typography>
+                                <a href="/user/guias">
+                                    <Button variant="outlined" onClick={() => { generarGuia() }}>Generar Guia</Button>
+                                </a>
+
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider />
+                    </Box >)
+
+        }
+    }
+
+
+    const generarArrNuevosPrecios = (arrApi, objBd, cantKgs, idxZona) => {
+        const arrDepurada = []
+        let matrizDatos = objBd['matriz']
+        arrApi.forEach(
+            cadaServicio => {
+                const validServices = ["I", "O", "1", "G", "N"]
+                if (validServices.indexOf(cadaServicio['@type']) >= 0) {
+                    let arrParseadaBD = JSON.parse(matrizDatos[cadaServicio['@type']]?.data)
+                    let precioPorKG = 0
+                    if (cantKgs > 30) {
+                        let excedentePeso = cantKgs - 30;
+                        let auxStr = arrParseadaBD[31][idxZona].value
+                        if (auxStr.includes(",")) {
+                            auxStr = auxStr.replace(",", ".")
+                        }
+                        let auxInt = auxStr != '' ? Number.parseFloat(auxStr).toFixed(2) : 0
+                        precioPorKG = !Number.isNaN(auxInt) ? auxInt : 0;
+                        let valorDe30KG = arrParseadaBD[30][idxZona].value
+                        let costoExcedente = precioPorKG * excedentePeso
+                        let sumaValores = Number.parseFloat(valorDe30KG) + Number.parseFloat(costoExcedente)
+                        precioPorKG = Number.parseFloat(sumaValores).toFixed(2);
+                    } else {
+                        precioPorKG = arrParseadaBD[cantKgs][idxZona].value
+                    }
+                    if (precioPorKG.toString().includes(",")) {
+                        precioPorKG = precioPorKG.replace(",", ".")
+                    }
+                    cadaServicio['Charges']['Charge'][0].ChargeAmount = Number(precioPorKG)
+                    if (cadaServicio['Charges']['Charge'].length > 2) {
+                        let valoresParaSumarFF = 0
+                        cadaServicio['Charges']['Charge'].forEach(
+                            cadaCargo => {
+                                if (cadaCargo.ChargeCode == "YY") {
+                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
+                                    valoresParaSumarFF += cadaCargo.ChargeAmount
+                                }
+                                if (cadaCargo.ChargeCode == "OO") {
+                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
+                                    valoresParaSumarFF += cadaCargo.ChargeAmount
+                                }
+                                if (cadaCargo.ChargeCode == "YB") {
+                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
+                                    valoresParaSumarFF += cadaCargo.ChargeAmount
+                                }
+                                if (cadaCargo.ChargeCode == "II") {
+                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
+                                }
+                                if (cadaCargo.ChargeCode == "YE") {
+                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
+                                }
+                                if (cadaCargo.ChargeCode == "FF") {
+                                    valoresParaSumarFF += Number(parseFloat(Number(precioPorKG)).toFixed(2))
+                                    let multiplicadorCombus = cadaServicio['@type'] === "G" ? porcFFTerrestre : porcFFAereo
+                                    let porcPreDepured = Number.parseFloat(multiplicadorCombus).toFixed(2)
+                                    let porcDepured = porcPreDepured / 100
+                                    let resultMulti = valoresParaSumarFF * porcDepured
+
+                                    cadaCargo.ChargeAmount = Number(parseFloat(resultMulti).toFixed(2))
+                                }
+                            })
+                    } else {
+                        cadaServicio['Charges']['Charge'][1].ChargeAmount = parseFloat(Number(precioPorKG) * cadaServicio['@type'] === "G" ? porcFFTerrestre : porcFFAereo).toFixed(2)
+                    }
+                    const subTotalCharge = { 'ChargeType': 'SubTotal', 'ChargeAmount': 0 }
+
+                    cadaServicio['Charges']['Charge'].forEach(cadaSubCargo => {
+                        //subTotalCharge.ChargeAmount = parseFloat(Number(cadaServicio['TotalNet'].Amount) + Number(cadaSubCargo['ChargeAmount'])).toFixed(2)
+                        subTotalCharge.ChargeAmount += Number(cadaSubCargo['ChargeAmount']);
+                    })
+
+                    subTotalCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount).toFixed(2)
+                    cadaServicio['Charges']['Charge'].push(subTotalCharge)
+                    const ivaCharge = { 'ChargeType': 'IVA', 'ChargeAmount': 0 }
+                    ivaCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount * 0.16).toFixed(2)
+                    cadaServicio['Charges']['Charge'].push(ivaCharge)
+                    cadaServicio['TotalNet'].Amount = parseFloat(Number(subTotalCharge.ChargeAmount) + Number(ivaCharge.ChargeAmount)).toFixed(2);
+                    arrDepurada.push(cadaServicio)
+                }
+
+            })
+        return arrDepurada;
+    }
+
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
         if (event.target.name == "originZip" && event.target.value.length >= 5) {
@@ -221,7 +289,7 @@ export default function Cotizaciones() {
                 arrAux[indice]['Dimensions']['Length'] = event.target.value;
                 break;
         }
-        arrAux[indice]['@number'] = indice
+        arrAux[indice]['@number'] = indice + 1
         setPaquetesList(arrAux)
     }
 
@@ -239,37 +307,15 @@ export default function Cotizaciones() {
     }
     //API Consulta
     const consultaAPI = (event) => {
-        // setIsLoading(true);
         setLoaderBtnCotizar(true)
         event.preventDefault()
-        var dataString = "https://quickpack-back-al2vij23ta-uc.a.run.app/rateRequest"
-            + "?AA01=" + datos.shipmentDate + "T12:00:00+GMT+0100"
-            + "&BB01=" + datos.originCity
-            + "&BB02=" + datos.originZip
-            + "&BB03=" + datos.originCC
-            + "&CC01=" + datos.destinyCity
-            + "&CC02=" + datos.destinyZip
-            + "&CC03=" + datos.destinyCC
-            + "&EE01=" + datos.insurance
-            + "&FF01=" + JSON.stringify(paquetesList)
-
         var dataZoneString = "https://quickpack-back-al2vij23ta-uc.a.run.app/getZoneRequest"
-            + "?AA01=" + datos.originZip
-            + "&BB01=" + datos.destinyZip
+            + "?AA01=" + Number(datos.originZip)
+            + "&BB01=" + Number(datos.destinyZip)
+        Api.getRateRequest(datos.shipmentDate, datos.originCity, datos.originZip, "MX", datos.destinyCity, datos.destinyZip, "MX", "0", paquetesList, datos.insurance != '' ? datos.insurance : 0)
 
-        fetch(dataString, {
-            method: 'GET',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Accept': 'application/json',
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
-            }
-        })
             .then(response => {
-                return response.json()
-            })
-            .then((data) => {
-                var dataJSONParsed = JSON.parse(data)
+                var dataJSONParsed = JSON.parse(response.data)
                 var code = dataJSONParsed.RateResponse.Provider[0].Notification[0]['@code']
                 setHasErrorAPI(code != 0 ? true : false)
                 if (hasErrorAPI == true) {
@@ -285,35 +331,62 @@ export default function Cotizaciones() {
                         auxArr = JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service))
                         const q = query(collection(db, "Cuenta"), where("id", "==", localStorage.getItem("userId")))
                         let dataUsuario = ""
-                        getDocs(q)
-                            .then(res => {
-                                if (res.docs.length > 0) {
-                                    res.forEach((doc) => {
-                                        dataUsuario = doc.data()
-                                        fetch(dataZoneString, {
-                                            method: 'GET',
-                                            headers: {
-                                                'Access-Control-Allow-Origin': '*'
-                                            }
-                                        })
-                                            .then(response => {
-                                                return response.json()
-                                            })
-                                            .then((dataZoneIndex) => {
-                                                setZoneofService(dataZoneIndex)
-                                                let volumetricWeight = (datos.height * datos.width * datos.longitude) / 5000
-                                                setArrServicios(generarArrNuevosPrecios(auxArr, dataUsuario, datos.weight > volumetricWeight ? datos.weight : volumetricWeight, dataZoneIndex));
-                                            })
 
-
-                                    })
-                                } else {
-                                    console.log("Problemas Consultando API")
-                                }
+                        fetch(dataZoneString, {
+                            method: 'GET',
+                            headers: {
+                                'Access-Control-Allow-Origin': '*'
+                            }
+                        })
+                            .then(response => {
+                                return response.json()
                             })
-                            .catch(err => {
-                                console.log("Problemas...")
-                            });
+                            .then((dataZoneIndex) => {
+                                setZoneofService(dataZoneIndex)
+                                let pesoForNuevosCalculos = 0;
+                                let pesoVolumetrico = 0
+                                let pesoReal = 0
+                                if (paquetesList.length > 1) {
+                                    let listaPaquetes = paquetesList
+                                    listaPaquetes.forEach(cadaPaquete => {
+                                        pesoReal = Number.parseInt(cadaPaquete['Weight']['Value'])
+                                        let heighNumber = Number.parseInt(cadaPaquete.Dimensions['Height'])
+                                        let widthNumber = Number.parseInt(cadaPaquete.Dimensions['Width'])
+                                        let lengthNumber = Number.parseInt(cadaPaquete.Dimensions['Length'])
+                                        pesoVolumetrico = (heighNumber * widthNumber * lengthNumber) / 5000
+                                        if (pesoVolumetrico > pesoReal) {
+                                            pesoForNuevosCalculos = pesoForNuevosCalculos + pesoVolumetrico
+                                        } else {
+                                            pesoForNuevosCalculos = pesoForNuevosCalculos + pesoReal
+                                        }
+                                    })
+
+
+                                } else {
+                                    let objPckg = paquetesList[0]
+                                    let heighNumber = Number.parseInt(objPckg.Dimensions['Height'])
+                                    let widthNumber = Number.parseInt(objPckg.Dimensions['Width'])
+                                    let lengthNumber = Number.parseInt(objPckg.Dimensions['Length'])
+                                    pesoVolumetrico = (heighNumber * widthNumber * lengthNumber) / 5000
+                                    pesoReal = paquetesList[0]['Weight']['Value']
+                                    if (pesoVolumetrico > pesoReal) {
+                                        pesoForNuevosCalculos = pesoVolumetrico
+                                    } else {
+                                        pesoForNuevosCalculos = pesoReal
+                                    }
+                                }
+
+                                let auxRedondeo = Math.round(pesoForNuevosCalculos)
+                                if (pesoForNuevosCalculos > auxRedondeo) {
+                                    pesoForNuevosCalculos = Number.parseInt(pesoForNuevosCalculos + 1)
+                                } else {
+                                    pesoForNuevosCalculos = auxRedondeo
+                                }
+                                //pesoForNuevosCalculos = pesoVolumetrico > pesoReal ? pesoVolumetrico : pesoReal
+                                var auxaux = generarArrNuevosPrecios(auxArr, userData, pesoForNuevosCalculos, dataZoneIndex)
+                                setArrServicios(auxaux);
+                                setArrDataAll(auxaux)
+                            })
                     }
 
                 }
@@ -341,13 +414,12 @@ export default function Cotizaciones() {
                     console.log("Error:", error)
                 })
                 handleClickOpen()
-                var objDataParsedAux = JSON.parse(data)
-                setArrServicios(data)
-                setArrDataAll(objDataParsedAux.RateResponse.Provider[0].Service)
-                setLoaderBtnCotizar(false)
+                var objDataParsedAux = JSON.parse(response.data)
+                setArrServicios(response.data)
+                var objCorrectRefToService = objDataParsedAux['RateResponse']['Provider'][0]['Service']
+                var objTratado = generarArrNuevosPrecios(objCorrectRefToService,)
 
-                // setIsLoading(false);
-                // return data
+                setLoaderBtnCotizar(false)
             })
             .catch((error) => {
                 console.log(error)
@@ -356,23 +428,11 @@ export default function Cotizaciones() {
 
     ///API Zipcodes
     const consultaZipCodes = (zipCode, ubicacion) => {
-        // setIsLoading(true)
         setLoaderBtnCotizar(true)
-        var apiURLOwn = "https://quickpack-back-al2vij23ta-uc.a.run.app/getCitybyZipCode"
-            + "?zipCode=" + zipCode
-        fetch(apiURLOwn, {
-            method: 'GET',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Accept': 'application/json',
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
-            }
-        })
+        Api.getCityDataBasedOnZipCode(zipCode)
+
             .then(response => {
-                return response.json()
-            })
-            .then(data => {
-                var dataParsed = JSON.parse(data)
+                var dataParsed = JSON.parse(response.data)
                 if (ubicacion == "origen") {
                     setDatos({
                         ...datos,
@@ -381,7 +441,6 @@ export default function Cotizaciones() {
                     })
                     // setIsLoading(false)
                     setLoaderBtnCotizar(false)
-
                 }
                 else if (ubicacion == "destino") {
                     setDatos({
@@ -409,6 +468,7 @@ export default function Cotizaciones() {
 
     };
 
+
     return (
         <>
             {isLoading ? <LoadingSpinner /> : <></>}
@@ -423,33 +483,34 @@ export default function Cotizaciones() {
                         <label>
                             <input type="date" name="shipmentDate" className="inputs" onChange={handelDatosChanges} placeholder="Fecha de envio" />
                         </label>
-
-                        <label>
-                            <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} value={datos.originCity != undefined ? datos.originCity : undefined} placeholder="Ciudad origen" />
-                        </label>
                         <label>
                             <input type="text" name="originZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal origen" />
                         </label>
-                        <br />
                         <label>
-                            <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} value={datos.destinyCity != undefined ? datos.destinyCity : undefined} placeholder="Ciudad destino" />
+                            <input type="text" disabled name="originCity" className="inputs" onChange={handelDatosChanges} value={datos.originCity != undefined ? datos.originCity : undefined} placeholder="Ciudad origen" />
                         </label>
+
+                        <br />
                         <label>
                             <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
                         </label>
+                        <label>
+                            <input type="text" disabled name="destinyCity" className="inputs" onChange={handelDatosChanges} value={datos.destinyCity != undefined ? datos.destinyCity : undefined} placeholder="Ciudad destino" />
+                        </label>
+
 
                         <div className="title-cliente">Asegurar envio </div>
                         <Stack direction="row">
 
                             <Box sx={{ margin: "0 0 0 5%" }}>
                                 <Stack direction="row" justifyContent="center" alignItems="center">
-                                    <TextField sx={mostrarAsegurarEnvio? { backgroundColor: "white" } : {visibility: "hidden"}} name="insurance" onChange={handelDatosChanges} label="valor de envio" />
+                                    <TextField sx={mostrarAsegurarEnvio ? { backgroundColor: "white" } : { visibility: "hidden" }} name="insurance" onChange={handelDatosChanges} label="valor de envio" />
                                     <Checkbox
                                         checked={mostrarAsegurarEnvio}
                                         onChange={handleChangeMostrarAsegurar}
                                         inputProps={{ 'aria-label': 'controlled' }}
                                     />
-                                    <Box sx={{color:"#33FFD4"}}>¿Desea asegurar el envio?</Box>
+                                    <Box sx={{ color: "#33FFD4" }}>¿Desea asegurar el envio?</Box>
                                 </Stack>
 
                             </Box>
@@ -469,8 +530,8 @@ export default function Cotizaciones() {
                                             <TextField sx={{ backgroundColor: "white", width: "15%" }} name="height" label="Alto" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
                                             <TextField sx={{ backgroundColor: "white", width: "15%" }} name="width" label="Ancho" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
                                             <TextField sx={{ backgroundColor: "white", width: "15%" }} name="lenght" label="Profundidad" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
-                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} id="outlined-basic" label="Referencia" variant="outlined" />
-                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} id="outlined-basic" label="Descripcion paquete" variant="outlined" />
+                                            {/* <TextField sx={{ backgroundColor: "white", width: "15%" }} id="outlined-basic" label="Referencia" variant="outlined" /> */}
+                                            {/* <TextField sx={{ backgroundColor: "white", width: "15%" }} id="outlined-basic" label="Descripcion paquete" variant="outlined" /> */}
                                         </Stack>
                                     ))}
                                     {mostrarLimitePaquetes == true ? <Box sx={{ color: "red", fontSize: "1.5rem" }}>Se alcanzo el limite de paquetes</Box> : <></>}
@@ -488,7 +549,7 @@ export default function Cotizaciones() {
                     </form>
 
                     <div>
-                        <Dialog onClose={handleClose} open={open} sx={{width:"50%", height:"70%"}} >
+                        <Dialog onClose={handleClose} open={open} sx={{ width: "50%", height: "70%" }} >
                             <DialogTitle>Cotizacion:</DialogTitle>
 
                             <Divider />
@@ -507,21 +568,7 @@ export default function Cotizaciones() {
                             }
                         </Dialog>
                         <div>
-                            {/* <Accordion>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <Typography>Accordion 1</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <Typography>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                        malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                    </Typography>
-                                </AccordionDetails>
-                            </Accordion> */}
+                 
 
                         </div>
                     </div>

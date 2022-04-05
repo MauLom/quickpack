@@ -29,9 +29,39 @@ function EdicionClientes() {
     const [beneficiosList, setBeneficiosList] = React.useState();
     const [dataTabla, setDataTabla] = React.useState([]);
     const defaultDatosTabla = [
-        [{ value: "Kgs", readOnly: true }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }],
-        [{ value: "Costo", readOnly: true }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }, { value: "" }],
-        [{ value: "Valor adicional", readOnly: true }, { value: "" }],
+        [{ value: "", readOnly: true }, { value: "Zona 1", readOnly: true }, { value: "Zona 2", readOnly: true }, { value: "Zona 3", readOnly: true }, { value: "Zona 4", readOnly: true }, { value: "Zona 5", readOnly: true }, { value: "Zona 6", readOnly: true }, { value: "Zona 7", readOnly: true }, { value: "Zona 8", readOnly: true }, { value: "", readOnly: true }],
+        [{ value: "1", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "2", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "3", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "4", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "5", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "6", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "7", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "8", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "9", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "10", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "11", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "12", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "13", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "14", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "15", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "16", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "17", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "18", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "19", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "20", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "21", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "22", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "23", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "24", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "25", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "26", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "27", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "28", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "29", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "30", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+        [{ value: "KGadicional", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+
     ]
     const [porcentajeDeServicios, setPorcentajeDeServicios] = React.useState({
         porcentajeI: undefined,
@@ -55,17 +85,11 @@ function EdicionClientes() {
     }
     const q = query(collection(database, "Cuenta"))
     React.useState(() => {
+        setDataTabla(defaultDatosTabla)
+
         getDocs(q)
             .then(res => {
                 res.forEach((doc) => {
-
-                    // jsonAux['id'] = doc.id;
-                    // jsonAux['Nombre'] = doc.data().Nombre;
-                    // jsonAux['Apellidos'] = doc.data().Apellidos;
-                    // jsonAux['Pass'] = doc.data().Pass;
-
-                    // jsonAux['tipoBeneficio'] = doc.data().tipoBeneficio;
-                    // jsonAux['matriz'] = doc.data().matriz;
                     datosOut.push(formatFilasClientes(doc.id, doc.data().Nombre, doc.data().Apellidos, doc.data().tipoBeneficio, doc.data().Pass, doc.data().matriz, doc.data().porcentajes ? doc.data().porcentajes : {}));
                 })
                 setUsersList(datosOut);
@@ -73,7 +97,7 @@ function EdicionClientes() {
             .catch(err => {
                 console.log("error" + err);
             });
-    }, [q])
+    }, [q, setDataTabla, defaultDatosTabla])
 
     const handelDatosChanges = (event) => {
         setSlctdUser({
@@ -95,28 +119,22 @@ function EdicionClientes() {
         setBeneficiosList(slctdUser.beneficios)
     }
 
-    const handleZonaChange = (event) => {
-        setSlctdZona(event.value)
-        if (slctdUser.hasOwnProperty('matriz') && Object.getOwnPropertyNames(slctdUser.matriz).indexOf(slctdServicioTipo) > -1 && Object.getOwnPropertyNames(slctdUser.matriz[slctdServicioTipo]).indexOf(slctdZona) > -1) {
-            setDataTabla(JSON.parse(slctdUser.matriz[slctdServicioTipo][slctdZona]['data']));
-        } else {
-            setDataTabla(defaultDatosTabla)
-        }
-    }
     const guardarDatos = () => {
         if (porcentajeDeServicios.porcentaje1 != undefined) {
             var objUserAux = slctdUser;
             objUserAux['porcentajes'] = porcentajeDeServicios
             setSlctdUser(objUserAux);
         }
+        let auxMatrizString = JSON.stringify(dataTabla)
+        auxMatrizString = auxMatrizString.replaceAll('null', '{"value":""}')
         if (Object.getOwnPropertyNames(slctdUser.matriz).indexOf(slctdServicioTipo) > -1 && Object.getOwnPropertyNames(slctdUser.matriz[slctdServicioTipo]).indexOf(slctdZona) > -1) {
-            slctdUser.matriz[slctdServicioTipo][slctdZona]['data'] = JSON.stringify(dataTabla);
+            slctdUser.matriz[slctdServicioTipo]['data'] = auxMatrizString;
         } else {
             if (!slctdUser.matriz.hasOwnProperty(slctdServicioTipo)) {
                 slctdUser.matriz[slctdServicioTipo] = {};
             }
-            slctdUser.matriz[slctdServicioTipo][slctdZona] = {};
-            slctdUser.matriz[slctdServicioTipo][slctdZona]['data'] = JSON.stringify(dataTabla);
+            slctdUser.matriz[slctdServicioTipo] = {};
+            slctdUser.matriz[slctdServicioTipo]['data'] = auxMatrizString;
         }
 
         let documentUserRef = doc(database, "Cuenta/" + slctdUser.id)
@@ -125,6 +143,16 @@ function EdicionClientes() {
             .catch(error => { console.log.length("Error: ", error) });
     }
 
+    const handleServiceChange = (e) => {
+        if (undefined != slctdUser.matriz[e.value].data) {
+            console.log("entro a aca...", slctdUser.matriz)
+            let auxObj = JSON.parse(slctdUser.matriz[e.value].data)
+            setDataTabla(auxObj)
+        } else {
+            setDataTabla(defaultDatosTabla)
+        }
+        setSlctdServicioTipo(e.value)
+    }
 
     const optionsSelectProducto = [
         { value: 'I', label: 'Servicio tipo I' },
@@ -133,16 +161,7 @@ function EdicionClientes() {
         { value: "G", label: 'Servicio tipo G' },
         { value: 'N', label: 'Servicio tipo N' }
     ]
-    const optionsSelectZona = [
-        { value: 'zone1', label: 'Zona 1' },
-        { value: 'zone2', label: 'Zona 2' },
-        { value: 'zone3', label: 'Zona 3' },
-        { value: 'zone4', label: 'Zona 4' },
-        { value: 'zone5', label: 'Zona 5' },
-        { value: 'zone6', label: 'Zona 6' },
-        { value: 'zone7', label: 'Zona 7' },
-        { value: 'zone8', label: 'Zona 8' },
-    ]
+
     const botonModelo = {
         'border': "1px solid",
         'background-color': "white",
@@ -201,11 +220,11 @@ function EdicionClientes() {
                                         <div>
                                             <div style={styleTableSelects}>
                                                 <div className="col" style={styleSelect}>
-                                                    <Select options={optionsSelectProducto} onChange={(event) => setSlctdServicioTipo(event.value)} placeholder="Tipo Servicio" />
+                                                    <Select options={optionsSelectProducto} onChange={(event) => handleServiceChange(event)} placeholder="Tipo Servicio" />
                                                 </div>
-                                                <div className="col" style={styleSelect}>
+                                                {/* <div className="col" style={styleSelect}>
                                                     <Select options={optionsSelectZona} onChange={handleZonaChange} placeholder="Zona " />
-                                                </div>
+                                                </div> */}
                                             </div>
                                             <div className="title-cliente"> Especificar rango peso y costos  </div>
                                             <br />
@@ -244,7 +263,7 @@ function EdicionClientes() {
                 :
                 mostrarAgregarCliente == true ?
                     <>
-                        <Button onClick={() => { setMostrarAgregarCliente(false); setSlctdUser(undefined); setPorcentajeDeServicios({ porcentajeI: undefined, porcentaje1: undefined, porcentajeG: undefined, porcentajeN: undefined, porcentajeO: undefined}) }}><span className="material-icons">keyboard_backspace</span>&nbsp;Regresar a lista</Button>
+                        <Button onClick={() => { setMostrarAgregarCliente(false); setSlctdUser(undefined); setPorcentajeDeServicios({ porcentajeI: undefined, porcentaje1: undefined, porcentajeG: undefined, porcentajeN: undefined, porcentajeO: undefined }) }}><span className="material-icons">keyboard_backspace</span>&nbsp;Regresar a lista</Button>
                         <AgregarCliente />
                     </> :
                     <>

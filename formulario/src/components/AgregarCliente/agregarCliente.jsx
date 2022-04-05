@@ -43,121 +43,170 @@ function AgregarCliente() {
                 id: response.id,
                 Pass: randomId.toString(),
                 matriz: {
-                    '1': {
-                        'zone1': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone2': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone3': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone4': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone5': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone6': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone7': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        }
-                    },
-                    'G': {
-                        'zone1': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone2': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone3': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone4': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone5': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone6': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone7': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        }
-                    },
-                    'I': {
-                        'zone1': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone2': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone3': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone4': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone5': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone6': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone7': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        }
-                    },
-                    'N': {
-                        'zone1': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone2': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone3': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone4': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone5': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone6': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone7': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        }
-                    },
-                    'O': {
-                        'zone1': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone2': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone3': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone4': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone5': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone6': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        },
-                        'zone7': {
-                            'data': `[[{"value":"Kgs","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}],[{"value":"Costo","readOnly":true},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""},{"value":""}]]`
-                        }
-                    }
+                    '1': {data:JSON.stringify([[{ value: "", readOnly: true }, { value: "Zona 1", readOnly: true }, { value: "Zona 2", readOnly: true }, { value: "Zona 3", readOnly: true }, { value: "Zona 4", readOnly: true }, { value: "Zona 5", readOnly: true }, { value: "Zona 6", readOnly: true }, { value: "Zona 7", readOnly: true }, { value: "Zona 8", readOnly: true }, { value: "", readOnly: true }],
+                    [{ value: "1", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "2", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "3", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "4", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "5", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "6", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "7", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "8", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "9", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "10", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "11", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "12", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "13", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "14", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "15", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "16", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "17", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "18", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "19", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "20", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "21", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "22", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "23", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "24", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "25", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "26", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "27", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "28", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "29", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "30", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "KGadicional", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    ])},
+                    'G': {data:JSON.stringify([[{ value: "", readOnly: true }, { value: "Zona 1", readOnly: true }, { value: "Zona 2", readOnly: true }, { value: "Zona 3", readOnly: true }, { value: "Zona 4", readOnly: true }, { value: "Zona 5", readOnly: true }, { value: "Zona 6", readOnly: true }, { value: "Zona 7", readOnly: true }, { value: "Zona 8", readOnly: true }, { value: "", readOnly: true }],
+                    [{ value: "1", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "2", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "3", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "4", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "5", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "6", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "7", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "8", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "9", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "10", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "11", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "12", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "13", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "14", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "15", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "16", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "17", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "18", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "19", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "20", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "21", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "22", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "23", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "24", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "25", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "26", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "27", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "28", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "29", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "30", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "KGadicional", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }]])},
+
+                    'I': {data:JSON.stringify([[{ value: "", readOnly: true }, { value: "Zona 1", readOnly: true }, { value: "Zona 2", readOnly: true }, { value: "Zona 3", readOnly: true }, { value: "Zona 4", readOnly: true }, { value: "Zona 5", readOnly: true }, { value: "Zona 6", readOnly: true }, { value: "Zona 7", readOnly: true }, { value: "Zona 8", readOnly: true }, { value: "", readOnly: true }],
+                    [{ value: "1", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "2", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "3", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "4", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "5", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "6", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "7", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "8", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "9", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "10", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "11", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "12", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "13", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "14", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "15", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "16", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "17", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "18", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "19", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "20", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "21", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "22", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "23", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "24", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "25", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "26", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "27", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "28", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "29", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "30", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "KGadicional", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }]])},
+
+                    'N': {data:JSON.stringify([[{ value: "", readOnly: true }, { value: "Zona 1", readOnly: true }, { value: "Zona 2", readOnly: true }, { value: "Zona 3", readOnly: true }, { value: "Zona 4", readOnly: true }, { value: "Zona 5", readOnly: true }, { value: "Zona 6", readOnly: true }, { value: "Zona 7", readOnly: true }, { value: "Zona 8", readOnly: true }, { value: "", readOnly: true }],
+                    [{ value: "1", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "2", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "3", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "4", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "5", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "6", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "7", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "8", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "9", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "10", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "11", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "12", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "13", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "14", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "15", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "16", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "17", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "18", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "19", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "20", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "21", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "22", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "23", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "24", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "25", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "26", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "27", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "28", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "29", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "30", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "KGadicional", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }]])},
+
+                    'O': {data: JSON.stringify([[{ value: "", readOnly: true }, { value: "Zona 1", readOnly: true }, { value: "Zona 2", readOnly: true }, { value: "Zona 3", readOnly: true }, { value: "Zona 4", readOnly: true }, { value: "Zona 5", readOnly: true }, { value: "Zona 6", readOnly: true }, { value: "Zona 7", readOnly: true }, { value: "Zona 8", readOnly: true }, { value: "", readOnly: true }],
+                    [{ value: "1", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "2", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "3", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "4", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "5", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "6", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "7", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "8", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "9", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "10", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "11", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "12", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "13", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "14", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "15", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "16", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "17", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "18", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "19", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "20", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "21", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "22", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "23", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "24", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "25", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "26", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "27", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "28", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "29", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "30", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
+                    [{ value: "KGadicional", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }]]) }
                 },
                 tipoBeneficio: 1,
                 serviciosBloqueados: serviciosDeshabilitados
