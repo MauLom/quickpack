@@ -106,6 +106,20 @@ export default function FormServiceDetails({ changeLoading }) {
       })
   }
 
+  const handleClose = (value) => {
+    setGuiaGenerada(false);
+
+    const url = "/user"
+    const link = document.createElement('a');
+    link.href = url;
+    // Append to html link element page
+    document.body.appendChild(link);
+    // Start download
+    link.click();
+    // Clean up and remove the link
+    link.parentNode.removeChild(link);
+
+  };
 
   return (
     <>
@@ -135,7 +149,7 @@ export default function FormServiceDetails({ changeLoading }) {
       </Box>
 
 
-      <Dialog open={guiaGenerada} sx={{ width: "50%", height: "70%" }}>
+      <Dialog onClose={handleClose} open={guiaGenerada} sx={{ width: "50%", height: "70%" }}>
         <DialogTitle>Su numero de guia es:</DialogTitle>
         <h2>{numeroDeGuia}</h2>
         <Button onClick={() => handleConvertZPLToIMG()}>Descargar etiqueta</Button>
