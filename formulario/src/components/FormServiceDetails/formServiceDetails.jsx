@@ -27,11 +27,11 @@ export default function FormServiceDetails({ changeLoading }) {
 
 
   const servicioOptions = [
-    { value: 'I', label: 'Servicio tipo I' },
-    { value: 'O', label: 'Servicio tipo O' },
-    { value: '1', label: 'Servicio tipo 1' },
-    { value: "G", label: 'Servicio tipo G' },
-    { value: 'N', label: 'Servicio tipo N' }
+    { value: 'I', label: 'Servicio tipo EXPRESS DOMESTIC 9:00' },
+    { value: 'O', label: 'Servicio tipo EXPRESS DOMESTIC 10:30 ' },
+    { value: '1', label: 'Servicio tipo EXPRESS DOMESTIC 12:00' },
+    { value: "G", label: 'Servicio tipo ECONOMY SELECT DOMESTIC ' },
+    { value: 'N', label: 'Servicio tipo EXPRESS DOMESTIC' }
   ]
 
   React.useState(() => {
@@ -62,7 +62,7 @@ export default function FormServiceDetails({ changeLoading }) {
     } else {
       formattedDate = format(dateValue, "yyyy-MM-dd");
     }
-    Api.getShipmentRequest(formattedDate, dataGuia.originData.clientName, dataGuia.originData.companyName, dataGuia.originData.cellphoneOrigin, dataGuia.originData.mailOrigin, dataGuia.originData.cityOrigin, dataGuia.originData.zipCodeOrigin, "MX", dataGuia.originData.streetLinesDetiny, dataGuia.destinyData.clientName, dataGuia.destinyData.companyName, dataGuia.destinyData.cellphoneDestiny, dataGuia.destinyData.mailDestiny, dataGuia.destinyData.cityDestiny, dataGuia.destinyData.zipCodeDestiny, "MX", dataGuia.destinyData.streetLinesDetiny, "1000", JSON.stringify(dataGuia.packageData), "desc", "ref", servicioOptions[slctdServicioTipo].value)
+    Api.getShipmentRequest(formattedDate, dataGuia.originData.clientName, dataGuia.originData.companyName, dataGuia.originData.cellphoneOrigin, dataGuia.originData.mailOrigin, dataGuia.originData.cityOrigin, dataGuia.originData.zipCodeOrigin, "MX", dataGuia.originData.streetLinesDetiny, dataGuia.destinyData.clientName, dataGuia.destinyData.companyName, dataGuia.destinyData.cellphoneDestiny, dataGuia.destinyData.mailDestiny, dataGuia.destinyData.cityDestiny, dataGuia.destinyData.zipCodeDestiny, "MX", dataGuia.destinyData.streetLinesDestiny, "1000", JSON.stringify(dataGuia.packageData), "desc", "ref", servicioOptions[slctdServicioTipo].value)
       .then(response => {
         let objDataResponse = JSON.parse(response.data)
         console.log("Just response: ", objDataResponse)

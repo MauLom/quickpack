@@ -43,15 +43,37 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
 
   }
   const handleClickContinuar = () => {
-
     let objAsString = {}
+    let streetLinesConcat = direccionLinea1 + direccionLinea2 + direccionLinea3
+    setDataOrigin({
+      ...dataOrigin,
+      streetLinesDetiny: direccionLinea1 + direccionLinea2 + direccionLinea3
+    })
     if (sessionStorage.getItem("generacionGuia") != null) {
       objAsString = {
         ...JSON.parse(sessionStorage.getItem("generacionGuia")),
-        originData: dataOrigin
+        originData: {
+          clientName: dataOrigin.clientName,
+          companyName: dataOrigin.companyName,
+          cellphoneOrigin: dataOrigin.cellphoneOrigin,
+          mailOrigin: dataOrigin.mailOrigin,
+          streetLinesDetiny:streetLinesConcat,
+          cityOrigin: dataOrigin.cityOrigin,
+          zipCodeOrigin: dataOrigin.zipCodeOrigin,
+        }
       }
     } else {
-      objAsString = { originData: dataOrigin }
+      objAsString = {
+        originData: {
+          clientName: dataOrigin.clientName,
+          companyName: dataOrigin.companyName,
+          cellphoneOrigin: dataOrigin.cellphoneOrigin,
+          mailOrigin: dataOrigin.mailOrigin,
+          streetLinesDetiny:streetLinesConcat,
+          cityOrigin: dataOrigin.cityOrigin,
+          zipCodeOrigin: dataOrigin.zipCodeOrigin,
+        }
+      }
     }
     sessionStorage.setItem("generacionGuia", JSON.stringify(objAsString))
 
@@ -62,22 +84,17 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
     Api.getCityDataBasedOnZipCode(zipCode)
       .then(response => {
         var dataParsed = JSON.parse(response.data)
-        // let stringAddress = dataParsed.results[0].formatted_address
-        // let primerIndice = stringAddress.indexOf(",")
-        // let partirDesde = Number.parseInt(primerIndice) + 1
-        // let segundoIndice = stringAddress.indexOf(",", partirDesde)
-        // let stringCortada = stringAddress.substring(primerIndice, segundoIndice)
-                let auxCadena = dataParsed.results[0].formatted_address
-                let primerIndiceComa = auxCadena.indexOf(",")
-                let auxNumerIndice = Number(primerIndiceComa) +1
-                let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
-                let indicePartida = auxNumerIndice+6
-                let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
+        let auxCadena = dataParsed.results[0].formatted_address
+        let primerIndiceComa = auxCadena.indexOf(",")
+        let auxNumerIndice = Number(primerIndiceComa) + 1
+        let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
+        let indicePartida = auxNumerIndice + 6
+        let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
 
         var dataParsed = JSON.parse(response.data)
         setDataOrigin({
           ...dataOrigin,
-          "cityOrigin":cadenaCortada,
+          "cityOrigin": cadenaCortada,
           "zipCodeOrigin": dataParsed.results[0].address_components[0].long_name
         })
 

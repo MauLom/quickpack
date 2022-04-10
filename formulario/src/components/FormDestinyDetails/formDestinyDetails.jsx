@@ -38,18 +38,36 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
   }
   const handleClickContinuar = () => {
     let objAsString = {}
+    let streetLinesConcat = direccionLinea1 + direccionLinea2 + direccionLinea3
     setDataDestiny({
       ...dataDestiny,
       streetLinesDetiny: direccionLinea1 + direccionLinea2 + direccionLinea3
-
     })
     if (sessionStorage.getItem("generacionGuia") != undefined) {
       objAsString = {
         ...JSON.parse(sessionStorage.getItem("generacionGuia")),
-        destinyData: dataDestiny
+        destinyData: {
+          clientName: dataDestiny.clientName,
+          companyName: dataDestiny.companyName,
+          cellphoneDestiny: dataDestiny.cellphoneDestiny,
+          mailDestiny: dataDestiny.mailDestiny,
+          streetLinesDestiny: streetLinesConcat,
+          cityDestiny: dataDestiny.cityDestiny,
+          zipCodeDestiny: dataDestiny.zipCodeDestiny,
+        }
       }
     } else {
-      objAsString = { destinyData: dataDestiny }
+      objAsString = {
+        destinyData: {
+          clientName: dataDestiny.clientName,
+          companyName: dataDestiny.companyName,
+          cellphoneDestiny: dataDestiny.cellphoneDestiny,
+          mailDestiny: dataDestiny.mailDestiny,
+          streetLinesDestiny: streetLinesConcat,
+          cityDestiny: dataDestiny.cityDestiny,
+          zipCodeDestiny: dataDestiny.zipCodeDestiny,
+        }
+      }
     }
     sessionStorage.setItem("generacionGuia", JSON.stringify(objAsString))
     goNextStep(3)
@@ -58,17 +76,13 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
     Api.getCityDataBasedOnZipCode(zipCode)
       .then(response => {
         var dataParsed = JSON.parse(response.data)
-        // let stringAddress = dataParsed.results[0].formatted_address
-        // let primerIndice = stringAddress.indexOf(",")
-        // let partirDesde = Number.parseInt(primerIndice) + 1
-        // let segundoIndice = stringAddress.indexOf(",", partirDesde)
-        // let stringCortada = stringAddress.substring(primerIndice, segundoIndice)
+
         let auxCadena = dataParsed.results[0].formatted_address
-                let primerIndiceComa = auxCadena.indexOf(",")
-                let auxNumerIndice = Number(primerIndiceComa) +1
-                let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
-                let indicePartida = auxNumerIndice+6
-                let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
+        let primerIndiceComa = auxCadena.indexOf(",")
+        let auxNumerIndice = Number(primerIndiceComa) + 1
+        let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
+        let indicePartida = auxNumerIndice + 6
+        let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
 
         setDataDestiny({
           ...dataDestiny,
@@ -100,7 +114,7 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.mailDestiny} placeholder="Correo" label="Correo de Destino" margin="normal" name="mailDestiny" />
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.zipCodeDestiny} placeholder="Codigo Postal" label="Codigo postal Destino" margin="normal" name="zipCodeDestiny" />
             <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea1} value={direccionLinea1} placeholder="Direccion 1 (Calle y numero)" label="Calle y numero de Destino" margin="normal" name="streetAndNumberDestiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea2} value={direccionLinea2} placeholder="Direccion 2 (Colonia)" label="Colonia de Origen" margin="normal" name="suburbDestiny" />
+            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea2} value={direccionLinea2} placeholder="Direccion 2 (Colonia)" label="Colonia de Destino" margin="normal" name="suburbDestiny" />
             <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea3} value={direccionLinea3} placeholder="Direccion 3 (Referencia)" label="Referencia de Destino" margin="normal" name="referenceDestiny" />
 
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.cityDestiny} placeholder="Ciudad Origen" label="Ciudad Destino" margin="normal" name="cityDestiny" />
