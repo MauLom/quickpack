@@ -3,15 +3,77 @@ from flask_cors import CORS
 import requests
 import json
 from requests.auth import HTTPBasicAuth
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
 app = Flask(__name__)
+
+
+
 CORS(app)
 API_ENDPOINT = "https://wsbexpress.dhl.com/rest/sndpt/RateRequest"
 headers = {
     'content-type': 'application/json',
 }
+cloudCredentials ={
+    "type": "service_account",
+    "project_id": "admin-central-de-envios",
+    "private_key_id": "0cfb642d92840dc25da26e8435d017403944c868",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDbgUbXWIKcvVZv\n6wlpST7ZoLf9a3FPlYVusa3SELvD5w1TjRuu6J8mGYC8FNgjGQ4CiUIkHtsA/TQ5\ngEhEkXAxVY6VWB1MqIkqclqj+OorKy4IDhIzPKjfRtuiv7Nm3CuUn4RY1SwBWmFf\nJqh2MV2QRHgsLLZYJlLVVvgujcVkLH5Tdnt+9yH0ITinhwP0UTKK1bxBmMDUnuUq\n65Ujeqf5Q6SgxPRbhbkGyPfGl1VFyUrUZoEhDoakeTnHn/95ZKer6Qn59IlEjdJt\neuDWbAeA6JcAhE7OR2rqsXZZ/IMI5o/TeXJabhlvPlQltoezWsbQUTKn+m0tCT+Z\nK6XStpGlAgMBAAECggEAYoCJa0KvXioDG3ckQoiZeSzL1B++egG1np6CS6WxtPA/\nBTLp7Nw76ut/3ycVdO6d4Fp7AV2NVszJflJIW+jOKX1k3jTr9QYeg5tMfI/LebLH\nVdsGpNKAT63rCwYuuiZsMiZBTGHg/PxzfLEK4Ps3KvHm4Z/w9e7AtjbwaWe6YEBY\nH4v/6SJmh8uq5UgNfdFUK52z/UbDtOg/nzfjYPEtPNXgdOSZvm6ueM/rm68mNMWg\nWfJEzjQpdRNcEIbg3cseX0sSDdBS8rjrl8Ve346DpqVWq3H7bOlLmi5Hzoi44nfg\nJg8NA5aMMuGX9AmxfO2HWTMAwOwx0KsI7yRBAbaPswKBgQD6W8aYvQh+Mz3bGPUk\ndeZv+HosQ27a/729wr+jVePMJgN+idFLRSER6rfdOeCsuZXdLXdfffumhhNwrXRO\nO4ZPJkLDp72ss0HR6yKIHuCUh6xZ5fXqB9bTocS9W8UqEgpskjP7WKLK8kxUR5oA\nYJVEwy2WDu1ldnFAfFKOxauXewKBgQDgc4TEfp3DXN6ortn+QdsZKFTfPGiWxjVL\nA39prBbBPbQOwSLlK9IDxVoRI5XAV7Iej5HZlrRl3kfU4XFdjs4AVxWZnOAVG7yy\n2CxokZ13Simn4+GAq5In8q8nlCq9UH52HYPiq2U6kWumEJNTS2GQHJqwClaZlT0e\nb1YPy7+hXwKBgQCIVvZ+M2OupmUnLh5CLtrBW4XdGRQDu4YvEyGd56ZYhNMeVBtg\nbFMoGLTsixpptd+BRcNeg5NKCnYHxM4z1IK+E84EExNeO3i6wtxZWMdg28nmYy9a\ntc4uDki//nwO/ygiHDSmyoxNDUq4Ew4w6mgfvFLVB2gM+0WNoqarDcb2hQKBgEXD\nYhb5C+w3J3XisxsWORV+tbKVQiTrApGISsf7ly8FELwtR71Xe3V0l+QP3XHlUBWz\npi+tafDnwAfo8qWTx2/PoYUXf4bQEjy8eEEgUYNMZ9opOGQX79u+0LZKlWY2aLgp\nwF5py5MCtCTvrfsLyQ1T9riU3gnqmw6kqGlMeQmdAoGAdYJhVdYPOMcX4YRfYtNN\nqYQyeT28Dfi75ZCSdy4LUZBW+BH/qkMIJJLZKRzo0FVTWP3aiALigZfccoEFOX/I\n/nqORHjAmsaDQUdkCVnrZgs12s0cOvJ0oXHNHd0K/yrhJUqYA9xbPJHvuJHO96Jd\nO0/X/sXAGFbS2IRJIczezkU=\n-----END PRIVATE KEY-----\n",
+    "client_email": "admin-central-de-envios@appspot.gserviceaccount.com",
+    "client_id": "101777057736744970776",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/admin-central-de-envios%40appspot.gserviceaccount.com"
+    }
+cred = credentials.Certificate(cloudCredentials)
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 
+#Custom Class Client:
+class Cuenta(object):
+    def __init__(self, Nombre, Apellidos, Pass, id, serviciosBloqueados, tipoBeneficio,
+    matriz=[]):
+        
+        self.Nombre= Nombre
+        self.Apellidos= Apellidos
+        self.Pass = Pass
+        self.id = id
+        self.serviciosBloqueados = serviciosBloqueados
+        self.tipoBeneficio = tipoBeneficio
+        self.matriz = matriz
+
+    @staticmethod
+    def from_dict(source):
+        Cuenta.Nombre = source[u'Nombre']
+        Cuenta.Apellidos = source[u'Apellidos']
+        Cuenta.Pass = source[u'Pass']
+        Cuenta.id = source[u'id']
+        Cuenta.serviciosBloqueados = source[u'serviciosBloqueados']
+        Cuenta.tipoBeneficio = source[u'tipoBeneficio']
+        Cuenta.matriz = source[u'matriz']
+        return Cuenta
+
+    def to_dict(self):
+        dest = {
+            u'Nombre': self.Nombre,
+            u'matriz': self.matriz,
+            u'id': self.id
+        }
+        return dest
+    def __repr__(self):
+        return(
+            f'Cuenta(\
+                Nombre={self.Nombre}, \
+                matriz={self.matriz}, \
+                id={self.id}, \
+                )'
+        )
+
+#End Custom Class
 @app.route("/rateRequest", methods=["GET"])
 def rateRequest():
     """GET in server"""
@@ -76,7 +138,6 @@ def rateRequest():
     response.headers.add("Access-Control-Allow-Origin", "*")
     print("Data: ", json.dumps(data))
     return response
-
 
 @app.route("/shipmentResquest", methods=["GET"])
 def shipmentRequest():
@@ -402,6 +463,28 @@ def getZoneRequest():
     zonaRespuesta = matrizDatos[(zonaDestino-1)][(zonaOrigen-1)]
 
     return zonaRespuesta
+
+@app.route("/usersData", methods=["GET"])
+def getUsersData():
+    userIdFirebase = request.args.get("AA01")
+
+    # doc_ref = db.collection(u'Cuenta').document(u'1kv0WKS4BRiHT9cBsu3r')
+    doc_ref = db.collection(u'Cuenta').where(u'id', u'==', userIdFirebase).stream()
+    doc = doc_ref.get()
+    cuenta = Cuenta.from_dict(doc.to_dict())
+    print("Cuenta: ", cuenta.matriz)
+    # for doc in docs:
+        # print("one doc: ",f'{doc.id} => {doc.to_dict()}')
+        # dataCliente = Nombre.from_dict(doc.to_dict())
+        # dataCliente= doc
+        # print("dataCliente:", dataCliente)
+    # [END firestore_data_query]
+    # readable = doc_ref.stream()
+    # for each in readable:
+    #     print("each:", f'{each.id} =>{each.to_dict()}')
+    # return doc_ref
+
+    return "texto"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="8080", debug=True)
