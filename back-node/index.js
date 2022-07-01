@@ -23,13 +23,6 @@ initializeApp({
 
 const db = getFirestore();
 
-async function getDataFromUsers() {
-  const snapshot = await db.collection('Cuenta').get();
-  snapshot.forEach((doc) => {
-    console.log(doc.id, '=>', doc.data());
-  });
-}
-
 app.get('/', (req, res) => {
   res.send(`Wron path of URL`);
 });
@@ -40,7 +33,10 @@ app.get('/sayHello', (req, res) => {
 });
 
 app.get('/getUsers', (req, res) => {
-  getDataFromUsers();
+  const idDoc = req.query.userId
+  console.log("the id: ", idDoc)
+  const docReference = db.collection('Cuenta').doc(idDoc);
+  console.log("DocReference", docReference)
   res.send("process OK");
 })
 
