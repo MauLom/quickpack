@@ -3,7 +3,6 @@ from flask_cors import CORS
 import requests
 import json
 from requests.auth import HTTPBasicAuth
-from fi
 
 app = Flask(__name__)
 CORS(app)
@@ -12,16 +11,15 @@ API_SHIPMENT = "https://wsbexpress.dhl.com/rest/sndpt/ShipmentRequest"
 headers = {
     'content-type': 'application/json'
 }
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBlyp5HYemfqgpr076XMWSGWWK8VLpCDiI",
-  authDomain: "admin-central-de-envios.firebaseapp.com",
-  databaseURL: "https://admin-central-de-envios-default-rtdb.firebaseio.com",
-  projectId: "admin-central-de-envios",
-  storageBucket: "admin-central-de-envios.appspot.com",
-  messagingSenderId: "789658214665",
-  appId: "1:789658214665:web:fe83579085038a7273b3d8",
-  measurementId: "G-1CG0YVRVE5"
+firebaseConfig = {
+  "apiKey": "AIzaSyBlyp5HYemfqgpr076XMWSGWWK8VLpCDiI",
+  "authDomain": "admin-central-de-envios.firebaseapp.com",
+  "databaseURL": "https://admin-central-de-envios-default-rtdb.firebaseio.com",
+  "projectId": "admin-central-de-envios",
+  "storageBucket": "admin-central-de-envios.appspot.com",
+  "messagingSenderId": "789658214665",
+  "appId": "1:789658214665:web:fe83579085038a7273b3d8",
+  "measurementId": "G-1CG0YVRVE5"
 }
 
 @app.route("/rateRequest", methods=["GET"])

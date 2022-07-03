@@ -6,7 +6,32 @@
             "request": "launch",
             "build": {
                 "buildpacks": {
-                    "path": "formulario/package.json",
+                    "path": "back-node/package.json",
+                    "builder": "gcr.io/buildpacks/builder:v1"
+                }
+            },
+            "image": "quickpack",
+            "service": {
+                "name": "quickpack",
+                "containerPort": 8080,
+                "resources": {
+                    "limits": {
+                        "memory": "256Mi"
+                    }
+                }
+            },
+            "target": {
+                "minikube": {}
+            },
+            "watch": true
+        },
+        {
+            "name": "Cloud Run: Run/Debug Locally",
+            "type": "cloudcode.cloudrun",
+            "request": "launch",
+            "build": {
+                "buildpacks": {
+                    "path": "back-node/package.json",
                     "builder": "gcr.io/buildpacks/builder:v1"
                 }
             },
