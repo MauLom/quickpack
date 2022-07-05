@@ -11,7 +11,16 @@ API_SHIPMENT = "https://wsbexpress.dhl.com/rest/sndpt/ShipmentRequest"
 headers = {
     'content-type': 'application/json'
 }
-
+firebaseConfig = {
+  "apiKey": "AIzaSyBlyp5HYemfqgpr076XMWSGWWK8VLpCDiI",
+  "authDomain": "admin-central-de-envios.firebaseapp.com",
+  "databaseURL": "https://admin-central-de-envios-default-rtdb.firebaseio.com",
+  "projectId": "admin-central-de-envios",
+  "storageBucket": "admin-central-de-envios.appspot.com",
+  "messagingSenderId": "789658214665",
+  "appId": "1:789658214665:web:fe83579085038a7273b3d8",
+  "measurementId": "G-1CG0YVRVE5"
+}
 
 @app.route("/rateRequest", methods=["GET"])
 def rateRequest():
@@ -401,6 +410,9 @@ def getCitybyZipCode():
     response = jsonify(r.text)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
+
+@app.route("/getRequestByUser", methods=["GET"])
+def getRequestByUser():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="8080", debug=True)
