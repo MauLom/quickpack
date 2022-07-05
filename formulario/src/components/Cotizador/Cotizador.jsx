@@ -328,6 +328,7 @@ export default function Cotizaciones() {
                         setArrServicios(auxArr)
 
                     } else if (auxString.charAt(0) == "[") {
+                        ///Quedo aca la migracion
                         auxArr = JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service))
                         const q = query(collection(db, "Cuenta"), where("id", "==", localStorage.getItem("userId")))
                         let dataUsuario = ""
