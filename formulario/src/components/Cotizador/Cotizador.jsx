@@ -427,6 +427,35 @@ export default function Cotizaciones() {
             })
     }
 
+    const consultaApiRates = () => {
+        const URLgetRates = "https://back-node-al2vij23ta-uc.a.run.app/getRates"
+        fetch(URLgetRates, {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: {
+                "timestamp": "2022-07-06T12:00:00+GMT+0100",
+                "shipperCity": "Monterrey",
+                "shipperCountryCode": "MX",
+                "shipperZip": "64000",
+                "recipientCity": "San Nicolas de los Garza",
+                "recipientCountryCode": "MX",
+                "recipientZip": "66494",
+                "packages": [{ "@number": 1, "Weight": { "Value": "5" }, "Dimensions": { "Length": "10", "Width": "10", "Height": "10" } }],
+                "insurance": "0",
+                "userId": "1kv0WKS4BRiHT9cBsu3r"
+            }
+        })
+            .then(response => {
+                console.log("response: ", response)
+                return response.json()
+            })
+            .then((data) => {
+                console.log("data:", data)
+            })
+    }
+
     ///API Zipcodes
     const consultaZipCodes = (zipCode, ubicacion) => {
         setLoaderBtnCotizar(true)
@@ -449,19 +478,19 @@ export default function Cotizaciones() {
                 // let cuartoIndice = stringAddres.indexOf(" , ", partiDesde)
                 // let stringCortarSinCp = stringAddres.substring(tercerIndice, cuartoIndice)
 
-                
+
                 let auxCadena = dataParsed.results[0].formatted_address
                 let primerIndiceComa = auxCadena.indexOf(",")
-                let auxNumerIndice = Number(primerIndiceComa) +1
+                let auxNumerIndice = Number(primerIndiceComa) + 1
                 let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
-                let indicePartida = auxNumerIndice+6
+                let indicePartida = auxNumerIndice + 6
                 let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
 
                 var dataParsed = JSON.parse(response.data)
                 if (ubicacion == "origen") {
                     setDatos({
                         ...datos,
-                        "originCity":  cadenaCortada,
+                        "originCity": cadenaCortada,
                         "originZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)
@@ -490,7 +519,6 @@ export default function Cotizaciones() {
     };
     const handleClose = (value) => {
         setOpen(false);
-
     };
 
 
@@ -563,7 +591,7 @@ export default function Cotizaciones() {
                                 </Stack>
                                 <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
                                     <LoadingButton loading={loaderBtnAgregarPaquete} variant="outlined"><span className="material-icons" onClick={() => { agregarPaqueteVacio() }}>playlist_add</span></LoadingButton>
-                                    <LoadingButton loading={loaderBtnCotizar} onClick={consultaAPI} variant="contained">Cotizar</LoadingButton>
+                                    <LoadingButton loading={loaderBtnCotizar} onClick={()=>consultaApiRates()} variant="contained">Cotizar</LoadingButton>
                                 </Stack>
 
                             </Stack>
