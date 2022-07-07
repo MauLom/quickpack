@@ -428,24 +428,26 @@ export default function Cotizaciones() {
     }
 
     const consultaApiRates = () => {
-        const URLgetRates = "https://back-node-al2vij23ta-uc.a.run.app/getRates"
+        const URLgetRates = "http://localhost:8080/getRates"
+        //const URLgetRates = "localhost:8080/getRates"
         fetch(URLgetRates, {
             method: 'POST',
             headers: {
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'Content-type': 'application/json; charset=UTF-8'
             },
-            body: {
-                "timestamp": "2022-07-06T12:00:00+GMT+0100",
+            body: JSON.stringify({
+                "timestamp": "2022-07-08T12:00:00+GMT+0100",
                 "shipperCity": "Monterrey",
                 "shipperCountryCode": "MX",
                 "shipperZip": "64000",
                 "recipientCity": "San Nicolas de los Garza",
-                "recipientCountryCode": "MX",
+                "recipientCountryCode" : "MX",
                 "recipientZip": "66494",
-                "packages": [{ "@number": 1, "Weight": { "Value": "5" }, "Dimensions": { "Length": "10", "Width": "10", "Height": "10" } }],
+                "packages" : [{"@number":1,"Weight":{"Value":"5"},"Dimensions":{"Length":"10","Width":"10","Height":"10"}}],
                 "insurance": "0",
                 "userId": "1kv0WKS4BRiHT9cBsu3r"
-            }
+             })
         })
             .then(response => {
                 console.log("response: ", response)

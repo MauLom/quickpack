@@ -32,6 +32,7 @@ router.post('/', async (req, res) => {
         userId=  req.body?.userId
 
         const dataToDHL = controllerDHLServices.structureRequestToDHL(timestamp, shipperCity, shipperZip, shipperCountryCode, recipientCity, recipientZip, recipientCountryCode, packages, insurance)
+        console.log("Packages: ", packages)
         const dataResponseDHL = await controllerDHLServices.getRateAndStructure(dataToDHL)
         const zoneForCalc = await controllerZone.getZone(shipperZip, recipientZip)
         const weightForCalcs = controllerWeight.getWeightForCalcs(packages)
@@ -43,7 +44,7 @@ router.post('/', async (req, res) => {
 
     } catch (e) {
         console.log("error:", e)
-        res.status(200).json({messages:"No se pudieron leer los datos"})
+        res.status(200).json({messages:"No se pudieron leer los datos:" + e})
     }
 
 })

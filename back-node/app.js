@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 const axios = require('axios');
+var cors = require('cors')
 const getRatesRoute = require('./api-routes/getRates')
 app.use(express.json())
 
+app.use(cors())
 function structureRequestToDHL(timestamp, shipperCity, shipperZip, shipperCountryCode, recipientCity, recipientZip, recipientCountryCode, packages, insurance) {
   const data = {
     "RateRequest": {
