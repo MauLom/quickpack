@@ -39,5 +39,14 @@ module.exports = {
         } else {
             return ffTaxes.data()
         }
+    },
+    getReferenceForPackagesById: async (userId) => {
+        const docRef = db.collection('Cuenta').doc(userId)
+        const userDoc = await docRef.get()
+        if (!userDoc.exists) {
+            return { error: "error", message: "User ID not found" }
+        } else {
+            return userDoc.data().referencia
+        }
     }
 }

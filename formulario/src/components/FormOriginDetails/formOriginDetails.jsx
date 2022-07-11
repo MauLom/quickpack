@@ -9,11 +9,11 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
   const [dataOrigin, setDataOrigin] = React.useState({
     clientName: '',
     companyName: '',
-    cellphoneOrigin: '',
-    mailOrigin: '',
-    streetLinesDetiny: '',
-    cityOrigin: '',
-    zipCodeOrigin: '',
+    cellphone: '',
+    mail: '',
+    streetLines: '',
+    city: '',
+    zipCode: '',
   })
   const [direccionLinea1, setDireccionLinea1] = React.useState('')
   const [direccionLinea2, setDireccionLinea2] = React.useState('')
@@ -47,7 +47,7 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
     let streetLinesConcat = direccionLinea1 + direccionLinea2 + direccionLinea3
     setDataOrigin({
       ...dataOrigin,
-      streetLinesDetiny: direccionLinea1 + direccionLinea2 + direccionLinea3
+      streetLines: direccionLinea1 + direccionLinea2 + direccionLinea3
     })
     if (sessionStorage.getItem("generacionGuia") != null) {
       objAsString = {
@@ -55,11 +55,14 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
         originData: {
           clientName: dataOrigin.clientName,
           companyName: dataOrigin.companyName,
-          cellphoneOrigin: dataOrigin.cellphoneOrigin,
-          mailOrigin: dataOrigin.mailOrigin,
-          streetLinesDetiny:streetLinesConcat,
-          cityOrigin: dataOrigin.cityOrigin,
-          zipCodeOrigin: dataOrigin.zipCodeOrigin,
+          cellphone: dataOrigin.cellphone,
+          mail: dataOrigin.mail,
+          streetLines: (dataOrigin.direccion1 + dataOrigin.direccion2 + dataOrigin.direccion3),
+          city: dataOrigin.city,
+          zipCode: dataOrigin.zipCode,
+          direccion1: dataOrigin.direccion1,
+          direccion2: dataOrigin.direccion2,
+          direccion3: dataOrigin.direccion3
         }
       }
     } else {
@@ -67,11 +70,14 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
         originData: {
           clientName: dataOrigin.clientName,
           companyName: dataOrigin.companyName,
-          cellphoneOrigin: dataOrigin.cellphoneOrigin,
-          mailOrigin: dataOrigin.mailOrigin,
-          streetLinesDetiny:streetLinesConcat,
-          cityOrigin: dataOrigin.cityOrigin,
-          zipCodeOrigin: dataOrigin.zipCodeOrigin,
+          cellphone: dataOrigin.cellphone,
+          mail: dataOrigin.mail,
+          streetLines: (dataOrigin.direccion1 + dataOrigin.direccion2 + dataOrigin.direccion3),
+          city: dataOrigin.city,
+          zipCode: dataOrigin.zipCode,
+          direccion1: dataOrigin.direccion1,
+          direccion2: dataOrigin.direccion2,
+          direccion3: dataOrigin.direccion3
         }
       }
     }
@@ -94,14 +100,15 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
         var dataParsed = JSON.parse(response.data)
         setDataOrigin({
           ...dataOrigin,
-          "cityOrigin": cadenaCortada,
-          "zipCodeOrigin": dataParsed.results[0].address_components[0].long_name
+          "city": cadenaCortada,
+          "zipCode": dataParsed.results[0].address_components[0].long_name
         })
 
       })
   }
   const handleChangeDireccionLinea1 = (event) => {
     setDireccionLinea1(event.target.value)
+    console.log("dir.linea1", dataOrigin.direccion1)
   }
   const handleChangeDireccionLinea2 = (event) => {
     setDireccionLinea2(event.target.value)
@@ -122,17 +129,17 @@ export default function FormOriginDetails({ goNextStep, changeLoading }) {
           <Stack direction="column" justifyContent="space-around" alignItems="center">
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.clientName} placeholder="Nombre origen" label="Quien envia" margin="normal" name="clientName" />
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.companyName} placeholder="Nombre compañia" label="Compañia que envia" margin="normal" name="companyName" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.cellphoneOrigin} placeholder="Numero celular" label="Numero Celular Origen" margin="normal" name="cellphoneOrigin" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.mailOrigin} placeholder="Correo" label="Correo de Origen" margin="normal" name="mailOrigin" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.zipCodeOrigin} placeholder="Codigo Postal" label="Codigo postal de Origen" margin="normal" name="zipCodeOrigin" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.cellphone} placeholder="Numero celular" label="Numero Celular Origen" margin="normal" name="cellphone" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.mail} placeholder="Correo" label="Correo de Origen" margin="normal" name="mail" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.zipCode} placeholder="Codigo Postal" label="Codigo postal de Origen" margin="normal" name="zipCode" />
 
             {/* <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.streetLinesDetiny} placeholder="Entre Calles" label="Entre Calles del Origen" margin="normal" name="streetLinesDetiny" /> */}
-            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea1} value={direccionLinea1} placeholder="Direccion 1 (Calle y numero)" label="Calle y numero de Origen" margin="normal" name="streetAndNumberOrigin" />
-            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea2} value={direccionLinea2} placeholder="Direccion 2 (Colonia)" label="Colonia de Origen" margin="normal" name="suburbOrigin" />
-            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea3} value={direccionLinea3} placeholder="Direccion 3 (Referencia)" label="Referencia de Origen" margin="normal" name="referenceOrigin" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.direccion1} placeholder="Direccion 1 (Calle y numero)" label="Calle y numero de Origen" margin="normal" name="direccion1" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.direccion2} placeholder="Direccion 2 (Colonia)" label="Colonia de Origen" margin="normal" name="direccion2" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.direccion3} placeholder="Direccion 3 (Referencia)" label="Referencia de Origen" margin="normal" name="direccion3" />
 
 
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.cityOrigin} placeholder="Ciudad Origen" label="Ciudad de Origen" margin="normal" name="cityOrigin" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataOrigin.city} placeholder="Ciudad Origen" label="Ciudad de Origen" margin="normal" name="city" />
             <Button color="primary" variant="contained" onClick={() => handleClickContinuar()}>Continuar</Button>
           </Stack>
         </Paper>

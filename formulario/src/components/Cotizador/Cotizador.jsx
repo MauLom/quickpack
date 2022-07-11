@@ -103,9 +103,7 @@ export default function Cotizaciones() {
     const renderSwitch = (param) => {
 
         const generarGuia = () => {
-            console.log("llamo a generar guia")
             let auxobj = []
-            console.log("paquetes: ", paquetesList)
             paquetesList.forEach(cadaPaquete => {
                 let paqueteToGuias = { "@number": 0, "Weight": 0, "Dimensions": {} }
                 paqueteToGuias['@number'] = cadaPaquete['@number']
@@ -117,18 +115,17 @@ export default function Cotizaciones() {
             })
             let objToStorage = {
                 destinyData: {
-                    cityDestiny: datos.destinyCity,
-                    zipCodeDestiny: datos.destinyZip
+                    city: datos.destinyCity,
+                    zipCode: datos.destinyZip
                 },
                 originData: {
-                    cityOrigin: datos.originCity,
-                    zipCodeOrigin: datos.originZip
+                    city: datos.originCity,
+                    zipCode: datos.originZip
                 },
                 packageData: auxobj,
                 date: datos.shipmentDate,
                 serviceType: param['@type']
             }
-            console.log("objToStorage: ", objToStorage)
             sessionStorage.setItem("generacionGuia", JSON.stringify(objToStorage))
         }
 
@@ -306,130 +303,9 @@ export default function Cotizaciones() {
         setLoaderBtnAgregarPaquete(false);
     }
     //API Consulta
-    const consultaAPI = (event) => {
-        setLoaderBtnCotizar(true)
-        event.preventDefault()
-        var dataZoneString = "https://quickpack-back-al2vij23ta-uc.a.run.app/getZoneRequest"
-            + "?AA01=" + Number(datos.originZip)
-            + "&BB01=" + Number(datos.destinyZip)
-        Api.getRateRequest(datos.shipmentDate, datos.originCity, datos.originZip, "MX", datos.destinyCity, datos.destinyZip, "MX", "0", paquetesList, datos.insurance != '' ? datos.insurance : 0)
-
-            .then(response => {
-                var dataJSONParsed = JSON.parse(response.data)
-                var code = dataJSONParsed.RateResponse.Provider[0].Notification[0]['@code']
-                setHasErrorAPI(code != 0 ? true : false)
-                if (hasErrorAPI == true) {
-                    setErrorMsg(dataJSONParsed.RateResponse.Provider[0].Notification[0]['Message'])
-                } else {
-                    var auxString = JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service)
-                    var auxArr = [];
-                    if (auxString.charAt(0) == "{") {
-                        auxArr.push(JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service)))
-                        setArrServicios(auxArr)
-
-                    } else if (auxString.charAt(0) == "[") {
-                        ///Quedo aca la migracion
-                        auxArr = JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service))
-                        const q = query(collection(db, "Cuenta"), where("id", "==", localStorage.getItem("userId")))
-                        let dataUsuario = ""
-
-                        fetch(dataZoneString, {
-                            method: 'GET',
-                            headers: {
-                                'Access-Control-Allow-Origin': '*'
-                            }
-                        })
-                            .then(response => {
-                                return response.json()
-                            })
-                            .then((dataZoneIndex) => {
-                                setZoneofService(dataZoneIndex)
-                                let pesoForNuevosCalculos = 0;
-                                let pesoVolumetrico = 0
-                                let pesoReal = 0
-                                if (paquetesList.length > 1) {
-                                    let listaPaquetes = paquetesList
-                                    listaPaquetes.forEach(cadaPaquete => {
-                                        pesoReal = Number.parseInt(cadaPaquete['Weight']['Value'])
-                                        let heighNumber = Number.parseInt(cadaPaquete.Dimensions['Height'])
-                                        let widthNumber = Number.parseInt(cadaPaquete.Dimensions['Width'])
-                                        let lengthNumber = Number.parseInt(cadaPaquete.Dimensions['Length'])
-                                        pesoVolumetrico = (heighNumber * widthNumber * lengthNumber) / 5000
-                                        if (pesoVolumetrico > pesoReal) {
-                                            pesoForNuevosCalculos = pesoForNuevosCalculos + pesoVolumetrico
-                                        } else {
-                                            pesoForNuevosCalculos = pesoForNuevosCalculos + pesoReal
-                                        }
-                                    })
-
-
-                                } else {
-                                    let objPckg = paquetesList[0]
-                                    let heighNumber = Number.parseInt(objPckg.Dimensions['Height'])
-                                    let widthNumber = Number.parseInt(objPckg.Dimensions['Width'])
-                                    let lengthNumber = Number.parseInt(objPckg.Dimensions['Length'])
-                                    pesoVolumetrico = (heighNumber * widthNumber * lengthNumber) / 5000
-                                    pesoReal = paquetesList[0]['Weight']['Value']
-                                    if (pesoVolumetrico > pesoReal) {
-                                        pesoForNuevosCalculos = pesoVolumetrico
-                                    } else {
-                                        pesoForNuevosCalculos = pesoReal
-                                    }
-                                }
-
-                                let auxRedondeo = Math.round(pesoForNuevosCalculos)
-                                if (pesoForNuevosCalculos > auxRedondeo) {
-                                    pesoForNuevosCalculos = Number.parseInt(pesoForNuevosCalculos + 1)
-                                } else {
-                                    pesoForNuevosCalculos = auxRedondeo
-                                }
-                                //pesoForNuevosCalculos = pesoVolumetrico > pesoReal ? pesoVolumetrico : pesoReal
-                                var auxaux = generarArrNuevosPrecios(auxArr, userData, pesoForNuevosCalculos, dataZoneIndex)
-                                setArrServicios(auxaux);
-                                setArrDataAll(auxaux)
-                            })
-                    }
-
-                }
-                var collectionRef = firestore.collection(db, "Cotizaciones");
-
-                firestore.addDoc(collectionRef, {
-                    DestinyCC: "MX",
-                    DestinyCity: datos.destinyCity,
-                    DestinyZip: datos.destinyZip,
-                    OriginCity: datos.originCity,
-                    OriginCC: "MX",
-                    OriginZip: datos.originZip,
-                    Height: datos.height,
-                    Insurance: datos.insurance,
-                    Longitude: datos.longitude,
-                    ShipmentDate: datos.shipmentDate,
-                    Weight: datos.weight,
-                    Width: datos.width,
-                    statusGuia: 0,
-                    userCreador: localStorage.getItem("userName"),
-                    userCreadorId: localStorage.getItem("Id")
-                }).then(response => {
-                    var respuesta = response;
-                }).catch(error => {
-                    console.log("Error:", error)
-                })
-                handleClickOpen()
-                var objDataParsedAux = JSON.parse(response.data)
-                setArrServicios(response.data)
-                var objCorrectRefToService = objDataParsedAux['RateResponse']['Provider'][0]['Service']
-                var objTratado = generarArrNuevosPrecios(objCorrectRefToService,)
-
-                setLoaderBtnCotizar(false)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
-
     const consultaApiRates = () => {
         const URLgetRates = "https://back-node-zagnnz6nfq-uc.a.run.app/getRates"
-        //const URLgetRates = "localhost:8080/getRates"
+        //const URLgetRates = "http://localhost:8080/getRates"
         setLoaderBtnCotizar(true)
         console.log("data del user: ", userData)
         const dateParsedToSting = datos.shipmentDate.toString() + "T12:00:00+GMT+0100"
@@ -477,35 +353,18 @@ export default function Cotizaciones() {
         Api.getCityDataBasedOnZipCode(zipCode)
 
             .then(response => {
-
                 var dataParsed = JSON.parse(response.data)
-
-                // let stringAddress = dataParsed.results[0].formatted_address
-                // let primerIndice = stringAddress.indexOf(",")
-                // let partirDesde = Number.parseInt(primerIndice) + 1
-                // let segundoIndice = stringAddress.indexOf(",", partirDesde)
-                // let stringCortadaConCP = stringAddress.substring(primerIndice, segundoIndice)
-
-
-                // let stringAddres = stringCortadaConCP
-                // let tercerIndice = stringAddres.indexOf(" , ")
-                // let partiDesde = Number.parseInt(tercerIndice) + 1
-                // let cuartoIndice = stringAddres.indexOf(" , ", partiDesde)
-                // let stringCortarSinCp = stringAddres.substring(tercerIndice, cuartoIndice)
-
-
                 let auxCadena = dataParsed.results[0].formatted_address
-                let primerIndiceComa = auxCadena.indexOf(",")
-                let auxNumerIndice = Number(primerIndiceComa) + 1
-                let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
-                let indicePartida = auxNumerIndice + 7
-                let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
-
+                let posicionZip = auxCadena.indexOf(zipCode)
+                posicionZip = posicionZip + zipCode.length
+                let sinZip = auxCadena.substring(posicionZip, auxCadena.length)
+                let sinMexico = sinZip.replace(", Mexico", "")
+                let cadenaFinal =  sinMexico.replace(" ", "")
                 var dataParsed = JSON.parse(response.data)
                 if (ubicacion == "origen") {
                     setDatos({
                         ...datos,
-                        "originCity": cadenaCortada,
+                        "originCity": cadenaFinal,
                         "originZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)
@@ -514,7 +373,7 @@ export default function Cotizaciones() {
                 else if (ubicacion == "destino") {
                     setDatos({
                         ...datos,
-                        "destinyCity": cadenaCortada,
+                        "destinyCity": cadenaFinal,
                         "destinyZip": dataParsed.results[0].address_components[0].long_name
                     })
                     // setIsLoading(false)

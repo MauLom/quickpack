@@ -1,9 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const controllerDHLServices = require('../services/connectionDHLServices')
-
+const controllerUserData = require('../models/controllerFirebaseBD')
 router.post('/', async (req, res) => {
     try {
+        const userReference = await controllerUserData.getReferenceForPackagesById(req.body.userId)
+        let newArrWithPackagess = req.body.packages
+        newArrWithPackagess.forEach(cadaPaquete =>{
+            cadaPaquete['CustomerReferences'] = userReference
+        })
         const dataObj = {
             "ShipmentRequest": {
                 "RequestedShipment": {
@@ -20,7 +25,7 @@ router.post('/', async (req, res) => {
                         },
                         "LabelType": "ZPL"
                     },
-                    "ShipTimestamp": req.body.date,
+                    "ShipTimestamp": req.body.date + "T12:00:00 GMT-05:00",
                     "PaymentInfo": "DDU",
                     "InternationalDetail": {
                         "Commodities": {
@@ -59,7 +64,7 @@ router.post('/', async (req, res) => {
                         }
                     },
                     "Packages": {
-                        "RequestedPackages": req.body.pacakages
+                        "RequestedPackages": req.body.packages
                     }
                 }
             }

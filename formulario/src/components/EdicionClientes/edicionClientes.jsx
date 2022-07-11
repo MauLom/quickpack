@@ -80,8 +80,8 @@ function EdicionClientes() {
     ///  Si  peso Volumetrico > peso real,   usar peso volumetrico   para   calculo
     var datosOut = []
 
-    function formatFilasClientes(id, Nombre, Apellidos, tipoBeneficio, Pass, matriz, porcentajes) {
-        return { id, Nombre, Apellidos, tipoBeneficio, Pass, matriz, porcentajes };
+    function formatFilasClientes(id, Nombre, Apellidos, tipoBeneficio, Pass, matriz, porcentajes, referencia) {
+        return { id, Nombre, Apellidos, tipoBeneficio, Pass, matriz, porcentajes, referencia };
     }
     const q = query(collection(database, "Cuenta"))
     React.useState(() => {
@@ -90,7 +90,7 @@ function EdicionClientes() {
         getDocs(q)
             .then(res => {
                 res.forEach((doc) => {
-                    datosOut.push(formatFilasClientes(doc.id, doc.data().Nombre, doc.data().Apellidos, doc.data().tipoBeneficio, doc.data().Pass, doc.data().matriz, doc.data().porcentajes ? doc.data().porcentajes : {}));
+                    datosOut.push(formatFilasClientes(doc.id, doc.data().Nombre, doc.data().Apellidos, doc.data().tipoBeneficio, doc.data().Pass, doc.data().matriz, doc.data().porcentajes ? doc.data().porcentajes : {},  doc.data().referencia ? doc.data().referencia : ""));
                 })
                 setUsersList(datosOut);
             })
@@ -212,6 +212,14 @@ function EdicionClientes() {
                                 <input disabled type="text" name="Pass" className="inputs" onChange={handelDatosChanges}
                                     value={slctdUser.Pass}></input>
                             </label>
+                            <label >
+                                <input type="text" name="referencia" className="inputs" placeholder="Referencia para envios"
+                                value={slctdUser.referencia}  onChange={handelDatosChanges}
+                                    ></input>
+                            </label>
+
+
+
                             <div > <div className="title-cliente">Por favor edite la informacion de descuento&nbsp;&nbsp;&nbsp;<span style={botonModelo} onClick={handleCambioModelo} >Cambiar Modelo Edicion</span></div> </div>
                             {
                                 mostrarDiagrama ?

@@ -8,11 +8,11 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
   const [dataDestiny, setDataDestiny] = React.useState({
     clientName: '',
     companyName: '',
-    cellphoneDestiny: '',
-    mailDestiny: '',
-    streetLinesDestiny: '',
-    cityDestiny: '',
-    zipCodeDestiny: '',
+    cellphone: '',
+    mail: '',
+    streetLines: '',
+    city: '',
+    zipCode: '',
   })
   const [direccionLinea1, setDireccionLinea1] = React.useState('')
   const [direccionLinea2, setDireccionLinea2] = React.useState('')
@@ -38,10 +38,9 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
   }
   const handleClickContinuar = () => {
     let objAsString = {}
-    let streetLinesConcat = direccionLinea1 + direccionLinea2 + direccionLinea3
     setDataDestiny({
       ...dataDestiny,
-      streetLinesDetiny: direccionLinea1 + direccionLinea2 + direccionLinea3
+      streetLines: direccionLinea1 + direccionLinea2 + direccionLinea3
     })
     if (sessionStorage.getItem("generacionGuia") != undefined) {
       objAsString = {
@@ -49,11 +48,14 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
         destinyData: {
           clientName: dataDestiny.clientName,
           companyName: dataDestiny.companyName,
-          cellphoneDestiny: dataDestiny.cellphoneDestiny,
-          mailDestiny: dataDestiny.mailDestiny,
-          streetLinesDestiny: streetLinesConcat,
-          cityDestiny: dataDestiny.cityDestiny,
-          zipCodeDestiny: dataDestiny.zipCodeDestiny,
+          cellphone: dataDestiny.cellphone,
+          mail: dataDestiny.mail,
+          streetLines: (dataDestiny.direccion1 + dataDestiny.direccion2 + dataDestiny.direccion3),
+          city: dataDestiny.city,
+          zipCode: dataDestiny.zipCode,
+          direccion1: dataDestiny.direccion1,
+          direccion2: dataDestiny.direccion2,
+          direccion3: dataDestiny.direccion3
         }
       }
     } else {
@@ -61,11 +63,14 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
         destinyData: {
           clientName: dataDestiny.clientName,
           companyName: dataDestiny.companyName,
-          cellphoneDestiny: dataDestiny.cellphoneDestiny,
-          mailDestiny: dataDestiny.mailDestiny,
-          streetLinesDestiny: streetLinesConcat,
-          cityDestiny: dataDestiny.cityDestiny,
-          zipCodeDestiny: dataDestiny.zipCodeDestiny,
+          cellphone: dataDestiny.cellphone,
+          maily: dataDestiny.mail,
+          streetLines: (dataDestiny.direccion1 + dataDestiny.direccion2 + dataDestiny.direccion3),
+          city: dataDestiny.city,
+          zipCode: dataDestiny.zipCode,
+          direccion1: dataDestiny.direccion1,
+          direccion2: dataDestiny.direccion2,
+          direccion3: dataDestiny.direccion3
         }
       }
     }
@@ -93,15 +98,7 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
 
 
   }
-  const handleChangeDireccionLinea1 = (event) => {
-    setDireccionLinea1(event.target.value)
-  }
-  const handleChangeDireccionLinea2 = (event) => {
-    setDireccionLinea2(event.target.value)
-  }
-  const handleChangeDireccionLinea3 = (event) => {
-    setDireccionLinea3(event.target.value)
-  }
+  
   return (
     <>
       <Box sx={{ backgroundColor: "white", textAlign: "center", margin: "5% 5% 5% 5%" }}>
@@ -110,14 +107,14 @@ export default function FormDestinyDetails({ goNextStep, changeLoading }) {
           <Stack direction="column" justifyContent="space-around" alignItems="center">
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.clientName} placeholder="Nombre destino" label="Quien recibe" margin="normal" name="clientName" />
             <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.companyName} placeholder="Nombre compañia" label="Nombre De Compañia Destino" margin="normal" name="companyName" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.cellphoneDestiny} placeholder="Numero celular" label="Numero Celular Destino" margin="normal" name="cellphoneDestiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.mailDestiny} placeholder="Correo" label="Correo de Destino" margin="normal" name="mailDestiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.zipCodeDestiny} placeholder="Codigo Postal" label="Codigo postal Destino" margin="normal" name="zipCodeDestiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea1} value={direccionLinea1} placeholder="Direccion 1 (Calle y numero)" label="Calle y numero de Destino" margin="normal" name="streetAndNumberDestiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea2} value={direccionLinea2} placeholder="Direccion 2 (Colonia)" label="Colonia de Destino" margin="normal" name="suburbDestiny" />
-            <TextField sx={{ width: "50%" }} onChange={handleChangeDireccionLinea3} value={direccionLinea3} placeholder="Direccion 3 (Referencia)" label="Referencia de Destino" margin="normal" name="referenceDestiny" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.cellphone} placeholder="Numero celular" label="Numero Celular Destino" margin="normal" name="cellphone" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.mail} placeholder="Correo" label="Correo de Destino" margin="normal" name="mail" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.zipCode} placeholder="Codigo Postal" label="Codigo postal Destino" margin="normal" name="zipCode" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.direccion1} placeholder="Direccion 1 (Calle y numero)" label="Calle y numero de Destino" margin="normal" name="direccion1" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.direccion2} placeholder="Direccion 2 (Colonia)" label="Colonia de Destino" margin="normal" name="direccion2" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.direccion3} placeholder="Direccion 3 (Referencia)" label="Referencia de Destino" margin="normal" name="direccion3" />
 
-            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.cityDestiny} placeholder="Ciudad Origen" label="Ciudad Destino" margin="normal" name="cityDestiny" />
+            <TextField sx={{ width: "50%" }} onChange={handleDatosChange} value={dataDestiny.city} placeholder="Ciudad Destino" label="Ciudad Destino" margin="normal" name="city" />
             <Button color="primary" variant="contained" onClick={() => handleClickContinuar()}>Continuar</Button>
           </Stack>
 

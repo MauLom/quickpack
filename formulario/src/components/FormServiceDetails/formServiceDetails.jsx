@@ -56,26 +56,59 @@ export default function FormServiceDetails({ changeLoading }) {
   }
 
   const handleClickGenerarGuia = () => {
-    console.log("Data de storage:", dataGuia)
+
+    console.log("lines:", )
+
     var formattedDate = ""
     if (dateValue.length <= 10) {
       formattedDate = dateValue
     } else {
       formattedDate = format(dateValue, "yyyy-MM-dd");
     }
-    Api.getShipmentRequest(formattedDate, dataGuia.originData.clientName, dataGuia.originData.companyName, dataGuia.originData.cellphoneOrigin, dataGuia.originData.mailOrigin, dataGuia.originData.cityOrigin, dataGuia.originData.zipCodeOrigin, "MX", dataGuia.originData.streetLinesDetiny, dataGuia.destinyData.clientName, dataGuia.destinyData.companyName, dataGuia.destinyData.cellphoneDestiny, dataGuia.destinyData.mailDestiny, dataGuia.destinyData.cityDestiny, dataGuia.destinyData.zipCodeDestiny, "MX", dataGuia.destinyData.streetLinesDestiny, "1000", JSON.stringify(dataGuia.packageData), descripcion, "ref", servicioOptions[slctdServicioTipo].value, descripcion)
-      .then(response => {
-        let objDataResponse = JSON.parse(response.data)
-        console.log("Just response: ", objDataResponse)
-        console.log("response number", objDataResponse.ShipmentResponse.ShipmentIdentificationNumber)
-        let auxZPLdecoded = atob(objDataResponse.ShipmentResponse.LabelImage[0].GraphicImage)
-        setZPLString(auxZPLdecoded)
-        setNumeroDeGuia(objDataResponse.ShipmentResponse.ShipmentIdentificationNumber)
-        setGuiaGenerada(true);
+    //const urlGenerateLabel = "http://localhost:8080/generateLabel"
+    const urlGenerateLabel = "https://back-node-zagnnz6nfq-uc.a.run.app/generateLabel"
 
+    fetch(urlGenerateLabel, {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify({
+        "service": servicioOptions[slctdServicioTipo].value,
+        "date": formattedDate,
+        "desc": descripcion,
+        "userId": localStorage.getItem("userId"),
+
+
+        "oName": dataGuia.originData.clientName,
+        "oCompany": dataGuia.originData.companyName,
+        "oPhone": dataGuia.originData.cellphone,
+        "oEmail": dataGuia.originData.mail,
+        "oStreets": dataGuia.originData.streetLines,
+        "oCity": dataGuia.originData.city,
+        "oZip": dataGuia.originData.zipCode,
+
+        "dName": dataGuia.destinyData.clientName,
+        "dCompany": dataGuia.destinyData.companyName,
+        "dPhone": dataGuia.destinyData.cellphone,
+        "dEmail": dataGuia.destinyData.mail,
+        "dStreets": dataGuia.destinyData.streetLines,
+        "dCity": dataGuia.destinyData.city,
+        "dZip": dataGuia.destinyData.zipCode,
+        "packages": dataGuia.packageData
       })
-
-
+    })
+      .then(response => {
+        console.log("response: ", response)
+        return response.json()
+      })
+      .then((resObj) => {
+        let auxZPLdecoded = atob(resObj.data.ShipmentResponse.LabelImage[0].GraphicImage)
+        setZPLString(auxZPLdecoded)
+        setNumeroDeGuia(resObj.data.ShipmentResponse.ShipmentIdentificationNumber)
+        setGuiaGenerada(true);
+      })
   }
   const handleConvertZPLToIMG = () => {
 
@@ -122,8 +155,7 @@ export default function FormServiceDetails({ changeLoading }) {
 
   };
 
-  const handleChangeDescripcion = (event) =>{
-    console.log("event", event.target.value)
+  const handleChangeDescripcion = (event) => {
     setDescripcion(event.target.value)
   }
 
@@ -148,7 +180,7 @@ export default function FormServiceDetails({ changeLoading }) {
                 />
               </LocalizationProvider>
 
-              <TextField label="Descripcion de envio" onChange={handleChangeDescripcion}/>
+              <TextField label="Descripcion de envio" onChange={handleChangeDescripcion} />
               <Button onClick={() => handleClickGenerarGuia()}>Generar Guia</Button>
             </Stack>
           </Box>
