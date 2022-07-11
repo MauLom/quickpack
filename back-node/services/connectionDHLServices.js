@@ -1,5 +1,7 @@
 const axios = require('axios');
-const urlRequestDHL = "https://wsbexpress.dhl.com/rest/sndpt/RateRequest"
+const mainUrl = "https://wsbexpress.dhl.com/rest/sndpt/"
+const rateRequest = "RateRequest"
+const shipmentRequest = "ShipmentRequest"
 
 
 module.exports = {
@@ -49,12 +51,12 @@ module.exports = {
     },
 
     getRateAndStructure: async (dataToSend) => {
-       const resolvedRequest = await axios
-            .post(urlRequestDHL, dataToSend,
+        const resolvedRequest = await axios
+            .post(mainUrl + rateRequest, dataToSend,
                 { auth: { username: "centraldeenMX", password: "B@3wZ!8bU$3g" } })
             .then(res => {
                 dataResponse = res.data
-                var code =  dataResponse.RateResponse.Provider[0]['@code']
+                var code = dataResponse.RateResponse.Provider[0]['@code']
                 if (code === 0) {
                     return dataResponse.RateResponse.Provider[0].Notification[0]['Message']
                 } else {
@@ -74,6 +76,21 @@ module.exports = {
                 console.error(error);
                 return error
             });
-       return resolvedRequest;
+        return resolvedRequest;
+    },
+
+    generateLabel: async (dataToSend) => {
+        // console.log("data received: ", dataToSend)
+        const resolvedRequest = await axios
+            .post(mainUrl + shipmentRequest, dataToSend,
+                { auth: { username: "centraldeenMX", password: "B@3wZ!8bU$3g" } })
+            .then(res => {
+                return res
+            })
+            .catch(error => {
+                console.error(error);
+                return error
+            });
+        return resolvedRequest
     }
 }

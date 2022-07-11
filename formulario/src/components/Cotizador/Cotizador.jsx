@@ -428,8 +428,11 @@ export default function Cotizaciones() {
     }
 
     const consultaApiRates = () => {
-        const URLgetRates = "http://localhost:8080/getRates"
+        const URLgetRates = "https://back-node-zagnnz6nfq-uc.a.run.app/getRates"
         //const URLgetRates = "localhost:8080/getRates"
+        setLoaderBtnCotizar(true)
+        console.log("data del user: ", userData)
+        const dateParsedToSting = datos.shipmentDate.toString() + "T12:00:00+GMT+0100"
         fetch(URLgetRates, {
             method: 'POST',
             headers: {
@@ -437,24 +440,34 @@ export default function Cotizaciones() {
                 'Content-type': 'application/json; charset=UTF-8'
             },
             body: JSON.stringify({
-                "timestamp": "2022-07-08T12:00:00+GMT+0100",
-                "shipperCity": "Monterrey",
+                "timestamp":dateParsedToSting,
+                "shipperCity": datos.originCity,
                 "shipperCountryCode": "MX",
-                "shipperZip": "64000",
-                "recipientCity": "San Nicolas de los Garza",
-                "recipientCountryCode" : "MX",
-                "recipientZip": "66494",
-                "packages" : [{"@number":1,"Weight":{"Value":"5"},"Dimensions":{"Length":"10","Width":"10","Height":"10"}}],
+                "shipperZip": datos.originZip,
+                "recipientCity": datos.destinyCity,
+                "recipientCountryCode": "MX",
+                "recipientZip": datos.destinyZip,
+                "packages": paquetesList,
                 "insurance": "0",
-                "userId": "1kv0WKS4BRiHT9cBsu3r"
-             })
+                "userId": userData.id
+            })
         })
             .then(response => {
                 console.log("response: ", response)
                 return response.json()
             })
             .then((data) => {
-                console.log("data:", data)
+                if (data.status === "error") {
+                    setHasErrorAPI(true)
+                    setErrorMsg(data.messages)
+                } else {
+                    setArrDataAll(data.DHLRateData)
+                    setZoneofService(data.zone)
+                }
+                handleClickOpen()
+                setLoaderBtnCotizar(false)
+
+                //console.log("data:", data)
             })
     }
 
@@ -485,7 +498,7 @@ export default function Cotizaciones() {
                 let primerIndiceComa = auxCadena.indexOf(",")
                 let auxNumerIndice = Number(primerIndiceComa) + 1
                 let segundoIndice = auxCadena.indexOf(",", auxNumerIndice)
-                let indicePartida = auxNumerIndice + 6
+                let indicePartida = auxNumerIndice + 7
                 let cadenaCortada = auxCadena.substring(indicePartida, segundoIndice)
 
                 var dataParsed = JSON.parse(response.data)
@@ -593,7 +606,7 @@ export default function Cotizaciones() {
                                 </Stack>
                                 <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
                                     <LoadingButton loading={loaderBtnAgregarPaquete} variant="outlined"><span className="material-icons" onClick={() => { agregarPaqueteVacio() }}>playlist_add</span></LoadingButton>
-                                    <LoadingButton loading={loaderBtnCotizar} onClick={()=>consultaApiRates()} variant="contained">Cotizar</LoadingButton>
+                                    <LoadingButton loading={loaderBtnCotizar} onClick={() => consultaApiRates()} variant="contained">Cotizar</LoadingButton>
                                 </Stack>
 
                             </Stack>

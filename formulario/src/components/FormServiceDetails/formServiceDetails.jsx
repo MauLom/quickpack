@@ -25,6 +25,7 @@ export default function FormServiceDetails({ changeLoading }) {
   const [guiaGenerada, setGuiaGenerada] = React.useState(false)
   const [ZPLstring, setZPLString] = React.useState("")
 
+  const [descripcion, setDescripcion] = React.useState("Falto descripcion en el envio")
 
   const servicioOptions = [
     { value: 'I', label: 'Servicio tipo EXPRESS DOMESTIC 9:00' },
@@ -62,7 +63,7 @@ export default function FormServiceDetails({ changeLoading }) {
     } else {
       formattedDate = format(dateValue, "yyyy-MM-dd");
     }
-    Api.getShipmentRequest(formattedDate, dataGuia.originData.clientName, dataGuia.originData.companyName, dataGuia.originData.cellphoneOrigin, dataGuia.originData.mailOrigin, dataGuia.originData.cityOrigin, dataGuia.originData.zipCodeOrigin, "MX", dataGuia.originData.streetLinesDetiny, dataGuia.destinyData.clientName, dataGuia.destinyData.companyName, dataGuia.destinyData.cellphoneDestiny, dataGuia.destinyData.mailDestiny, dataGuia.destinyData.cityDestiny, dataGuia.destinyData.zipCodeDestiny, "MX", dataGuia.destinyData.streetLinesDestiny, "1000", JSON.stringify(dataGuia.packageData), "desc", "ref", servicioOptions[slctdServicioTipo].value)
+    Api.getShipmentRequest(formattedDate, dataGuia.originData.clientName, dataGuia.originData.companyName, dataGuia.originData.cellphoneOrigin, dataGuia.originData.mailOrigin, dataGuia.originData.cityOrigin, dataGuia.originData.zipCodeOrigin, "MX", dataGuia.originData.streetLinesDetiny, dataGuia.destinyData.clientName, dataGuia.destinyData.companyName, dataGuia.destinyData.cellphoneDestiny, dataGuia.destinyData.mailDestiny, dataGuia.destinyData.cityDestiny, dataGuia.destinyData.zipCodeDestiny, "MX", dataGuia.destinyData.streetLinesDestiny, "1000", JSON.stringify(dataGuia.packageData), descripcion, "ref", servicioOptions[slctdServicioTipo].value, descripcion)
       .then(response => {
         let objDataResponse = JSON.parse(response.data)
         console.log("Just response: ", objDataResponse)
@@ -121,6 +122,11 @@ export default function FormServiceDetails({ changeLoading }) {
 
   };
 
+  const handleChangeDescripcion = (event) =>{
+    console.log("event", event.target.value)
+    setDescripcion(event.target.value)
+  }
+
   return (
     <>
       <Box sx={{ backgroundColor: "white", textAlign: "center", margin: "5% 5% 5% 5%" }}>
@@ -141,6 +147,8 @@ export default function FormServiceDetails({ changeLoading }) {
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
+
+              <TextField label="Descripcion de envio" onChange={handleChangeDescripcion}/>
               <Button onClick={() => handleClickGenerarGuia()}>Generar Guia</Button>
             </Stack>
           </Box>

@@ -6,6 +6,7 @@ const getRateRequest = "rateRequest"
 const getShipmentRequest = "shipmentResquest"
 const instance = axios.create({
   baseURL: "https://quickpack-back-al2vij23ta-uc.a.run.app/",
+  otherURL: "https://quickpack-back-zagnnz6nfq-uc.a.run.app/"
 });
 export default {
   ///RateRequest
@@ -26,7 +27,7 @@ export default {
     }),
 
   ///ShipRequest
-  getShipmentRequest: (date, oName, oCompany, oPhone, oEmail, oCity, oZip, oCC, oStreets, dName, dCompany, dPhone, dEmail, dCity, dZip, dCC, dStreets, insurance, packages, desc, ref, service) =>
+  getShipmentRequest: (date, oName, oCompany, oPhone, oEmail, oCity, oZip, oCC, oStreets, dName, dCompany, dPhone, dEmail, dCity, dZip, dCC, dStreets, insurance, packages, desc, ref, service, descripcionPaquete) =>
     instance({
       method: "GET",
       url: getShipmentRequest
@@ -53,6 +54,8 @@ export default {
         + "&EE01=" + desc
         + "&FF01=" + ref
         + "&GG01=" + service
+        + "&HH01=" + descripcionPaquete
+    
     }),
   ///ZIP
   getCityDataBasedOnZipCode: (zipCode) =>

@@ -32,7 +32,6 @@ router.post('/', async (req, res) => {
         userId=  req.body?.userId
 
         const dataToDHL = controllerDHLServices.structureRequestToDHL(timestamp, shipperCity, shipperZip, shipperCountryCode, recipientCity, recipientZip, recipientCountryCode, packages, insurance)
-        console.log("Packages: ", packages)
         const dataResponseDHL = await controllerDHLServices.getRateAndStructure(dataToDHL)
         const zoneForCalc = await controllerZone.getZone(shipperZip, recipientZip)
         const weightForCalcs = controllerWeight.getWeightForCalcs(packages)
@@ -40,11 +39,11 @@ router.post('/', async (req, res) => {
         const ffTaxes = await controllerFirebaseBD.getFFTaxes()
         const pricesBasedOnClientData = controllerPrices.getPricesBasedOnSheet(dataResponseDHL, clientDataSheet,weightForCalcs, zoneForCalc, ffTaxes.tipoAereo, ffTaxes.tipoTerrestre)
 
-        res.status(200).json({ messages: "ok", DHLRateData: pricesBasedOnClientData })
+        res.status(200).json({status:"OK",  messages: "ok", DHLRateData: pricesBasedOnClientData, zone: zoneForCalc})
 
     } catch (e) {
         console.log("error:", e)
-        res.status(200).json({messages:"No se pudieron leer los datos:" + e})
+        res.status(200).json({status:"error", messages:"No se pudieron leer los datos:" + e})
     }
 
 })

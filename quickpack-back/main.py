@@ -111,6 +111,7 @@ def shipmentRequest():
     ref=request.args.get("FF01")
     service=request.args.get("GG01")
 
+
     pacakagesUnformatted = json.loads(packages.replace("%22", "'"))
     ShipmentValue = request.args.get("EE01") if request.args.get(
         "EE01") is not None and request.args.get("EE01") else 0
@@ -137,7 +138,7 @@ def shipmentRequest():
             "InternationalDetail": {
                "Commodities": {
                   "NumberOfPieces": 1,
-                  "Description": "Test"
+                  "Description": desc
                }
             },
             "Ship": {
