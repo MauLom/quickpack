@@ -3,7 +3,7 @@ import * as React from 'react';
 ///Utils
 import Api from '../../utils/Api';
 
-/// Material 
+/// Material
 import { TextField, Button, Box, Stack, Paper, DialogTitle } from '@mui/material';
 // >LAB
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -24,7 +24,7 @@ export default function FormServiceDetails({ changeLoading }) {
   const [numeroDeGuia, setNumeroDeGuia] = React.useState('')
   const [guiaGenerada, setGuiaGenerada] = React.useState(false)
   const [ZPLstring, setZPLString] = React.useState("")
-
+  const [labelEstafetaString, setLabelEstafetaString] = React.useState("")
   const [descripcion, setDescripcion] = React.useState("Falto descripcion en el envio")
 
   const servicioOptions = [
@@ -55,9 +55,22 @@ export default function FormServiceDetails({ changeLoading }) {
     setSlctdServicioTipo(e.value)
   }
 
+
+  const decodeFileBase64 = (base64String) => {
+    // From Bytestream to Percent-encoding to Original string
+    return decodeURIComponent(
+      atob(base64String)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+  };
+
   const handleClickGenerarGuia = () => {
 
-    console.log("lines:", )
+    console.log("lines:",)
 
     var formattedDate = ""
     if (dateValue.length <= 10) {
@@ -65,8 +78,10 @@ export default function FormServiceDetails({ changeLoading }) {
     } else {
       formattedDate = format(dateValue, "yyyy-MM-dd");
     }
-    //const urlGenerateLabel = "http://localhost:8080/generateLabel"
+    //const urlGenerateLabelEstafeta = "http://localhost:8080/generateLabel/estafeta"
     const urlGenerateLabel = "https://back-node-zagnnz6nfq-uc.a.run.app/generateLabel"
+    const urlGenerateLabelEstafeta = "http://localhost:8080/generateLabel/estafeta"
+
 
     fetch(urlGenerateLabel, {
       method: 'POST',
@@ -79,7 +94,6 @@ export default function FormServiceDetails({ changeLoading }) {
         "date": formattedDate,
         "desc": descripcion,
         "userId": localStorage.getItem("userId"),
-
 
         "oName": dataGuia.originData.clientName,
         "oCompany": dataGuia.originData.companyName,
@@ -100,7 +114,6 @@ export default function FormServiceDetails({ changeLoading }) {
       })
     })
       .then(response => {
-        console.log("response: ", response)
         return response.json()
       })
       .then((resObj) => {
@@ -109,9 +122,47 @@ export default function FormServiceDetails({ changeLoading }) {
         setNumeroDeGuia(resObj.data.ShipmentResponse.ShipmentIdentificationNumber)
         setGuiaGenerada(true);
       })
+
+    fetch(urlGenerateLabelEstafeta, {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify({
+        "service": servicioOptions[slctdServicioTipo].value,
+        "date": formattedDate,
+        "desc": descripcion,
+        "userId": localStorage.getItem("userId"),
+
+        "oName": dataGuia.originData.clientName,
+        "oCompany": dataGuia.originData.companyName,
+        "oPhone": dataGuia.originData.cellphone,
+        "oEmail": dataGuia.originData.mail,
+        "oStreets": dataGuia.originData.streetLines,
+        "oCity": dataGuia.originData.city,
+        "oZip": dataGuia.originData.zipCode,
+
+        "dName": dataGuia.destinyData.clientName,
+        "dCompany": dataGuia.destinyData.companyName,
+        "dPhone": dataGuia.destinyData.cellphone,
+        "dEmail": dataGuia.destinyData.mail,
+        "dStreets": dataGuia.destinyData.streetLines,
+        "dCity": dataGuia.destinyData.city,
+        "dZip": dataGuia.destinyData.zipCode,
+        "packages": dataGuia.packageData
+      })
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then((resObj) => {
+        setLabelEstafetaString(resObj.data.data);
+      })
+
+
   }
   const handleConvertZPLToIMG = () => {
-
     Api.getImageFroZPL(ZPLstring)
       .then(response =>
         // console.log("response", response)
@@ -126,7 +177,7 @@ export default function FormServiceDetails({ changeLoading }) {
         link.href = url;
         link.setAttribute(
           'download',
-          `etiqueta.pdf`,
+          `etiquetaDHL.pdf`,
         );
 
         // Append to html link element page
@@ -138,6 +189,37 @@ export default function FormServiceDetails({ changeLoading }) {
         // Clean up and remove the link
         link.parentNode.removeChild(link);
       })
+  };
+
+  const downloadTheEstafetaLabel = () => {
+    const byteCharacters = atob(labelEstafetaString);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], {type: ''});
+
+
+    const url = window.URL.createObjectURL(
+      blob,
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `etiquetaEstafeta.pdf`,
+    );
+
+    // Append to html link element page
+    document.body.appendChild(link);
+
+    // Start download
+    link.click();
+
+    // Clean up and remove the link
+    link.parentNode.removeChild(link);
+
   }
 
   const handleClose = (value) => {
@@ -192,7 +274,8 @@ export default function FormServiceDetails({ changeLoading }) {
       <Dialog onClose={handleClose} open={guiaGenerada} sx={{ width: "50%", height: "70%" }}>
         <DialogTitle>Su numero de guia es:</DialogTitle>
         <h2>{numeroDeGuia}</h2>
-        <Button onClick={() => handleConvertZPLToIMG()}>Descargar etiqueta</Button>
+        <Button onClick={() => handleConvertZPLToIMG()}>Descargar etiqueta DHL</Button>
+        <Button onClick={() => downloadTheEstafetaLabel()}>Descargar etiqueta ESTAFETA</Button>
       </Dialog>
     </>
 
