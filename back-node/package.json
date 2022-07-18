@@ -14,6 +14,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "axios": "^0.27.2",
+    "axios-oauth-client": "^1.5.0",
+    "axios-token-interceptor": "^0.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^11.0.0"

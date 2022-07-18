@@ -6,7 +6,7 @@ import {
     Link
 } from "react-router-dom";
 import firebaseApp from '../../firebaseApp';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, Stack } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, Stack, Checkbox } from '@mui/material';
 
 import AgregarCliente from '../AgregarCliente/agregarCliente';
 import ListaClientes from '../ListaClientes/listaClientes';
@@ -90,7 +90,7 @@ function EdicionClientes() {
         getDocs(q)
             .then(res => {
                 res.forEach((doc) => {
-                    datosOut.push(formatFilasClientes(doc.id, doc.data().Nombre, doc.data().Apellidos, doc.data().tipoBeneficio, doc.data().Pass, doc.data().matriz, doc.data().porcentajes ? doc.data().porcentajes : {},  doc.data().referencia ? doc.data().referencia : ""));
+                    datosOut.push(formatFilasClientes(doc.id, doc.data().Nombre, doc.data().Apellidos, doc.data().tipoBeneficio, doc.data().Pass, doc.data().matriz, doc.data().porcentajes ? doc.data().porcentajes : {}, doc.data().referencia ? doc.data().referencia : ""));
                 })
                 setUsersList(datosOut);
             })
@@ -186,6 +186,26 @@ function EdicionClientes() {
         'overflow': 'auto'
     }
 
+    const stylesFontStyle = {
+        'color': "white",
+        'font-size': "18    px"
+    }
+
+    const [serviciosDeshabilitados, setServiciosDeshabilitados] = React.useState({
+        servicioI: false,
+        servicio1: false,
+        servicioG: false,
+        servicioN: false,
+        servicioO: false,
+    })
+
+    const handleChangeBloqueoServicios = (e) => {
+        setServiciosDeshabilitados({
+            ...serviciosDeshabilitados,
+            [e.target.name]: !serviciosDeshabilitados[e.target.name]
+        })
+        console.log("Servicios despues del cambio:", serviciosDeshabilitados)
+    }
 
     return (
         <>
@@ -214,8 +234,8 @@ function EdicionClientes() {
                             </label>
                             <label >
                                 <input type="text" name="referencia" className="inputs" placeholder="Referencia para envios"
-                                value={slctdUser.referencia}  onChange={handelDatosChanges}
-                                    ></input>
+                                    value={slctdUser.referencia} onChange={handelDatosChanges}
+                                ></input>
                             </label>
 
 
@@ -262,6 +282,50 @@ function EdicionClientes() {
                                         </label>
 
                                     </div>)}
+
+
+                            <div >
+                                <div className="title-cliente">Editar servicios bloqueados&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </div>
+                            <Stack direction="column" spacing={2} sx={{marginLeft:"4%", marginTop:"25px "}}>
+                                <Stack direction="row">
+                                    <span style={stylesFontStyle}>Desactivar el servicio de '1'</span>
+                                    <Box sx={serviciosDeshabilitados.servicio1 === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>&nbsp;Se desactivara el servicio '1'</Box>
+                                    <Checkbox name="servicio1" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                                </Stack>
+                                <Stack direction="row">
+                                    <span style={stylesFontStyle}>Desactivar el servicio de 'I'</span>
+                                    <Box sx={serviciosDeshabilitados.servicioI === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>&nbsp;Se desactivara el servicio 'I'</Box>
+                                    <Checkbox name="servicioI" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                                </Stack>
+                                <Stack direction="row">
+                                    <span style={stylesFontStyle}>Desactivar el servicio de 'N'</span>
+                                    <Box sx={serviciosDeshabilitados.servicioN === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>&nbsp;Se desactivara el servicio 'N'</Box>
+                                    <Checkbox name="servicioN" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                                </Stack>
+                                <Stack direction="row">
+                                    <span style={stylesFontStyle}>Desactivar el servicio de 'G'</span>
+                                    <Box sx={serviciosDeshabilitados.servicioG === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>&nbsp;Se desactivara el servicio 'G'</Box>
+                                    <Checkbox name="servicioG" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                                </Stack>
+                                <Stack direction="row">
+                                    <span style={stylesFontStyle}>Desactivar el servicio de 'O'</span>
+                                    <Box sx={serviciosDeshabilitados.servicioO === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>&nbsp;Se desactivara el servicio 'O'</Box>
+                                    <Checkbox name="servicioO" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                                </Stack>
+                                <Stack direction="row">
+                                    <span style={stylesFontStyle}>Desactivar  servicios de ESTAFETA</span>
+                                    <Box sx={serviciosDeshabilitados.servicioO === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>&nbsp;Se desactivaran servicios de ESTAFETA</Box>
+                                    <Checkbox name="servicioO" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                                </Stack>
+                                <Stack direction="row">
+                                    <span style={stylesFontStyle}>Desactivar  servicios de DHL</span>
+                                    <Box sx={serviciosDeshabilitados.servicioO === true ? { color: "red", fontSize: "16px", visibility: "visible" } : { color: "red", fontSize: "16px", visibility: "hidden" }}>&nbsp;Se desactivaran servicios de DHL</Box>
+                                    <Checkbox name="servicioO" onChange={(event) => { handleChangeBloqueoServicios(event) }} aria-label='Checkbox demo' />
+                                </Stack>
+                            </Stack>
+
                         </form>
                         <div className="w-100 text-right mt-2 contBtn">
                             <Button className="btnGuardar" variant="contained" onClick={guardarDatos}>Guardar</Button>

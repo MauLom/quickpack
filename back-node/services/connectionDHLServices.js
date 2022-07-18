@@ -1,5 +1,5 @@
 const axios = require('axios');
-const mainUrl = "https://wsbexpress.dhl.com/rest/sndpt/"
+const mainUrl = "https://wsbexpress.dhl.com/rest/gbl/"
 const rateRequest = "RateRequest"
 const shipmentRequest = "ShipmentRequest"
 
@@ -80,7 +80,6 @@ module.exports = {
     },
 
     generateLabel: async (dataToSend) => {
-        // console.log("data received: ", dataToSend)
         const resolvedRequest = await axios
             .post(mainUrl + shipmentRequest, dataToSend,
                 { auth: { username: "centraldeenMX", password: "B@3wZ!8bU$3g" } })
