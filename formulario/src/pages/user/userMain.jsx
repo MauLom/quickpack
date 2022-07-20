@@ -17,6 +17,8 @@ import {
 
 import Cotizaciones from '../../components/Cotizador/Cotizador';
 import GenerarGuias from '../../components/GenerarGuias/generarGuias';
+import GenerarGuiasEstafeta from '../../components/GenerarGuias/generarGuiasEstafeta';
+
 
 import './userMain.css'
 import firebaseApp from '../../firebaseApp';
@@ -28,7 +30,15 @@ firebaseApp();
 const database = getFirestore();
 var datosOut = []
 function UserMain() {
-  const [listaAcciones, setListaAcciones] = React.useState([]);
+  const [listaAcciones, setListaAcciones] = React.useState(
+    [
+      { id: 0, txt: "Realizar cotizacion", ico: "note_add", destiny: "/user/cotizar" },
+      { id: 1, txt: " Revisar mis pedidos", ico: "find_in_page", destiny: "/" },
+      { id: 2, txt: " Configurar de mi cuenta", ico: "manage_accounts", destiny: "/user/configurar" },
+      { id: 3, txt: " Realizar guia", ico: "find_in_page", destiny: "/user/guias" },
+      { id: 4, txt: " Realizar guia con ESTAFETA", ico: "find_in_page", destiny: "/user/guiasEstafeta" }
+    ]
+  );
   const [datos, setDatos] = useState({
     originId: '',
     originName: '',
@@ -116,23 +126,6 @@ function UserMain() {
     })
 
   }
-
-
-
-
-
-  React.useEffect(() => {
-    const jsonFake = [
-      { id: 0, txt: "Realizar cotizacion", ico: "note_add", destiny: "/user/cotizar" },
-      { id: 1, txt: " Revisar mis pedidos", ico: "find_in_page", destiny: "/" },
-      { id: 2, txt: " Configurar de mi cuenta", ico: "manage_accounts", destiny: "/user/configurar" },
-      { id: 3, txt: " Realizar guia", ico: "find_in_page", destiny: "/user/guias" },
-    ];
-    setTimeout(() => {
-      setListaAcciones(jsonFake);
-    }, 200);
-  })
-
 
   return (
     <>
@@ -258,6 +251,9 @@ function UserMain() {
           </Route>
           <Route path="/user/guias">
             <GenerarGuias />
+          </Route>
+          <Route path="/user/guiasEstafeta">
+            <GenerarGuiasEstafeta />
           </Route>
         </Switch>
       </Router>
