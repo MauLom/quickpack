@@ -49,7 +49,6 @@ export default function Cotizaciones() {
         width: '',
         longitude: '',
         ref: '',
-        insurance: ''
     })
     const [open, setOpen] = React.useState(false);
     const [hasErrorAPI, setHasErrorAPI] = React.useState(false);
@@ -324,7 +323,7 @@ export default function Cotizaciones() {
                 "recipientCountryCode": "MX",
                 "recipientZip": datos.destinyZip,
                 "packages": paquetesList,
-                "insurance": "0",
+                "insurance": datos.insurance,
                 "userId": userData.id
             })
         })

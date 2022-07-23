@@ -46,7 +46,9 @@ export default function FormServiceDetails({ changeLoading }) {
       setSlctdServicioTipo(auxIdx)
     }
     if (objAux.date != null) {
-      setDateValue(objAux.date)
+      console.log("original:", objAux.date + "T00:00:00")
+      console.log("lo qeu se parse..", new Date(objAux.date + "T00:00:00"))
+      setDateValue(new Date(objAux.date + "T00:00:00"))
     }
   }, [slctdServicioTipo, dateValue])
 
@@ -74,9 +76,13 @@ export default function FormServiceDetails({ changeLoading }) {
 
     var formattedDate = ""
     if (dateValue.length <= 10) {
+      console.log("dateValue?", dateValue)
       formattedDate = dateValue
+      console.log("menor a 10", formattedDate)
+
     } else {
       formattedDate = format(dateValue, "yyyy-MM-dd");
+      console.log("viene de servicio?", formattedDate)
     }
     //const urlGenerateLabelEstafeta = "http://localhost:8080/generateLabel/estafeta"
     const urlGenerateLabel = "https://back-node-zagnnz6nfq-uc.a.run.app/generateLabel"
@@ -198,7 +204,7 @@ export default function FormServiceDetails({ changeLoading }) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], {type: ''});
+    const blob = new Blob([byteArray], { type: '' });
 
 
     const url = window.URL.createObjectURL(
