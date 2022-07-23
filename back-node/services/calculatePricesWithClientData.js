@@ -75,6 +75,8 @@ module.exports = {
                     cadaServicio['Charges']['Charge'].push(ivaCharge)
                     cadaServicio['TotalNet'].Amount = parseFloat(Number(subTotalCharge.ChargeAmount) + Number(ivaCharge.ChargeAmount)).toFixed(2);
                     arrWithNewPrices.push(cadaServicio)
+                } else {
+                    return "matriz de datos mal estructurada, consulte soporte"
                 }
 
             })

@@ -66,8 +66,6 @@ module.exports = {
                         formattedServicesArr.push(dataResponse.RateResponse.Provider[0].Service)
                     } else if (serviceString.charAt(0) == "[") {
                         formattedServicesArr = dataResponse.RateResponse.Provider[0].Service
-                        ///Aca continua la migracion
-                        ////Abajo es solo para desarrollo
                     }
                     return formattedServicesArr
                 }
