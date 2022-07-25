@@ -1,5 +1,5 @@
 const axios = require('axios');
-const mainUrl = "https://wsbexpress.dhl.com/rest/sndpt/"
+const mainUrl = "https://wsbexpress.dhl.com/rest/sndpta/"
 const rateRequest = "RateRequest"
 const shipmentRequest = "ShipmentRequest"
 
