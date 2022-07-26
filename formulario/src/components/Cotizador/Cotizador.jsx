@@ -55,6 +55,7 @@ export default function Cotizaciones() {
     const [errorMsg, setErrorMsg] = React.useState("Si puedes leer esto, contacta al soporte.");
     const [arrServiciosYCargos, setArrServicios] = React.useState([])
     const [arrDataAll, setArrDataAll] = React.useState([])
+    const [arrDataEstafeta, setArrDataEstafeta] = React.useState([])
     const [zoneOfService, setZoneofService] = React.useState(undefined)
     const [isLoading, setIsLoading] = useState(false);
     const [loaderBtnCotizar, setLoaderBtnCotizar] = React.useState(false);
@@ -127,7 +128,6 @@ export default function Cotizaciones() {
             }
             sessionStorage.setItem("generacionGuia", JSON.stringify(objToStorage))
         }
-
         switch (param['@type']) {
             case "I": case "O": case "1": case "G": case "N":
                 return (
@@ -167,88 +167,42 @@ export default function Cotizaciones() {
         }
     }
 
+    const organizarDataEstafeta = (param) => {
+        switch (param['DescripcionServicio']) {
+            case "Dia Sig.": case "Terrestre":
+                return (
+                    <Box sx={{ backgroundColor: "#F2FAFC" }} key={param['@type']}>
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography><b>{param['DescripcionServicio']}</b></Typography>
+                            </AccordionSummary>
+                            <AccordionDetails >
+                                <Typography>
+                                    {Object.keys(param).map((eachCharge, idx) => (
+                                        <>
+                                            <div key={"key-" + idx}>
+                                                <div>-{eachCharge} </div>
+                                                <div>{param[eachCharge]} </div>
+                                            </div>
+                                        </>
+                                    ))}
+                                    <br />
+                                    {/* <div>Total:  ${param['TotalNet']['Amount']} </div>   */}
+                                </Typography>
+                                <a href="/user/guias">
+                                    <Button variant="outlined">Generar Guia</Button>
+                                </a>
 
-    const generarArrNuevosPrecios = (arrApi, objBd, cantKgs, idxZona) => {
-        const arrDepurada = []
-        let matrizDatos = objBd['matriz']
-        arrApi.forEach(
-            cadaServicio => {
-                const validServices = ["I", "O", "1", "G", "N"]
-                if (validServices.indexOf(cadaServicio['@type']) >= 0) {
-                    let arrParseadaBD = JSON.parse(matrizDatos[cadaServicio['@type']]?.data)
-                    let precioPorKG = 0
-                    if (cantKgs > 30) {
-                        let excedentePeso = cantKgs - 30;
-                        let auxStr = arrParseadaBD[31][idxZona].value
-                        if (auxStr.includes(",")) {
-                            auxStr = auxStr.replace(",", ".")
-                        }
-                        let auxInt = auxStr != '' ? Number.parseFloat(auxStr).toFixed(2) : 0
-                        precioPorKG = !Number.isNaN(auxInt) ? auxInt : 0;
-                        let valorDe30KG = arrParseadaBD[30][idxZona].value
-                        let costoExcedente = precioPorKG * excedentePeso
-                        let sumaValores = Number.parseFloat(valorDe30KG) + Number.parseFloat(costoExcedente)
-                        precioPorKG = Number.parseFloat(sumaValores).toFixed(2);
-                    } else {
-                        precioPorKG = arrParseadaBD[cantKgs][idxZona].value
-                    }
-                    if (precioPorKG.toString().includes(",")) {
-                        precioPorKG = precioPorKG.replace(",", ".")
-                    }
-                    cadaServicio['Charges']['Charge'][0].ChargeAmount = Number(precioPorKG)
-                    if (cadaServicio['Charges']['Charge'].length > 2) {
-                        let valoresParaSumarFF = 0
-                        cadaServicio['Charges']['Charge'].forEach(
-                            cadaCargo => {
-                                if (cadaCargo.ChargeCode == "YY") {
-                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                    valoresParaSumarFF += cadaCargo.ChargeAmount
-                                }
-                                if (cadaCargo.ChargeCode == "OO") {
-                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                    valoresParaSumarFF += cadaCargo.ChargeAmount
-                                }
-                                if (cadaCargo.ChargeCode == "YB") {
-                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                    valoresParaSumarFF += cadaCargo.ChargeAmount
-                                }
-                                if (cadaCargo.ChargeCode == "II") {
-                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                }
-                                if (cadaCargo.ChargeCode == "YE") {
-                                    cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                }
-                                if (cadaCargo.ChargeCode == "FF") {
-                                    valoresParaSumarFF += Number(parseFloat(Number(precioPorKG)).toFixed(2))
-                                    let multiplicadorCombus = cadaServicio['@type'] === "G" ? porcFFTerrestre : porcFFAereo
-                                    let porcPreDepured = Number.parseFloat(multiplicadorCombus).toFixed(2)
-                                    let porcDepured = porcPreDepured / 100
-                                    let resultMulti = valoresParaSumarFF * porcDepured
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider />
+                    </Box >)
 
-                                    cadaCargo.ChargeAmount = Number(parseFloat(resultMulti).toFixed(2))
-                                }
-                            })
-                    } else {
-                        cadaServicio['Charges']['Charge'][1].ChargeAmount = parseFloat(Number(precioPorKG) * cadaServicio['@type'] === "G" ? porcFFTerrestre : porcFFAereo).toFixed(2)
-                    }
-                    const subTotalCharge = { 'ChargeType': 'SubTotal', 'ChargeAmount': 0 }
-
-                    cadaServicio['Charges']['Charge'].forEach(cadaSubCargo => {
-                        //subTotalCharge.ChargeAmount = parseFloat(Number(cadaServicio['TotalNet'].Amount) + Number(cadaSubCargo['ChargeAmount'])).toFixed(2)
-                        subTotalCharge.ChargeAmount += Number(cadaSubCargo['ChargeAmount']);
-                    })
-
-                    subTotalCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount).toFixed(2)
-                    cadaServicio['Charges']['Charge'].push(subTotalCharge)
-                    const ivaCharge = { 'ChargeType': 'IVA', 'ChargeAmount': 0 }
-                    ivaCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount * 0.16).toFixed(2)
-                    cadaServicio['Charges']['Charge'].push(ivaCharge)
-                    cadaServicio['TotalNet'].Amount = parseFloat(Number(subTotalCharge.ChargeAmount) + Number(ivaCharge.ChargeAmount)).toFixed(2);
-                    arrDepurada.push(cadaServicio)
-                }
-
-            })
-        return arrDepurada;
+        }
     }
 
     //Datos del formulario a enviar
@@ -304,9 +258,44 @@ export default function Cotizaciones() {
     //API Consulta
     const consultaApiRates = () => {
         const URLgetRates = "https://back-node-zagnnz6nfq-uc.a.run.app/getRates"
+        const URLgetRatesESTAFETA = "http://localhost:8080/getRates/estafeta"
+        if (paquetesList.length == 1) {
+            // console.log("primer elemento: ", paquetesList[0])
+            let dataRequest = {
+                "alto": paquetesList[0]['Dimensions']['Height'],
+                "ancho": paquetesList[0]['Dimensions']['Width'],
+                "esPaquete": true,
+                "largo": paquetesList[0]['Dimensions']['Length'],
+                "peso": paquetesList[0]['Weight']['Value'],
+                "originZip": datos.originZip,
+                "destinyZip": datos.destinyZip
+            }
+            fetch(URLgetRatesESTAFETA, {
+                method: 'POST',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({
+                    "alto": paquetesList[0]['Dimensions']['Height'],
+                    "ancho": paquetesList[0]['Dimensions']['Width'],
+                    "esPaquete": true,
+                    "largo": paquetesList[0]['Dimensions']['Length'],
+                    "peso": paquetesList[0]['Weight']['Value'],
+                    "originZip": datos.originZip,
+                    "destinyZip": datos.destinyZip
+                })
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    console.log("data?", data.data.FrecuenciaCotizadorResponse.FrecuenciaCotizadorResult.Respuesta.TipoServicio.TipoServicio)
+                    setArrDataEstafeta(data.data.FrecuenciaCotizadorResponse.FrecuenciaCotizadorResult.Respuesta.TipoServicio.TipoServicio)
+                })
+        }
         //const URLgetRates = "http://localhost:8080/getRates"
         setLoaderBtnCotizar(true)
-        console.log("data del user: ", userData)
         const dateParsedToSting = datos.shipmentDate.toString() + "T12:00:00+GMT+0100"
         fetch(URLgetRates, {
             method: 'POST',
@@ -315,7 +304,7 @@ export default function Cotizaciones() {
                 'Content-type': 'application/json; charset=UTF-8'
             },
             body: JSON.stringify({
-                "timestamp":dateParsedToSting,
+                "timestamp": dateParsedToSting,
                 "shipperCity": datos.originCity,
                 "shipperCountryCode": "MX",
                 "shipperZip": datos.originZip,
@@ -328,7 +317,7 @@ export default function Cotizaciones() {
             })
         })
             .then(response => {
-                console.log("response: ", response)
+                // console.log("response: ", response)
                 return response.json()
             })
             .then((data) => {
@@ -350,7 +339,6 @@ export default function Cotizaciones() {
     const consultaZipCodes = (zipCode, ubicacion) => {
         setLoaderBtnCotizar(true)
         Api.getCityDataBasedOnZipCode(zipCode)
-
             .then(response => {
                 var dataParsed = JSON.parse(response.data)
                 let auxCadena = dataParsed.results[0].formatted_address
@@ -358,7 +346,7 @@ export default function Cotizaciones() {
                 posicionZip = posicionZip + zipCode.length
                 let sinZip = auxCadena.substring(posicionZip, auxCadena.length)
                 let sinMexico = sinZip.replace(", Mexico", "")
-                let cadenaFinal =  sinMexico.replace(" ", "")
+                let cadenaFinal = sinMexico.replace(" ", "")
                 var dataParsed = JSON.parse(response.data)
                 if (ubicacion == "origen") {
                     setDatos({
@@ -475,7 +463,7 @@ export default function Cotizaciones() {
                     </form>
 
                     <div>
-                        <Dialog onClose={handleClose} open={open} sx={{ width: "50%", height: "70%" }} >
+                        <Dialog onClose={handleClose} open={open} sx={{ width: "70%", height: "100%" }} >
                             <DialogTitle>Cotizacion:</DialogTitle>
 
                             <Divider />
@@ -483,12 +471,32 @@ export default function Cotizaciones() {
                                 <div>Error: {String(errorMsg)}</div>
                                 :
                                 <>
-                                    <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>Zona de servicio
-                                        <Box sx={{ color: "purple" }}>{zoneOfService}</Box></Box >
-                                    <Divider />
-                                    {arrDataAll.map(each => (
-                                        renderSwitch(each,)
-                                    ))}
+                                    <Stack direction="row">
+                                        <Box>
+                                            <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>DHL
+                                            </Box >
+                                            <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>Zona de servicio
+                                                <Box sx={{ color: "purple" }}>{zoneOfService}</Box></Box >
+                                            <Divider />
+                                            {arrDataAll.map(each => (
+                                                renderSwitch(each,)
+                                            ))}
+                                        </Box>
+                                        {arrDataEstafeta.length > 0 ?
+                                            <Box>
+                                                <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>ESTAFETA
+                                                </Box >
+                                                <Divider />
+                                                {arrDataEstafeta.map(each =>(
+                                                    organizarDataEstafeta(each)
+                                                ))}
+                                            </Box>
+                                            : <></>}
+
+                                    </Stack>
+
+
+
                                 </>
 
                             }
