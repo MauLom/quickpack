@@ -257,8 +257,10 @@ export default function Cotizaciones() {
     }
     //API Consulta
     const consultaApiRates = () => {
-        const URLgetRates = "https://webserviceprod.quickpak.com.mx/getRates"
-        const URLgetRatesESTAFETA = "https://webserviceprod.quickpak.com.mx/getRates/estafeta"
+        const URLgetRates = "https://back-node-al2vij23ta-uc.a.run.app/getRates"
+        const URLgetRatesESTAFETA = "https://back-node-al2vij23ta-uc.a.run.app/getRates/estafeta"
+        // const URLgetRates = "https://webserviceprod.quickpak.com.mx/getRates"
+        // const URLgetRatesESTAFETA = "https://webserviceprod.quickpak.com.mx/getRates/estafeta"
         if (paquetesList.length == 1) {
             // console.log("primer elemento: ", paquetesList[0])
             let dataRequest = {
@@ -488,7 +490,7 @@ export default function Cotizaciones() {
                                                 <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>ESTAFETA
                                                 </Box >
                                                 <Divider />
-                                                {arrDataEstafeta.map(each =>(
+                                                {arrDataEstafeta.map(each => (
                                                     organizarDataEstafeta(each)
                                                 ))}
                                             </Box>
