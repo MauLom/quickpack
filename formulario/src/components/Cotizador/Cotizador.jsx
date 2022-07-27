@@ -257,8 +257,8 @@ export default function Cotizaciones() {
     }
     //API Consulta
     const consultaApiRates = () => {
-        const URLgetRates = "https://back-node-zagnnz6nfq-uc.a.run.app/getRates"
-        const URLgetRatesESTAFETA = "http://localhost:8080/getRates/estafeta"
+        const URLgetRates = "https://webserviceprod.quickpak.com.mx/getRates"
+        const URLgetRatesESTAFETA = "https://webserviceprod.quickpak.com.mx/getRates/estafeta"
         if (paquetesList.length == 1) {
             // console.log("primer elemento: ", paquetesList[0])
             let dataRequest = {
@@ -321,6 +321,7 @@ export default function Cotizaciones() {
                 return response.json()
             })
             .then((data) => {
+                console.log("Error?", data)
                 if (data.status === "error") {
                     setHasErrorAPI(true)
                     setErrorMsg(data.messages)
