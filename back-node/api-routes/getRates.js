@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controllerDHLServices = require('../services/connectionDHLServices')
+const controllerEstafetaServices = require('../services/connectionESTAFETAServices')
 const controllerZone = require('../services/calculateZone')
 const controllerWeight = require('../services/calculateWeight')
 const controllerUserData = require('../models/controllerFirebaseBD')
@@ -18,8 +19,7 @@ router.post('/', async (req, res) => {
     var packages = ""
     var insurance = ""
     var userId = ""
-    // try {
-    //Need validations here for every data  
+
     if (req.body.timestamp === "" || req.body.timestamp === undefined) {
         res.status(500).json({ status: "error", messages: "No se pudo leer la propiedad 'timestamp' del body" })
     } else if (req.body.shipperCity === "" || req.body.shipperCity === undefined) {
@@ -59,15 +59,69 @@ router.post('/', async (req, res) => {
         const clientDataSheet = await controllerUserData.getDataSheetById(userId)
         const ffTaxes = await controllerFirebaseBD.getFFTaxes()
         const pricesBasedOnClientData = controllerPrices.getPricesBasedOnSheet(dataResponseDHL, clientDataSheet, weightForCalcs, zoneForCalc, ffTaxes.tipoAereo, ffTaxes.tipoTerrestre)
-
         res.status(200).json({ status: "OK", messages: "ok", DHLRateData: pricesBasedOnClientData, zone: zoneForCalc })
     }
 
+})
 
-    // } catch (e) {
-    //     console.log("error:", e)
-    //     res.status(500).json({status:"error", messages:"Error al procesar datos:" + e})
-    // }
+router.post('/estafeta', async (req, res) => {
+    var alto = ""
+    var ancho = ""
+    var esPaquete = ""
+    var largo = ""
+    var peso = ""
+    var originZip = ""
+    var destinyZip = ""
+    if (req.body.alto === "" || req.body.alto === undefined) {
+        res.status(500).json({ status: "error", messages: "No se pudo leer la propiedad 'alto' del body" })
+    } else if (req.body.ancho === "" || req.body.ancho === undefined) {
+        res.status(500).json({ status: "error", messages: "No se pudo leer la propiedad 'ancho' del body" })
+    } else if (req.body.esPaquete === "" || req.body.esPaquete === undefined) {
+        res.status(500).json({ status: "error", messages: "No se pudo leer la propiedad 'esPaquete' del body" })
+    } else if (req.body.largo === "" || req.body.largo === undefined) {
+        res.status(500).json({ status: "error", messages: "No se pudo leer la propiedad 'largo' del body" })
+    } else if (req.body.peso === "" || req.body.peso === undefined) {
+        res.status(500).json({ status: "error", messages: "No se pudo leer la propiedad 'peso' del body" })
+    } else if (req.body.originZip === "" || req.body.originZip === undefined) {
+        res.status(500).json({ status: "error", messages: "No se pudo leer la propiedad 'originZip' del body" })
+    } else if (req.body.destinyZip === "" || req.body.destinyZip === undefined) {
+        res.status(500).json({ status: "error", messages: "No se pudo leer la propiedad 'destinyZip' del body" })
+    } else {
+        alto = req.body.alto
+        ancho = req.body.ancho
+        esPaquete = req.body.esPaquete
+        largo = req.body.largo
+        peso = req.body.peso
+        originZip = req.body.originZip
+        destinyZip = req.body.destinyZip
+        let dataRequest = {
+            "idusuario": "1",
+            "usuario": "AdminUser",
+            "contra": ",1,B(vVi",
+            "esFrecuencia": "true",
+            "esLista": "true",
+            "tipoEnvio": {
+                "Alto": alto,
+                "Ancho": ancho,
+                "EsPaquete": esPaquete,
+                "Largo": largo,
+                "Peso": peso
+            },
+            "datosOrigen": {
+                "string": [
+                    originZip
+                ]
+            },
+            "datosDestino": {
+                "string": [
+                    destinyZip
+                ]
+            }
+        }
+        
+        let dataResponseESTAFETA = await controllerEstafetaServices.getRates(dataRequest)
+        res.status(200).json({ status: "ok", messages:"OK", data: dataResponseESTAFETA })
+    }
 
 })
 module.exports = router;
