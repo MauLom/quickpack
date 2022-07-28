@@ -1,36 +1,35 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import firebaseApp from '../../firebaseApp';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
+import './adminMain.css'
 
+///Material Imports
+import { Stack, Card, CardContent, Button, Typography, AppBar, Toolbar, Grid, Box } from '@mui/material';
+
+///Router 
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+////Components Imports
 import EdicionClientes from '../../components/EdicionClientes/edicionClientes';
 import ListaPedidos from '../../components/Pedidos/Pedidos';
 import EdicionValores from '../../components/EdicionValores/edicionValores'
-import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 
-import './adminMain.css'
 firebaseApp();
 const database = getFirestore();
 
 function AdminMain() {
 
   const [listaAcciones, setListaAcciones] = React.useState([]);
+  const [accionSeleccionada, setAccionSeleccionada] = React.useState(0);
+
+  const handleAccionChange = (e, id) => {
+    setAccionSeleccionada(id)
+  }
   React.useEffect(() => {
     const jsonFake = [
-      { id: 0, txt: "Editar clientes", ico: "manage_accounts", destiny: "/admin/edicion-clientes" },
-      { id: 1, txt: "Editar Valores", ico: "supervisor_account", destiny: "/admin/edicionValores" },
-      { id: 2, txt: "Ver pedidos", ico: "find_in_page", destiny: "/admin/pedidos" },
-      //{ id: 3, txt: "Editar Valores", ico: "drag-horizontal-variant", destiny: "/admin/edicion-valores"}
+      { id: 1, txt: "Editar clientes", ico: "manage_accounts", destiny: "/admin/edicion-clientes" },
+      { id: 2, txt: "Editar Valores", ico: "supervisor_account", destiny: "/admin/edicionValores" },
+      { id: 3, txt: "Ver pedidos", ico: "find_in_page", destiny: "/admin/pedidos" },
     ];
     setTimeout(() => {
       setListaAcciones(jsonFake);
@@ -56,77 +55,36 @@ function AdminMain() {
           </Link>
         </Toolbar>
       </AppBar>
-      <Router>
-        <Switch>
-          <Route exact path="/admin">
-            <div className="title">
-              ¿Qué quieres hacer hoy?
-            </div>
-            <div className="wrapper">
-              {listaAcciones.map(cadaAccion => (
-                <Button className="buttonAction">
-                  <Link to={cadaAccion.destiny} className="noLinkStyle">
-                    <Card className="h100">
-                      <CardContent className="wrapperForAction">
-                        <div>
-                          {cadaAccion.txt}
-                        </div>
-                        <span class="material-icons-outlined">
-                          {cadaAccion.ico}
-                        </span>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </Button>
-              ))}
-            </div>
-          </Route>
-          <Route exact path="/admin/edicion-clientes">
-            <div className="contBackButton">
-              <Link to="/admin" className="noLinkStyle">
-                <Button >
-                  <span className="material-icons">
-                    reply
-                  </span>
-                  &nbsp;&nbsp;&nbsp;
-                  <span>Regresar</span>
-                </Button>
-              </Link>
-            </div>
-            <EdicionClientes />
-          </Route>
-          <Route exact path="/admin/pedidos">
-            <div className="contBackButton">
-              <Link to="/admin" className="noLinkStyle">
-                <Button >
-                  <span className="material-icons">
-                    reply
-                  </span>
-                  &nbsp;&nbsp;&nbsp;
-                  <span>Regresar</span>
-                </Button>
-              </Link>
-            </div>
 
-            <ListaPedidos />
-          </Route>
-          <Route exact path="/admin/edicionValores">
-            <div className="contBackButton">
-              <Link to="/admin" className="noLinkStyle">
-                <Button >
-                  <span className="material-icons">
-                    reply
-                  </span>
-                  &nbsp;&nbsp;&nbsp;
-                  <span>Regresar</span>
-                </Button>
-              </Link>
-            </div>
+      <Grid container>
+        <Grid item md={3} lg={3} sx={{paddingTop:"5%"}}>
+          <Stack direction="column">
+            {listaAcciones.map(cadaAccion => (
+              <Button className="buttonAction" onClick={(e) => handleAccionChange(e, cadaAccion.id)} key={cadaAccion.txt}>
+                <Card className="h100">
+                  <CardContent className="wrapperForAction">
+                    <div>
+                      {cadaAccion.txt}
+                    </div>
+                    <span className="material-icons-outlined">
+                      {cadaAccion.ico}
+                    </span>
+                  </CardContent>
+                </Card>
+              </Button>
+            ))}
+          </Stack>
+        </Grid>
+        <Grid item md={8} lg={8} sx={{paddingTop:"3%"}}>
+          {{
+            0: <Box sx={{width:'100%',height:"50%", paddingTop:"25%", margin:"2% 0 2% 0",fontSize:'3rem', textAlign:'center',backgroundColor:"#F2FAFC"}}>Selecciona una acci&oacute;n del men&uacute;</Box>,
+            1: <EdicionClientes />,
+            2: <EdicionValores />,
+            3:<ListaPedidos /> 
+          }[accionSeleccionada]}
 
-            <EdicionValores />
-          </Route>
-        </Switch>
-      </Router>
+        </Grid>
+      </Grid>
     </>
 
   );

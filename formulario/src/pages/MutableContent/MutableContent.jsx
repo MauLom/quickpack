@@ -11,29 +11,31 @@ import Main from '../conexion';
 import UserMain from '../user/userMain';
 import AdminMain from '../admin/adminMain';
 import Cotizaciones from '../../components/Cotizador/Cotizador';
-
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 function MutableContent() {
     return (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Router>
 
-        <Router>
+                <Switch>
+                    <Route exact path="/">
+                        <Main />
+                    </Route>
+                    <Route path="/user">
+                        <UserMain />
+                    </Route>
+                    <Route path="/admin">
+                        <AdminMain />
+                    </Route>
+                    <Route path="/Cotizador">
+                        <Cotizaciones />
+                    </Route>
+                </Switch>
 
-            <Switch>
-                <Route exact path="/">
-                    <Main />
-                </Route>
-                <Route path="/user">
-                    <UserMain />
-                </Route>
-                <Route path="/admin">
-                    <AdminMain />
-                </Route>
-                <Route path="/Cotizador">
-                    <Cotizaciones />
-                </Route>
-            </Switch>
-            
 
-        </Router>
+            </Router></LocalizationProvider>
+
 
     );
 }
