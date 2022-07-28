@@ -42,7 +42,7 @@ export default function Cotizaciones() {
         destinyCity: '',
         destinyZip: undefined,
         destinyCC: 'MX',
-        insurance: '',
+        insurance: '0',
         quantity: undefined,
         weight: '',
         height: '',
@@ -57,6 +57,7 @@ export default function Cotizaciones() {
     const [arrDataAll, setArrDataAll] = React.useState([])
     const [arrDataEstafeta, setArrDataEstafeta] = React.useState([])
     const [zoneOfService, setZoneofService] = React.useState(undefined)
+    const [zoneOfServiceEstafeta, setZoneofServiceEstafeta] = React.useState(undefined)
     const [isLoading, setIsLoading] = useState(false);
     const [loaderBtnCotizar, setLoaderBtnCotizar] = React.useState(false);
     const [loaderBtnAgregarPaquete, setLoaderBtnAgregarPaquete] = React.useState(false)
@@ -292,7 +293,6 @@ export default function Cotizaciones() {
                     return response.json()
                 })
                 .then(data => {
-                    console.log("data?", data.data.FrecuenciaCotizadorResponse.FrecuenciaCotizadorResult.Respuesta.TipoServicio.TipoServicio)
                     setArrDataEstafeta(data.data.FrecuenciaCotizadorResponse.FrecuenciaCotizadorResult.Respuesta.TipoServicio.TipoServicio)
                 })
         }
@@ -474,7 +474,7 @@ export default function Cotizaciones() {
                                 <div>Error: {String(errorMsg)}</div>
                                 :
                                 <>
-                                    <Stack direction="row">
+                                    <Stack direction="column">
                                         <Box>
                                             <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>DHL
                                             </Box >
@@ -489,6 +489,9 @@ export default function Cotizaciones() {
                                             <Box>
                                                 <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>ESTAFETA
                                                 </Box >
+                                                <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>Zona de servicio
+                                                    <Box sx={{ color: "purple" }}>{zoneOfServiceEstafeta}</Box></Box >
+                                                <Divider />
                                                 <Divider />
                                                 {arrDataEstafeta.map(each => (
                                                     organizarDataEstafeta(each)
