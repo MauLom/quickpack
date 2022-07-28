@@ -1,9 +1,9 @@
 module.exports = {
-    getPricesBasedOnSheet: (rateData, sheet, weight, zone, FFAerialTax, FFGroundTax) => {
+    getPricesBasedOnSheet: (rateData, sheet, weight, zone, FFAerialTax, FFGroundTax,validServicesDHL) => {
         var arrWithNewPrices = []
         rateData.forEach(
             cadaServicio => {
-                const validServices = ["I", "O", "1", "G", "N"]
+                const validServices = validServicesDHL
                 if (validServices.indexOf(cadaServicio['@type']) >= 0) {
                     let arrParseadaBD = JSON.parse(sheet[cadaServicio['@type']]?.data)
                     let precioPorKG = 0
@@ -51,6 +51,7 @@ module.exports = {
                                 if (cadaCargo.ChargeCode == "FF") {
                                     valoresParaSumarFF += Number(parseFloat(Number(precioPorKG)).toFixed(2))
                                     let multiplicadorCombus = cadaServicio['@type'] === "G" ? FFGroundTax : FFAerialTax
+                                    console.log("multiplicadorCombus", multiplicadorCombus)
                                     let porcPreDepured = Number.parseFloat(multiplicadorCombus).toFixed(2)
                                     let porcDepured = porcPreDepured / 100
                                     let resultMulti = valoresParaSumarFF * porcDepured
@@ -59,7 +60,9 @@ module.exports = {
                                 }
                             })
                     } else {
-                        cadaServicio['Charges']['Charge'][1].ChargeAmount = parseFloat(Number(precioPorKG) * cadaServicio['@type'] === "G" ? FFGroundTax : FFAerialTax).toFixed(2)
+                        let eleccionTipoFF = cadaServicio['@type'] === "G" ? FFGroundTax : FFAerialTax
+                        let valorDividido = parseFloat(Number(precioPorKG) * eleccionTipoFF).toFixed(2)
+                        cadaServicio['Charges']['Charge'][1].ChargeAmount = Number(parseFloat(valorDividido/100).toFixed(2))
                     }
                     const subTotalCharge = { 'ChargeType': 'SubTotal', 'ChargeAmount': 0 }
 

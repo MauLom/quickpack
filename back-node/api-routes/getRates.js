@@ -58,7 +58,9 @@ router.post('/', async (req, res) => {
         const weightForCalcs = controllerWeight.getWeightForCalcs(packages)
         const clientDataSheet = await controllerUserData.getDataSheetById(userId)
         const ffTaxes = await controllerFirebaseBD.getFFTaxes()
-        const pricesBasedOnClientData = controllerPrices.getPricesBasedOnSheet(dataResponseDHL, clientDataSheet, weightForCalcs, zoneForCalc, ffTaxes.tipoAereo, ffTaxes.tipoTerrestre)
+        console.log("ffTaxes", ffTaxes)
+        const validServicesDHL =  await controllerUserData.getValidServices(userId)
+        const pricesBasedOnClientData = controllerPrices.getPricesBasedOnSheet(dataResponseDHL, clientDataSheet, weightForCalcs, zoneForCalc, ffTaxes.tipoAereo, ffTaxes.tipoTerrestre, validServicesDHL)
         res.status(200).json({ status: "OK", messages: "ok", DHLRateData: pricesBasedOnClientData, zone: zoneForCalc })
     }
 
@@ -120,6 +122,7 @@ router.post('/estafeta', async (req, res) => {
         }
         
         let dataResponseESTAFETA = await controllerEstafetaServices.getRates(dataRequest)
+        let siglasConcat = dataResponseESTAFETA
         res.status(200).json({ status: "ok", messages:"OK", data: dataResponseESTAFETA })
     }
 

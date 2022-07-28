@@ -48,5 +48,19 @@ module.exports = {
         } else {
             return userDoc.data().referencia
         }
+    },
+    getValidServices: async (userId) => {
+        let validServicesDHL = ["I", "O", "1", "G", "N"]
+        const docRef = db.collection('Cuenta').doc(userId)
+        const userDoc = await docRef.get()
+        if (!userDoc.exists) {
+            return { error: "error", message: "User ID not found" }
+        } else {
+            if (userDoc.data().hasOwnProperty('validServicesDHL')) {
+                return userDoc.data().validServicesDHL
+            } else {
+                return validServicesDHL
+            }
+        }
     }
 }

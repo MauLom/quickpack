@@ -1,5 +1,5 @@
 const axios = require('axios');
-const mainUrl = "https://wsbexpress.dhl.com/rest/sndpta/"
+const mainUrl = "https://wsbexpress.dhl.com/rest/sndpt/"
 const rateRequest = "RateRequest"
 const shipmentRequest = "ShipmentRequest"
 
@@ -67,6 +67,22 @@ module.exports = {
                     } else if (serviceString.charAt(0) == "[") {
                         formattedServicesArr = dataResponse.RateResponse.Provider[0].Service
                     }
+                    formattedServicesArr.forEach(eachType => {
+                        // console.log("eachType type", eachType['@type'])
+                        // if (eachType.hasOwnProperty('TotalNet')) {
+                        //     delete eachType['TotalNet']
+                        // }
+                        if (eachType.hasOwnProperty('Charges') && eachType['Charges'].hasOwnProperty('Charge')) {
+                            eachType['Charges']['Charge'].forEach(cadaCargo => {
+                                // console.log("cargos:", cadaCargo['ChargeCode'])
+                                if (cadaCargo.hasOwnProperty('ChargeBreakdown')) {
+                                    delete cadaCargo['ChargeBreakdown']
+                                }
+                            })
+                        }
+
+
+                    })
                     return formattedServicesArr
                 }
             })
