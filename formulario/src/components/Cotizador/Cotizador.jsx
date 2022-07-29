@@ -3,297 +3,379 @@ import { makeStyles } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { Stack, Divider, TextField, Dialog, DialogTitle, Button, Checkbox } from '@mui/material'
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Divider from '@mui/material/Divider';
-
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-
 import firebaseApp from '../../firebaseApp';
 import * as firestore from "firebase/firestore"
 import { getFirestore, collection, addDoc, getDocs, setDoc, updateDoc, doc, where, query } from "firebase/firestore"
 
+
+import LoadingButton from '@mui/lab/LoadingButton';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import LoadingSpinner from '../Loader/loader';
 import './Cotizador.css';
+import Api from '../../utils/Api';
+
+
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+
 
 firebaseApp()
 const db = firestore.getFirestore();
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
 
-    return (
-        <div className="bg-white"
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box p={3}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
-
-
-function renderSwitch(param) {
-    const generarGuia = () => {
-        console.log("Funcion pendiente")
-    }
-
-    switch (param['@type']) {
-        case "I": case "O": case "1": case "G": case "N":
-            return (<>
-                <div>Cargos:</div>
-                <div>Moneda: {param['TotalNet']['Currency']}</div>
-
-                {param['Charges']['Charge'].map((eachCharge, idx) => (
-                    <div key={"key-" + idx}>
-                        <br />
-                        <div>Tipo de cargo: {eachCharge['ChargeType']} </div>
-                        <div>Monto del cargo: {eachCharge['ChargeAmount']} </div>
-                    </div>
-                ))}
-                <br />
-                <div>Tiempo de entrega: {param['DeliveryTime']} </div>
-                <div>Total:  {param['TotalNet']['Amount']} </div>
-                <button onClick={generarGuia}>Generar Guia</button>
-                <Divider />
-            </>)
-
-    }
-}
-
-function generarArrNuevosPrecios(arrApi, objBd, cantKgs, idxZona) {
-    const zonaStr = "zone" + idxZona
-    const arrDepurada = []
-    const porcFFAereo = 0.0844
-
-    ///  (altura . ancho . profundidad) /5000 = pesoVolumetrico
-    ///  Si  peso Volumetrico > peso real,   usar peso volumetrico   para   calculo
-   
-    /// Mostrar Zona en el cotizador para el  cliente
-    /// cargo por seguro...
-
-    arrApi.forEach(
-        cadaServicio => {
-            const validServices = ["I", "O", "1", "G", "N"]
-            if (validServices.indexOf(cadaServicio['@type']) >= 0) {
-                let arrParseadaBD = JSON.parse(objBd.matriz[cadaServicio['@type']][zonaStr]?.data)
-                arrParseadaBD[0].forEach((cadaKgEnMatriz, idx) => {
-                    let parsedKgOnBD = Number.parseInt(cadaKgEnMatriz.value)
-                    if (!Number.isNaN(parsedKgOnBD) && Number.parseInt(cadaKgEnMatriz.value) == cantKgs) {
-                        cadaServicio['Charges']['Charge'][0].ChargeAmount = Number(arrParseadaBD[1][idx].value)
-                        if (cadaServicio['Charges']['Charge'].length > 2) {
-                            let valoresParaSumarFF = 0
-                            cadaServicio['Charges']['Charge'].forEach(
-                                cadaCargo => {
-                                    if (cadaCargo.ChargeCode == "YY") {
-                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                        valoresParaSumarFF += cadaCargo.ChargeAmount
-                                    }
-                                    if (cadaCargo.ChargeCode == "OO") {
-                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                        valoresParaSumarFF += cadaCargo.ChargeAmount
-                                    }
-                                    if (cadaCargo.ChargeCode == "YB") {
-                                        cadaCargo.ChargeAmount = Number(parseFloat(Number(cadaCargo.ChargeAmount) / 1.16).toFixed(2))
-                                        valoresParaSumarFF += cadaCargo.ChargeAmount
-                                    }
-                                    if (cadaCargo.ChargeCode == "FF") {
-                                        valoresParaSumarFF += Number(parseFloat(Number(arrParseadaBD[1][idx].value)).toFixed(2))
-                                        cadaCargo.ChargeAmount = Number(parseFloat(valoresParaSumarFF * porcFFAereo).toFixed(2))
-                                    }
-                                })
-                        } else {
-                            cadaServicio['Charges']['Charge'][1].ChargeAmount = parseFloat(Number(arrParseadaBD[1][idx].value) * porcFFAereo).toFixed(2)
-                        }
-                        const subTotalCharge = { 'ChargeType': 'SubTotal', 'ChargeAmount': 0 }
-
-                        cadaServicio['Charges']['Charge'].forEach(cadaSubCargo => {
-                            console.log('Montos a sumar', Number(cadaSubCargo['ChargeAmount']))
-                            //subTotalCharge.ChargeAmount = parseFloat(Number(cadaServicio['TotalNet'].Amount) + Number(cadaSubCargo['ChargeAmount'])).toFixed(2)
-                            subTotalCharge.ChargeAmount += Number(cadaSubCargo['ChargeAmount']);
-                        })
-                        subTotalCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount).toFixed(2)
-                        cadaServicio['Charges']['Charge'].push(subTotalCharge)
-                        const ivaCharge = { 'ChargeType': 'IVA', 'ChargeAmount': 0 }
-                        ivaCharge.ChargeAmount = parseFloat(subTotalCharge.ChargeAmount * 0.16).toFixed(2)
-                        cadaServicio['Charges']['Charge'].push(ivaCharge)
-                        cadaServicio['TotalNet'].Amount = parseFloat(Number(subTotalCharge.ChargeAmount) + Number(ivaCharge.ChargeAmount)).toFixed(2);
-                        arrDepurada.push(cadaServicio)
-                    }
-                })
-            }
-
-        })
-    return arrDepurada;
-}
 export default function Cotizaciones() {
     const [datos, setDatos] = useState({
         userName: '',
         shipmentDate: '',
         originCity: '',
-        originZip: '',
-        originCC: '',
+        originZip: undefined,
+        originCC: 'MX',
         destinyCity: '',
-        destinyZip: '',
-        destinyCC: '',
-        insurance: '',
-        quantity: '',
+        destinyZip: undefined,
+        destinyCC: 'MX',
+        insurance: '0',
+        quantity: undefined,
         weight: '',
         height: '',
         width: '',
         longitude: '',
         ref: '',
-        insurance: ''
     })
-    const [tabIdx, setTab] = useState(0);
     const [open, setOpen] = React.useState(false);
     const [hasErrorAPI, setHasErrorAPI] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState("Si puedes leer esto, contacta al soporte.");
     const [arrServiciosYCargos, setArrServicios] = React.useState([])
+    const [arrDataAll, setArrDataAll] = React.useState([])
+    const [arrDataEstafeta, setArrDataEstafeta] = React.useState([])
+    const [zoneOfService, setZoneofService] = React.useState(undefined)
+    const [zoneOfServiceEstafeta, setZoneofServiceEstafeta] = React.useState(undefined)
+    const [isLoading, setIsLoading] = useState(false);
+    const [loaderBtnCotizar, setLoaderBtnCotizar] = React.useState(false);
+    const [loaderBtnAgregarPaquete, setLoaderBtnAgregarPaquete] = React.useState(false)
+    //Example: { "@number": "1","Weight": { "Value": 4  },  "Dimensions": { "Length": 2,   "Width": 2,  "Height": 2 } },
+    const [paquetesList, setPaquetesList] = React.useState([{ "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }])
+    const [mostrarLimitePaquetes, setMostrarLimitePaquetes] = React.useState(false)
+    const [mostrarAsegurarEnvio, setMostrarAsegurarEnvio] = React.useState(false)
+
+    const [userData, setUserData] = React.useState()
+    const [porcFFAereo, setPorcFFAereo] = React.useState(0)
+    const [porcFFTerrestre, setPorcFFTerrestre] = React.useState(0)
+
+
+    React.useState(() => {
+        const q = query(collection(db, "Cuenta"), where("id", "==", localStorage.getItem("userId")))
+        getDocs(q)
+            .then(res => {
+                if (res.docs.length > 0) {
+                    res.forEach((doc) => {
+                        setUserData(doc.data())
+                    })
+                } else {
+                    console.log("Problemas Consultando API")
+                }
+            })
+            .catch(err => {
+                console.log("Problemas...")
+            });
+
+        const qFF = query(collection(db, "Valores"))
+        getDocs(qFF)
+            .then(res => {
+                res.forEach((doc) => {
+                    setPorcFFAereo(Number.parseFloat(doc.data().tipoAereo).toFixed(2))
+                    setPorcFFTerrestre(Number.parseFloat(doc.data().tipoTerrestre).toFixed(2))
+                })
+            })
+            .catch(err => {
+                console.log("error" + err);
+            });
+    }, [setUserData, setPorcFFAereo, setPorcFFTerrestre])
+
+
+    const renderSwitch = (param) => {
+
+        const generarGuia = () => {
+            let auxobj = []
+            paquetesList.forEach(cadaPaquete => {
+                let paqueteToGuias = { "@number": 0, "Weight": 0, "Dimensions": {} }
+                paqueteToGuias['@number'] = cadaPaquete['@number']
+                paqueteToGuias.Weight = cadaPaquete['Weight']['Value']
+                paqueteToGuias.Dimensions['Height'] = cadaPaquete['Dimensions']['Height']
+                paqueteToGuias.Dimensions['Length'] = cadaPaquete['Dimensions']['Length']
+                paqueteToGuias.Dimensions['Width'] = cadaPaquete['Dimensions']['Width']
+                auxobj.push(paqueteToGuias)
+            })
+            let objToStorage = {
+                destinyData: {
+                    city: datos.destinyCity,
+                    zipCode: datos.destinyZip
+                },
+                originData: {
+                    city: datos.originCity,
+                    zipCode: datos.originZip
+                },
+                packageData: auxobj,
+                date: datos.shipmentDate,
+                serviceType: param['@type']
+            }
+            sessionStorage.setItem("generacionGuia", JSON.stringify(objToStorage))
+        }
+        switch (param['@type']) {
+            case "I": case "O": case "1": case "G": case "N":
+                return (
+                    <Box sx={{ backgroundColor: "#F2FAFC" }} key={param['@type']}>
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography><b>{param['Charges']['Charge'][0]['ChargeType']}</b></Typography>
+                            </AccordionSummary>
+                            <AccordionDetails >
+                                <Typography>
+                                    {param['Charges']['Charge'].map((eachCharge, idx) => (
+                                        <>
+                                            <div key={"key-" + idx}>
+                                                <div>-{eachCharge['ChargeType']} </div>
+                                                <div>${eachCharge['ChargeAmount']} </div>
+                                            </div>
+                                        </>
+
+                                    ))}
+                                    <br />
+                                    <div>Tiempo de entrega: {param['DeliveryTime']} </div>
+                                    <div>Total:  ${param['TotalNet']['Amount']} </div>
+                                </Typography>
+                                <a href="/user/guias">
+                                    <Button variant="outlined" onClick={() => { generarGuia() }}>Generar Guia</Button>
+                                </a>
+
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider />
+                    </Box >)
+
+        }
+    }
+
+    const organizarDataEstafeta = (param) => {
+        switch (param['DescripcionServicio']) {
+            case "Dia Sig.": case "Terrestre":
+                return (
+                    <Box sx={{ backgroundColor: "#F2FAFC" }} key={param['@type']}>
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography><b>{param['DescripcionServicio']}</b></Typography>
+                            </AccordionSummary>
+                            <AccordionDetails >
+                                <Typography>
+                                    {Object.keys(param).map((eachCharge, idx) => (
+                                        <>
+                                            <div key={"key-" + idx}>
+                                                <div>-{eachCharge} </div>
+                                                <div>{param[eachCharge]} </div>
+                                            </div>
+                                        </>
+                                    ))}
+                                    <br />
+                                    {/* <div>Total:  ${param['TotalNet']['Amount']} </div>   */}
+                                </Typography>
+                                <a href="/user/guias">
+                                    <Button variant="outlined">Generar Guia</Button>
+                                </a>
+
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider />
+                    </Box >)
+
+        }
+    }
 
     //Datos del formulario a enviar
     const handelDatosChanges = (event) => {
+        if (event.target.name == "originZip" && event.target.value.length >= 5) {
+            consultaZipCodes(event.target.value, "origen")
+        } else if (event.target.name == "destinyZip" && event.target.value.length >= 5) {
+            consultaZipCodes(event.target.value, "destino")
+        } else {
+            setDatos({
+                ...datos,
+                [event.target.name]: event.target.value
+            })
+        }
         setDatos({
             ...datos,
             [event.target.name]: event.target.value
         })
     }
 
-    //API Consulta
-    const consultaAPI = (event) => {
-        event.preventDefault()
-        var dataString = "https://quickpack-back-al2vij23ta-uc.a.run.app/rateRequest"
-            + "?AA01=" + datos.shipmentDate + "T12:00:00+GMT+0100"
-            + "&BB01=" + datos.originCity
-            + "&BB02=" + datos.originZip
-            + "&BB03=" + datos.originCC
-            + "&CC01=" + datos.destinyCity
-            + "&CC02=" + datos.destinyZip
-            + "&CC03=" + datos.destinyCC
-            + "&DD01=" + datos.weight
-            + "&DD02=" + datos.longitude
-            + "&DD03=" + datos.width
-            + "&DD04=" + datos.height
-            + "&EE01=" + datos.insurance
+    const handleDatosPaquetesChange = (event, indice) => {
+        var arrAux = paquetesList
+        switch (event.target.name) {
+            case 'weight':
+                arrAux[indice]['Weight']['Value'] = event.target.value;
+                break;
+            case 'height':
+                arrAux[indice]['Dimensions']['Height'] = event.target.value;
+                break;
+            case 'width':
+                arrAux[indice]['Dimensions']['Width'] = event.target.value;
+                break;
+            case 'lenght':
+                arrAux[indice]['Dimensions']['Length'] = event.target.value;
+                break;
+        }
+        arrAux[indice]['@number'] = indice + 1
+        setPaquetesList(arrAux)
+    }
 
-        var dataZoneString = "https://quickpack-back-al2vij23ta-uc.a.run.app/getZoneRequest"
-            + "?AA01=" + datos.originZip
-            + "&BB01=" + datos.destinyZip
-        fetch(dataString, {
-            method: 'GET',
-            headers: {
-                'Access-Control-Allow-Origin': '*'
+    const agregarPaqueteVacio = () => {
+        setLoaderBtnAgregarPaquete(true);
+        if (paquetesList.length <= 4) {
+            setPaquetesList([
+                ...paquetesList,
+                { "@number": undefined, "Weight": { "Value": undefined }, "Dimensions": { "Length": undefined, "Width": undefined, "Height": undefined } }
+            ])
+        } else {
+            setMostrarLimitePaquetes(true)
+        }
+        setLoaderBtnAgregarPaquete(false);
+    }
+    //API Consulta
+    const consultaApiRates = () => {
+        const URLgetRates = "https://back-node-al2vij23ta-uc.a.run.app/getRates"
+        const URLgetRatesESTAFETA = "https://back-node-al2vij23ta-uc.a.run.app/getRates/estafeta"
+        // const URLgetRates = "https://webserviceprod.quickpak.com.mx/getRates"
+        // const URLgetRatesESTAFETA = "https://webserviceprod.quickpak.com.mx/getRates/estafeta"
+        if (paquetesList.length == 1) {
+            // console.log("primer elemento: ", paquetesList[0])
+            let dataRequest = {
+                "alto": paquetesList[0]['Dimensions']['Height'],
+                "ancho": paquetesList[0]['Dimensions']['Width'],
+                "esPaquete": true,
+                "largo": paquetesList[0]['Dimensions']['Length'],
+                "peso": paquetesList[0]['Weight']['Value'],
+                "originZip": datos.originZip,
+                "destinyZip": datos.destinyZip
             }
+            fetch(URLgetRatesESTAFETA, {
+                method: 'POST',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({
+                    "alto": paquetesList[0]['Dimensions']['Height'],
+                    "ancho": paquetesList[0]['Dimensions']['Width'],
+                    "esPaquete": true,
+                    "largo": paquetesList[0]['Dimensions']['Length'],
+                    "peso": paquetesList[0]['Weight']['Value'],
+                    "originZip": datos.originZip,
+                    "destinyZip": datos.destinyZip
+                })
+            })
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    setArrDataEstafeta(data.data.FrecuenciaCotizadorResponse.FrecuenciaCotizadorResult.Respuesta.TipoServicio.TipoServicio)
+                })
+        }
+        //const URLgetRates = "http://localhost:8080/getRates"
+        setLoaderBtnCotizar(true)
+        const dateParsedToSting = datos.shipmentDate.toString() + "T12:00:00+GMT+0100"
+        fetch(URLgetRates, {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-type': 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify({
+                "timestamp": dateParsedToSting,
+                "shipperCity": datos.originCity,
+                "shipperCountryCode": "MX",
+                "shipperZip": datos.originZip,
+                "recipientCity": datos.destinyCity,
+                "recipientCountryCode": "MX",
+                "recipientZip": datos.destinyZip,
+                "packages": paquetesList,
+                "insurance": datos.insurance,
+                "userId": userData.id
+            })
         })
             .then(response => {
+                // console.log("response: ", response)
                 return response.json()
             })
             .then((data) => {
-
-                var dataJSONParsed = JSON.parse(data)
-                var code = dataJSONParsed.RateResponse.Provider[0].Notification[0]['@code']
-                setHasErrorAPI(code != 0 ? true : false)
-                if (hasErrorAPI == true) {
-                    setErrorMsg(dataJSONParsed.RateResponse.Provider[0].Notification[0]['Message'])
+                console.log("Error?", data)
+                if (data.status === "error") {
+                    setHasErrorAPI(true)
+                    setErrorMsg(data.messages)
                 } else {
-                    var auxString = JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service)
-                    var auxArr = [];
-                    if (auxString.charAt(0) == "{") {
-                        auxArr.push(JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service)))
-                        setArrServicios(auxArr)
+                    setArrDataAll(data.DHLRateData)
+                    setZoneofService(data.zone)
+                }
+                handleClickOpen()
+                setLoaderBtnCotizar(false)
 
-                    } else if (auxString.charAt(0) == "[") {
-                        auxArr = JSON.parse(JSON.stringify(dataJSONParsed.RateResponse.Provider[0].Service))
-                        const q = query(collection(db, "Cuenta"), where("id", "==", localStorage.getItem("userId")))
-                        let dataUsuario = ""
-                        getDocs(q)
-                            .then(res => {
-                                if (res.docs.length > 0) {
-                                    res.forEach((doc) => {
-                                        dataUsuario = doc.data()
-                                        fetch(dataZoneString, {
-                                            method: 'GET',
-                                            headers: {
-                                                'Access-Control-Allow-Origin': '*'
-                                            }
-                                        })
-                                            .then(response => {
-                                                return response.json()
-                                            })
-                                            .then((dataZoneIndex) => {
-                                                let volumetricWeight = (datos.height * datos.width * datos.longitude) / 5000
-                                                setArrServicios(generarArrNuevosPrecios(auxArr, dataUsuario, datos.weight > volumetricWeight ? datos.weight : volumetricWeight, dataZoneIndex));
-                                            })
+                //console.log("data:", data)
+            })
+    }
 
-
-                                    })
-                                } else {
-                                    console.log("Problemas Consultando API")
-                                }
-                            })
-                            .catch(err => {
-                                console.log("Problemas...")
-                            });
-                        //console.log("Array",arrServiciosYCargos);
-                    }
+    ///API Zipcodes
+    const consultaZipCodes = (zipCode, ubicacion) => {
+        setLoaderBtnCotizar(true)
+        Api.getCityDataBasedOnZipCode(zipCode)
+            .then(response => {
+                var dataParsed = JSON.parse(response.data)
+                let auxCadena = dataParsed.results[0].formatted_address
+                let posicionZip = auxCadena.indexOf(zipCode)
+                posicionZip = posicionZip + zipCode.length
+                let sinZip = auxCadena.substring(posicionZip, auxCadena.length)
+                let sinMexico = sinZip.replace(", Mexico", "")
+                let cadenaFinal = sinMexico.replace(" ", "")
+                var dataParsed = JSON.parse(response.data)
+                if (ubicacion == "origen") {
+                    setDatos({
+                        ...datos,
+                        "originCity": cadenaFinal,
+                        "originZip": dataParsed.results[0].address_components[0].long_name
+                    })
+                    // setIsLoading(false)
+                    setLoaderBtnCotizar(false)
+                }
+                else if (ubicacion == "destino") {
+                    setDatos({
+                        ...datos,
+                        "destinyCity": cadenaFinal,
+                        "destinyZip": dataParsed.results[0].address_components[0].long_name
+                    })
+                    // setIsLoading(false)
+                    setLoaderBtnCotizar(false)
 
                 }
-                var collectionRef = firestore.collection(db, "Cotizaciones");
 
-                firestore.addDoc(collectionRef, {
-                    DestinyCC: datos.destinyCC,
-                    DestinyCity: datos.destinyCity,
-                    DestinyZip: datos.destinyZip,
-                    OriginCity: datos.originCity,
-                    OriginCC: datos.originCC,
-                    OriginZip: datos.originZip,
-                    Height: datos.height,
-                    Insurance: datos.insurance,
-                    Longitude: datos.longitude,
-                    ShipmentDate: datos.shipmentDate,
-                    Weight: datos.weight,
-                    Width: datos.width,
-                    statusGuia: 0,
-                    userCreador: localStorage.getItem("userName"),
-                    userCreadorId: localStorage.getItem("Id")
-                }).then(response => {
-                    console.log("Response firestore", response)
-                }).catch(error => {
-                    console.log("Error:", error)
-                })
-                handleClickOpen()
-
-                // background-color: #02cfaa !important;
-                return data
-            })
-            .catch((error) => {
-                console.log(error)
             })
     }
-
-    ///Tabs de detalle producto
-    const handleTabChange = (event, newValue) => {
-        setTab(newValue);
+    const handleChangeMostrarAsegurar = () => {
+        setMostrarAsegurarEnvio(!mostrarAsegurarEnvio)
     }
-    const classes = makeStyles((theme) => ({
-        root: {
-            flexGrow: 1,
-            backgroundColor: theme.palette.background.paper,
-        }
-    }));
 
     // Dialog Stuff
     const handleClickOpen = () => {
@@ -301,137 +383,134 @@ export default function Cotizaciones() {
     };
     const handleClose = (value) => {
         setOpen(false);
-
     };
+
 
     return (
         <>
+            {isLoading ? <LoadingSpinner /> : <></>}
             <div className="bg-azul">
                 <div>
                     <form >
-
-                        <div className="title-cliente">Información de envio
-                        </div>
-
+                        <Stack>
+                            <div className="title-cliente">Información de envio
+                            </div>
+                            <Box sx={{ color: "#33FFD4", marginLeft: "25%" }}>El nombre del municipio se autocompleta al llenar el codigo postal</Box>
+                        </Stack>
                         <label>
                             <input type="date" name="shipmentDate" className="inputs" onChange={handelDatosChanges} placeholder="Fecha de envio" />
-                        </label>
-
-                        <label>
-                            <input type="text" name="originCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad origen" />
                         </label>
                         <label>
                             <input type="text" name="originZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal origen" />
                         </label>
                         <label>
-                            <input type="text" name="originCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais origen" />
+                            <input type="text" disabled name="originCity" className="inputs" onChange={handelDatosChanges} value={datos.originCity != undefined ? datos.originCity : undefined} placeholder="Ciudad origen" />
                         </label>
+
                         <br />
-                        <label>
-                            <input type="text" name="destinyCity" className="inputs" onChange={handelDatosChanges} placeholder="Ciudad destino" />
-                        </label>
                         <label>
                             <input type="text" name="destinyZip" className="inputs" onChange={handelDatosChanges} placeholder="Codigo postal destino" />
                         </label>
                         <label>
-                            <input type="text" name="destinyCC" className="inputs" onChange={handelDatosChanges} placeholder="Codigo pais destino" />
+                            <input type="text" disabled name="destinyCity" className="inputs" onChange={handelDatosChanges} value={datos.destinyCity != undefined ? datos.destinyCity : undefined} placeholder="Ciudad destino" />
                         </label>
 
-                        <div className="title-cliente">Asegurar envio
-                        </div>
 
-                        <label>
-                            <input type="text" name="insurance" className="inputs" onChange={handelDatosChanges} placeholder="valor de envio" />
-                        </label>
+                        <div className="title-cliente">Asegurar envio </div>
+                        <Stack direction="row">
 
-                        <div className="title-cliente">Paquete
-                        </div>
-                        {/*  */}
+                            <Box sx={{ margin: "0 0 0 5%" }}>
+                                <Stack direction="row" justifyContent="center" alignItems="center">
+                                    <TextField sx={mostrarAsegurarEnvio ? { backgroundColor: "white" } : { visibility: "hidden" }} name="insurance" onChange={handelDatosChanges} label="valor de envio" />
+                                    <Checkbox
+                                        checked={mostrarAsegurarEnvio}
+                                        onChange={handleChangeMostrarAsegurar}
+                                        inputProps={{ 'aria-label': 'controlled' }}
+                                    />
+                                    <Box sx={{ color: "#33FFD4" }}>¿Desea asegurar el envio?</Box>
+                                </Stack>
+
+                            </Box>
+
+                        </Stack>
 
 
-                        <div className={classes.root} className="pieza">
-                            <div>
-                                <AppBar position="static">
-                                    <Tabs value={tabIdx} onChange={handleTabChange} aria-label="simple tabs example" className="principal">
-                                        <Tab label="1 Cantidad" {...a11yProps(0)} />
-                                        <Tab label="2 Peso" {...a11yProps(1)} />
-                                        <Tab label="3 Alto" {...a11yProps(2)} />
-                                        <Tab label="4 Ancho" {...a11yProps(3)} />
-                                        <Tab label="5 Profundidad" {...a11yProps(4)} />
-                                        <Tab label="6 Referencia" {...a11yProps(5)} />
-                                    </Tabs>
-                                </AppBar>
-                                <TabPanel value={tabIdx} index={0} >
-                                    <div className="display-contentTabPanel">
-                                        <div>Cantidad</div>
-                                        <label>
-                                            <input type="number" name="quantity" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={1}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique el peso</div>
-                                        <label>
-                                            <input type="number" name="weight" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>Kg.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={2}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique la altura</div>
-                                        <label>
-                                            <input type="number" name="height" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={3}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Indique el ancho</div>
-                                        <label>
-                                            <input type="number" name="width" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={4}>
-                                    <div className="display-contentTabPanel">
-                                        <div>Seleccione la profundidad</div>
-                                        <label>
-                                            <input type="number" name="longitude" className="selector" onChange={handelDatosChanges} />
-                                        </label>
-                                        <div>cm.</div>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel value={tabIdx} index={5}>
-                                    <div className="display-contentTabPanel">
-                                        <div>ingrese una referencia</div>
-                                        <label>
-                                            <input type="text" name="ref" onChange={handelDatosChanges} />
-                                        </label>
-                                    </div>
-                                </TabPanel>
-                            </div>
-                        </div>
-                        <div className="boton">
-                            <button onClick={consultaAPI} className="boton-color"> Cotizar </button>
-                        </div>
+                        <div className="title-cliente">Paquete(s) </div>
+                        <br />
+                        <Box>
+                            <Stack direction="column" spacing={2}>
+                                <Stack direction="column" justifyContent="center" alignItems="center">
+                                    {paquetesList.map((cadaPaquete, idx) => (
+                                        <Stack key={"paquete-" + idx} direction="row" justifyContent="center" alignItems="center">
+                                            <Box sx={{ color: "#33FFD4", fontSize: "1.5rem" }}>#{idx + 1}&nbsp;</Box>
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} name="weight" label="Peso" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} name="height" label="Alto" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} name="width" label="Ancho" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
+                                            <TextField sx={{ backgroundColor: "white", width: "15%" }} name="lenght" label="Profundidad" variant="outlined" onChange={(e) => { handleDatosPaquetesChange(e, idx) }} />
+                                            {/* <TextField sx={{ backgroundColor: "white", width: "15%" }} id="outlined-basic" label="Referencia" variant="outlined" /> */}
+                                            {/* <TextField sx={{ backgroundColor: "white", width: "15%" }} id="outlined-basic" label="Descripcion paquete" variant="outlined" /> */}
+                                        </Stack>
+                                    ))}
+                                    {mostrarLimitePaquetes == true ? <Box sx={{ color: "red", fontSize: "1.5rem" }}>Se alcanzo el limite de paquetes</Box> : <></>}
+                                </Stack>
+                                <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
+                                    <LoadingButton loading={loaderBtnAgregarPaquete} variant="outlined"><span className="material-icons" onClick={() => { agregarPaqueteVacio() }}>playlist_add</span></LoadingButton>
+                                    <LoadingButton loading={loaderBtnCotizar} onClick={() => consultaApiRates()} variant="contained">Cotizar</LoadingButton>
+                                </Stack>
+
+                            </Stack>
+
+
+                        </Box>
+
                     </form>
 
                     <div>
-                        <Dialog onClose={handleClose} open={open} >
+                        <Dialog onClose={handleClose} open={open} sx={{ width: "70%", height: "100%" }} >
                             <DialogTitle>Cotizacion:</DialogTitle>
 
                             <Divider />
                             {hasErrorAPI ?
                                 <div>Error: {String(errorMsg)}</div>
                                 :
-                                arrServiciosYCargos.map(each => (
-                                    renderSwitch(each)
-                                ))}
+                                <>
+                                    <Stack direction="column">
+                                        <Box>
+                                            <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>DHL
+                                            </Box >
+                                            <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>Zona de servicio
+                                                <Box sx={{ color: "purple" }}>{zoneOfService}</Box></Box >
+                                            <Divider />
+                                            {arrDataAll.map(each => (
+                                                renderSwitch(each,)
+                                            ))}
+                                        </Box>
+                                        {arrDataEstafeta.length > 0 ?
+                                            <Box>
+                                                <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>ESTAFETA
+                                                </Box >
+                                                <Box sx={{ fontSize: "20px", fontWeight: "700", textAlign: "center" }}>Zona de servicio
+                                                    <Box sx={{ color: "purple" }}>{zoneOfServiceEstafeta}</Box></Box >
+                                                <Divider />
+                                                <Divider />
+                                                {arrDataEstafeta.map(each => (
+                                                    organizarDataEstafeta(each)
+                                                ))}
+                                            </Box>
+                                            : <></>}
+
+                                    </Stack>
+
+
+
+                                </>
+
+                            }
                         </Dialog>
+                        <div>
+
+
+                        </div>
                     </div>
                 </div>
             </div>

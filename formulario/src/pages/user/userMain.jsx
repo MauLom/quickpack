@@ -17,6 +17,8 @@ import {
 
 import Cotizaciones from '../../components/Cotizador/Cotizador';
 import GenerarGuias from '../../components/GenerarGuias/generarGuias';
+import GenerarGuiasEstafeta from '../../components/GenerarGuias/generarGuiasEstafeta';
+
 
 import './userMain.css'
 import firebaseApp from '../../firebaseApp';
@@ -28,7 +30,15 @@ firebaseApp();
 const database = getFirestore();
 var datosOut = []
 function UserMain() {
-  const [listaAcciones, setListaAcciones] = React.useState([]);
+  const [listaAcciones, setListaAcciones] = React.useState(
+    [
+      { id: 0, txt: "Realizar cotizacion", ico: "note_add", destiny: "/user/cotizar" },
+      { id: 1, txt: " Revisar mis pedidos", ico: "find_in_page", destiny: "/" },
+      { id: 2, txt: " Configurar de mi cuenta", ico: "manage_accounts", destiny: "/user/configurar" },
+      { id: 3, txt: " Realizar guia", ico: "find_in_page", destiny: "/user/guias" },
+      { id: 4, txt: " Realizar guia con ESTAFETA", ico: "find_in_page", destiny: "/user/guiasEstafeta" }
+    ]
+  );
   const [datos, setDatos] = useState({
     originId: '',
     originName: '',
@@ -117,23 +127,6 @@ function UserMain() {
 
   }
 
-
-
-
-
-  React.useEffect(() => {
-    const jsonFake = [
-      { id: 0, txt: "Realizar cotizacion", ico: "note_add", destiny: "/user/cotizar" },
-      { id: 1, txt: " Revisar mis pedidos", ico: "find_in_page", destiny: "/" },
-      { id: 2, txt: " Configurar de mi cuenta", ico: "manage_accounts", destiny: "/user/configurar" },
-      { id: 3, txt: " Realizar guia", ico: "find_in_page", destiny: "/user/guias" },
-    ];
-    setTimeout(() => {
-      setListaAcciones(jsonFake);
-    }, 200);
-  })
-
-
   return (
     <>
       <AppBar position="static">
@@ -145,7 +138,7 @@ function UserMain() {
             <Button color="inherit">
               <span>Desconexion</span>
               &nbsp;&nbsp;&nbsp;
-              <span class="material-icons">
+              <span className="material-icons">
                 logout
               </span>
             </Button>
@@ -168,7 +161,7 @@ function UserMain() {
                         <div>
                           {cadaAccion.txt}
                         </div>
-                        <span class="material-icons-outlined">
+                        <span className="material-icons-outlined">
                           {cadaAccion.ico}
                         </span>
                       </CardContent>
@@ -182,7 +175,7 @@ function UserMain() {
             <div className="contBackButton">
               <Link to="/user" className="noLinkStyle">
                 <Button >
-                  <span class="material-icons">
+                  <span className="material-icons">
                     reply
                   </span>
                   &nbsp;&nbsp;&nbsp;
@@ -197,51 +190,51 @@ function UserMain() {
           <Route exact path="/user/configurar">
             <div>
 
-              <div _msthash="146601" _msttexthash="469534" class="contBackButton">
-                <a class="noLinkStyle" href="/user">
-                  <button class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root css-1e6y48t-MuiButtonBase-root-MuiButton-root" tabindex="0" type="button"><span class="material-icons" _msthash="331916" _msttexthash="140842">respuesta</span>&nbsp;&nbsp;&nbsp;<span _msthash="332072" _msttexthash="114361">Regresar</span><span class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span></button></a></div>
-              <div class="bg-azul">
+              <div _msthash="146601" _msttexthash="469534" className="contBackButton">
+                <a className="noLinkStyle" href="/user">
+                  <button className="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root css-1e6y48t-MuiButtonBase-root-MuiButton-root" tabindex="0" type="button"><span className="material-icons" _msthash="331916" _msttexthash="140842">respuesta</span>&nbsp;&nbsp;&nbsp;<span _msthash="332072" _msttexthash="114361">Regresar</span><span className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span></button></a></div>
+              <div className="bg-azul">
 
-                <div class="title-cuenta" _msthash="604514" _msttexthash="411905"><font color="white">  Configuración de mi cuenta</font></div>
+                <div className="title-cuenta" _msthash="604514" _msttexthash="411905"><font color="white">  Configuración de mi cuenta</font></div>
                 <br></br>
                 <label>
-                  <font color="white">Id</font><center><input type="text" id="Id_1" name="Id" onChange={UpdateDatos} class="inputs"></input></center>
+                  <font color="white">Id</font><center><input type="text" id="Id_1" name="Id" onChange={UpdateDatos} className="inputs"></input></center>
                 </label>
                 <label>
-                  <p></p><font color="white">Nombre/s</font><center><input type="text" id="Nombres_1" name="Nombres" onChange={UpdateDatos} class="inputs"></input></center>
+                  <p></p><font color="white">Nombre/s</font><center><input type="text" id="Nombres_1" name="Nombres" onChange={UpdateDatos} className="inputs"></input></center>
                 </label>
                 <label>
-                  <p></p><font color="white">Apellidos</font><center><input type="text" id="Apellidos_2" name="Apellidos" onChange={UpdateDatos} class="inputs"></input></center>
+                  <p></p><font color="white">Apellidos</font><center><input type="text" id="Apellidos_2" name="Apellidos" onChange={UpdateDatos} className="inputs"></input></center>
                 </label>
                 <label>
-                  <p></p><font color="white">Grupo</font><center> <input type="text" id="Grupo_1" name="Grupo" onChange={UpdateDatos} class="inputs"></input></center>
+                  <p></p><font color="white">Grupo</font><center> <input type="text" id="Grupo_1" name="Grupo" onChange={UpdateDatos} className="inputs"></input></center>
                 </label>
                 <label>
-                  <p></p><font color="white">Contraseña</font><center> <input type="password_1" id="Contraseña" name="Pass" onChange={UpdateDatos} class="inputs" values=""></input></center>
+                  <p></p><font color="white">Contraseña</font><center> <input type="password_1" id="Contraseña" name="Pass" onChange={UpdateDatos} className="inputs" values=""></input></center>
                 </label>
                 <p></p>
                 <p></p>
                 <button onClick={getUsers}>Ver</button> <button onClick={getUsers}>Modificar</button>
 
               </div>
-              <div class="bg-azul">
+              <div className="bg-azul">
 
-                <div class="title-cuenta" _msthash="604514" _msttexthash="411905"><font color="white"> Registrar</font></div>
+                <div className="title-cuenta" _msthash="604514" _msttexthash="411905"><font color="white"> Registrar</font></div>
                 <p></p>
                 <label>
-                  <font color="white">Id</font><center><input type="text" id="Id" name="originId" onChange={handelDatosChanges} class="inputs"></input></center>
+                  <font color="white">Id</font><center><input type="text" id="Id" name="originId" onChange={handelDatosChanges} className="inputs"></input></center>
                 </label>
                 <label>
-                  <p></p><font color="white">Nombre/s</font><center><input type="text" id="Nombres" name="originName" onChange={handelDatosChanges} class="inputs"></input></center>
+                  <p></p><font color="white">Nombre/s</font><center><input type="text" id="Nombres" name="originName" onChange={handelDatosChanges} className="inputs"></input></center>
                 </label>
                 <label>
-                  <p></p><font color="white">Apellidos</font><center><input type="text" id="Apellidos" name="originLastname" onChange={handelDatosChanges} class="inputs"></input></center>
+                  <p></p><font color="white">Apellidos</font><center><input type="text" id="Apellidos" name="originLastname" onChange={handelDatosChanges} className="inputs"></input></center>
                 </label>
                 <label>
-                  <p></p><font color="white">Grupo</font><center> <input type="text" id="Grupo" name="originGroup" onChange={handelDatosChanges} class="inputs"></input></center>
+                  <p></p><font color="white">Grupo</font><center> <input type="text" id="Grupo" name="originGroup" onChange={handelDatosChanges} className="inputs"></input></center>
                 </label>
                 <label>
-                  <p></p><font color="white">Contraseña</font><center> <input type="password" id="Contrasena" name="originPass" onChange={handelDatosChanges} class="inputs" values=""></input></center>
+                  <p></p><font color="white">Contraseña</font><center> <input type="password" id="Contrasena" name="originPass" onChange={handelDatosChanges} className="inputs" values=""></input></center>
                 </label>
 
                 <p></p><button onClick={getData}>Guardar</button>
@@ -258,6 +251,9 @@ function UserMain() {
           </Route>
           <Route path="/user/guias">
             <GenerarGuias />
+          </Route>
+          <Route path="/user/guiasEstafeta">
+            <GenerarGuiasEstafeta />
           </Route>
         </Switch>
       </Router>

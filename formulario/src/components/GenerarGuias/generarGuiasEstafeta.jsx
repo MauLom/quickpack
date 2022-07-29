@@ -4,12 +4,14 @@ import * as React from 'react';
 import { Button, Box, Stack, Divider } from '@mui/material';
 
 /// Components
-import FormDestinyDetails from '../FormDestinyDetails/formDestinyDetails'
-import FormOriginDetails from '../FormOriginDetails/formOriginDetails'
-import FormPackageDetails from '../FormPackageDetails/formPackageDetails'
-import FormServiceDetails from '../FormServiceDetails/formServiceDetails';
+import FormDestinyDetails from '../FormDestinyDetails/formDestinyDetailsESTAFETA'
+import FormOriginDetails from '../FormOriginDetails/formOriginDetailsESTAFETA'
+import FormPackageDetails from '../FormPackageDetails/formPackageDetailsESTAFETA'
+import FormServiceDetails from '../FormServiceDetails/formServiceDetailsESTAFETA';
 import LoadingSpinner from '../Loader/loader';
-export default function GenerarGuias() {
+
+
+export default function GenerarGuiasEstafeta() {
     const [pasoActivo, setPasoActivo] = React.useState(1)
     const [isLoading, setIsLoading] = React.useState(false)
     const handleClicksPasosBoxes = (event) => {
@@ -22,6 +24,7 @@ export default function GenerarGuias() {
         console.log("invocan change loadin")
         setIsLoading(!isLoading)
     }
+
     return (
         <>
             <Box sx={{ marginTop: "2%" }}>
