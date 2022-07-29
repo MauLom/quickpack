@@ -3,7 +3,6 @@ const config =  require('../config')
 const mainUrl = "https://wsbexpress.dhl.com/rest/sndpt/"
 const rateRequest = "RateRequest"
 const shipmentRequest = "ShipmentRequest"
-/// { auth: { username: "centraldeenMX", password: "B@3wZ!8bU$3g" } })
 
 const envVariables =  config.getVariables()
 
