@@ -1,6 +1,6 @@
 const axios = require('axios');
 const config =  require('../config')
-const mainUrl = "https://wsbexpress.dhl.com/rest/sndpt/"
+const mainUrl = "https://wsbexpress.dhl.com/rest/"
 const rateRequest = "RateRequest"
 const shipmentRequest = "ShipmentRequest"
 
@@ -54,7 +54,7 @@ module.exports = {
 
     getRateAndStructure: async (dataToSend) => {
         const resolvedRequest = await axios
-            .post(mainUrl + rateRequest, dataToSend,
+            .post(mainUrl + envVariables.enviroment + rateRequest, dataToSend,
                 { auth: { username: envVariables.DHLAccessUser, password: envVariables.DHLAccessPass } })
             .then(res => {
                 dataResponse = res.data
