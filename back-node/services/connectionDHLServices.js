@@ -98,7 +98,7 @@ module.exports = {
     generateLabel: async (dataToSend) => {
         const resolvedRequest = await axios
             .post(mainUrl + shipmentRequest, dataToSend,
-                { auth: { username: "centraldeenMX", password: "B@3wZ!8bU$3g" } })
+                { auth: { username: envVariables.DHLAccessUser, password: envVariables.DHLAccessPass } })
             .then(res => {
                 return res
             })
