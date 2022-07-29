@@ -3,8 +3,6 @@ const config =  require('../config')
 const mainUrl = "https://wsbexpress.dhl.com/rest/sndpt/"
 const rateRequest = "RateRequest"
 const shipmentRequest = "ShipmentRequest"
-/// { auth: { username: "centraldeenMX", password: "B@3wZ!8bU$3g" } })
-
 const envVariables =  config.getVariables()
 
 module.exports = {
@@ -71,10 +69,6 @@ module.exports = {
                         formattedServicesArr = dataResponse.RateResponse.Provider[0].Service
                     }
                     formattedServicesArr.forEach(eachType => {
-                        // console.log("eachType type", eachType['@type'])
-                        // if (eachType.hasOwnProperty('TotalNet')) {
-                        //     delete eachType['TotalNet']
-                        // }
                         if (eachType.hasOwnProperty('Charges') && eachType['Charges'].hasOwnProperty('Charge')) {
                             eachType['Charges']['Charge'].forEach(cadaCargo => {
                                 // console.log("cargos:", cadaCargo['ChargeCode'])
@@ -83,8 +77,6 @@ module.exports = {
                                 }
                             })
                         }
-
-
                     })
                     return formattedServicesArr
                 }

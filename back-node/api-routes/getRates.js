@@ -62,7 +62,6 @@ router.post('/', async (req, res) => {
         const validServicesDHL =  await controllerUserData.getValidServices(userId)
         const pricesBasedOnClientData = controllerPrices.getPricesBasedOnSheet(dataResponseDHL, clientDataSheet, weightForCalcs, zoneForCalc, ffTaxes.tipoAereo, ffTaxes.tipoTerrestre, validServicesDHL)
         res.status(200).json({ status: "OK", messages: "ok", DHLRateData: pricesBasedOnClientData, zone: zoneForCalc })
-        //res.status(200).json({ status: "OK", messages: "ok", DHLRateData: dataResponseDHL})
     }
 
 })
